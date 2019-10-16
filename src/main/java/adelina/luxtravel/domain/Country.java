@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Country {
-
     private String name;
     private List<City> cities;
 
@@ -21,7 +20,7 @@ public class Country {
         if (cities == null || cities.contains(null)) {
             throw new FailedInitializationException("Invalid cities");
         }
-        this.name = name;
-        this.cities = new ArrayList(cities);
+        this.name = new String(name);
+        this.cities = new ArrayList<>(cities);
     }
 }

@@ -6,13 +6,15 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class Vehicle {
+abstract public class Vehicle {
     private LocalDate releaseDate;
     private String brandName;
 
     public Vehicle(LocalDate releaseDate, String brandName) {
         initializeFields(releaseDate, brandName);
     }
+
+     public abstract void findDuration();
 
     private void initializeFields(LocalDate releaseDate, String brandName) {
         if (releaseDate == null || releaseDate.isAfter(LocalDate.now())) {
@@ -22,6 +24,7 @@ public class Vehicle {
             throw new FailedInitializationException("Invalid brand name");
         }
         this.releaseDate = releaseDate;
-        this.brandName = brandName;
+        this.brandName = new String(brandName);
     }
+
 }

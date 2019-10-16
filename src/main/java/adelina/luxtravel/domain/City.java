@@ -15,6 +15,6 @@ public class City {
         if (name == null || name.isEmpty()) {
             throw new FailedInitializationException("Invalid city name");
         }
-        this.name = name;
+        this.name = new String(name);
     }
 }
