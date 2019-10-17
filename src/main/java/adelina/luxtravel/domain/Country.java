@@ -20,7 +20,7 @@ public class Country {
         if (cities == null || cities.contains(null)) {
             throw new FailedInitializationException("Invalid cities");
         }
-        this.name = new String(name);
+        this.name = name;
         this.cities = new ArrayList<>(cities);
     }
 }

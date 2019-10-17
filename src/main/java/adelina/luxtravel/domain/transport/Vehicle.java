@@ -1,5 +1,6 @@
 package adelina.luxtravel.domain.transport;
 
+import adelina.luxtravel.domain.City;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
@@ -14,9 +15,9 @@ abstract public class Vehicle {
         initializeFields(releaseDate, brandName);
     }
 
-     public abstract void findDuration();
+    public abstract void findDuration(City from, City to);
 
-    private void initializeFields(LocalDate releaseDate, String brandName) {
+    private void initializeFields(LocalDate releaseDate, java.lang.String brandName) {
         if (releaseDate == null || releaseDate.isAfter(LocalDate.now())) {
             throw new FailedInitializationException("Invalid release date");
         }
@@ -24,7 +25,6 @@ abstract public class Vehicle {
             throw new FailedInitializationException("Invalid brand name");
         }
         this.releaseDate = releaseDate;
-        this.brandName = new String(brandName);
+        this.brandName = new java.lang.String(brandName);
     }
-
 }

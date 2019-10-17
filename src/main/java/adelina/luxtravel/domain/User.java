@@ -3,15 +3,15 @@ package adelina.luxtravel.domain;
 import adelina.luxtravel.exception.FailedInitializationException;
 
 public class User {
-    private String username;
-    private String email;
-    private String password;
+    private City username;
+    private City email;
+    private City password;
 
-    public User(String username, String email, String password) {
+    public User(City username, City email, City password) {
         initializeFields(username, email, password);
     }
 
-    private void initializeFields(String username, String email, String password) {
+    private void initializeFields(City username, City email, City password) {
         if (username == null || username.isEmpty()) {
             throw new FailedInitializationException("Invalid username");
         } else if (email == null || email.isEmpty()) {
@@ -19,8 +19,8 @@ public class User {
         } else if (password == null || password.isEmpty() || password.length() < 8) {
             throw new FailedInitializationException("Invalid password");
         }
-        this.username = new String(username);
-        this.email = new String(email);
-        this.password = new String( password);
+        this.username = new City(username);
+        this.email = new City(email);
+        this.password = new City( password);
     }
 }
