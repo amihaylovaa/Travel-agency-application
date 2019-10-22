@@ -1,11 +1,18 @@
 package adelina.luxtravel.domain;
 
+import adelina.luxtravel.domain.transport.Airplane;
+import adelina.luxtravel.domain.transport.AirplaneClass;
 import adelina.luxtravel.domain.transport.Vehicle;
 import adelina.luxtravel.exception.FailedInitializationException;
 
+import static adelina.luxtravel.utility.Constants.MINUTE;
+import static adelina.luxtravel.utility.Constants.TEN_PERCENT;
+
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Booking {
+    private double price;
     private LocalDate from;
     private LocalDate to;
     private Vehicle vehicle;
@@ -23,7 +30,7 @@ public class Booking {
         if (vehicle == null) {
             throw new FailedInitializationException("Invalid vehicle");
         }
-        if (startingPoint == null  || endingPoint == null ) {
+        if (startingPoint == null || endingPoint == null) {
             throw new FailedInitializationException("Starting or ending point is not set");
         }
         this.from = from;
@@ -31,12 +38,23 @@ public class Booking {
         this.vehicle = vehicle;
         this.startingPoint = startingPoint;
         this.endingPoint = endingPoint;
+        calculatePrice();
     }
 
-    private double generatePrice() {
-        double price = 0.00;
-        vehicle.findDuration(startingPoint, endingPoint);
+    private void calculatePrice() {
+        double durationInMinutes = getDurationInMinutes();
 
-        return price;
+        if (vehicle instanceof Airplane) {
+            AirplaneClass airplaneClass = ((Airplane) vehicle).getAirplaneClass();
+            price = durationInMinutes / airplaneClass.getPriceCoefficient();
+        } else {
+            price = durationInMinutes / TEN_PERCENT;
+        }
+    }
+
+    private double getDurationInMinutes() {
+        LocalTime duration = vehicle.calculateDuration(endingPoint);
+
+        return (duration.getHour() * MINUTE) + duration.getMinute();
     }
 }

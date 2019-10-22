@@ -5,6 +5,8 @@ import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 abstract public class Vehicle {
@@ -15,8 +17,6 @@ abstract public class Vehicle {
         initializeFields(releaseDate, brandName);
     }
 
-    public abstract void findDuration(City from, City to);
-
     private void initializeFields(LocalDate releaseDate, java.lang.String brandName) {
         if (releaseDate == null || releaseDate.isAfter(LocalDate.now())) {
             throw new FailedInitializationException("Invalid release date");
@@ -26,5 +26,13 @@ abstract public class Vehicle {
         }
         this.releaseDate = releaseDate;
         this.brandName = new java.lang.String(brandName);
+    }
+
+    public abstract LocalTime calculateDuration(City to);
+
+    public LocalTime parseToLocalTime(Double duration) {
+        String durationString = duration.toString().replace('.', ':');
+
+        return LocalTime.parse(durationString, DateTimeFormatter.ofPattern("HH:mm"));
     }
 }

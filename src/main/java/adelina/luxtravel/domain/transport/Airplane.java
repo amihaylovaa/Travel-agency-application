@@ -3,9 +3,14 @@ package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.City;
 import adelina.luxtravel.exception.FailedInitializationException;
+import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
+import static adelina.luxtravel.utility.Constants.AIRPLANE_MAX_SPEED;
+
+@Getter
 public class Airplane extends Vehicle {
     private AirplaneClass airplaneClass;
 
@@ -21,9 +26,10 @@ public class Airplane extends Vehicle {
         this.airplaneClass = airplaneClass;
     }
 
-    // not finished
     @Override
-    public void findDuration(City from, City to) {
-          ;
+    public LocalTime calculateDuration(City to) {
+        double duration = to.getDistance() / AIRPLANE_MAX_SPEED;
+
+        return parseToLocalTime(duration);
     }
 }
