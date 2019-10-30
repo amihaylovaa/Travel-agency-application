@@ -11,10 +11,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static adelina.luxtravel.utility.DB.conn;
-import static adelina.luxtravel.utility.DB.DB_PASSWORD;
-import static adelina.luxtravel.utility.DB.DB_URL;
-import static adelina.luxtravel.utility.DB.DB_USERNAME;
+import static adelina.luxtravel.utility.Database.conn;
+import static adelina.luxtravel.utility.Database.DB_PASSWORD;
+import static adelina.luxtravel.utility.Database.DB_URL;
+import static adelina.luxtravel.utility.Database.DB_USERNAME;
 
 @Configuration
 @PropertySource(value = {"classpath:application.properties"})

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class DB {
+public class Database {
 
     public static Connection conn = null;
     public static Statement stmt = null;
