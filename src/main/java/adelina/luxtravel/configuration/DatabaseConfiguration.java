@@ -1,54 +1,34 @@
 package adelina.luxtravel.configuration;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Properties;
 
-import static adelina.luxtravel.utility.Database.conn;
-import static adelina.luxtravel.utility.Database.DB_PASSWORD;
-import static adelina.luxtravel.utility.Database.DB_URL;
-import static adelina.luxtravel.utility.Database.DB_USERNAME;
+import static adelina.luxtravel.utility.Database.*;
 
 @Configuration
-@PropertySource(value = {"classpath:application.properties"})
+@PropertySource(value = {"classpath:db.properties"})
 public class DatabaseConfiguration {
-    private MysqlDataSource dataSource = null;
-    private Properties properties = null;
-    private FileInputStream fileInputStream = null;
+    private MysqlDataSource dataSource;
+
+    @Autowired
+    private Environment env;
 
     @Bean
-    synchronized public MysqlDataSource getMysqlDataSource() throws FileNotFoundException, IOException {
+    synchronized public MysqlDataSource getMysqlDataSource() {
         if (dataSource == null) {
             dataSource = new MysqlDataSource();
-
-            readDBPropertiesFile();
-
-            dataSource.setURL(properties.getProperty(DB_URL));
-            dataSource.setUser(properties.getProperty(DB_USERNAME));
-            dataSource.setPassword(properties.getProperty(DB_PASSWORD));
         }
+        dataSource.setURL(env.getProperty(DB_URL));
+        dataSource.setUser(env.getProperty(DB_USERNAME));
+        dataSource.setPassword(env.getProperty(DB_PASSWORD));
+
         return dataSource;
-    }
-
-    public void setConnection() {
-        try {
-            conn = dataSource.getConnection();
-        } catch (SQLException exception) {
-            System.out.print("Unable to connect");
-        }
-    }
-
-    void readDBPropertiesFile() throws IOException {
-        properties = new Properties();
-        fileInputStream = new FileInputStream("src/main/resources/db.properties");
-
-        properties.load(fileInputStream);
     }
 }

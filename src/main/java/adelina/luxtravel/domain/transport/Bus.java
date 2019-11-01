@@ -7,8 +7,8 @@ import java.time.LocalTime;
 import static adelina.luxtravel.utility.Constants.BUS_MAX_SPEED;
 
 public class Bus extends Vehicle {
-    public Bus(LocalDate releaseDate, java.lang.String brandName) {
-        super(releaseDate, brandName);
+    public Bus(String brandName) {
+        super(brandName);
     }
 
     @Override

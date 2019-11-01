@@ -4,28 +4,22 @@ import adelina.luxtravel.domain.City;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
 abstract public class Vehicle {
-    private LocalDate releaseDate;
     private String brandName;
 
-    public Vehicle(LocalDate releaseDate, String brandName) {
-        initializeFields(releaseDate, brandName);
+    public Vehicle(String brandName) {
+        initializeFields(brandName);
     }
 
-    private void initializeFields(LocalDate releaseDate, java.lang.String brandName) {
-        if (releaseDate == null || releaseDate.isAfter(LocalDate.now())) {
-            throw new FailedInitializationException("Invalid release date");
-        }
+    private void initializeFields(String brandName) {
         if (brandName == null || brandName.isEmpty()) {
             throw new FailedInitializationException("Invalid brand name");
         }
-        this.releaseDate = releaseDate;
-        this.brandName = new java.lang.String(brandName);
+        this.brandName = new String(brandName);
     }
 
     public abstract LocalTime calculateDuration(City to);

@@ -14,8 +14,8 @@ import static adelina.luxtravel.utility.Constants.AIRPLANE_MAX_SPEED;
 public class Airplane extends Vehicle {
     private AirplaneClass airplaneClass;
 
-    public Airplane(LocalDate releaseDate, java.lang.String brandName, AirplaneClass airplaneClass) {
-        super(releaseDate, brandName);
+    public Airplane(String brandName, AirplaneClass airplaneClass) {
+        super(brandName);
         initializeAirplaneClass(airplaneClass);
     }
 
