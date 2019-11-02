@@ -1,12 +1,10 @@
 package adelina.luxtravel.domain;
 
 import adelina.luxtravel.domain.transport.Airplane;
-import adelina.luxtravel.domain.transport.AirplaneClass;
 import adelina.luxtravel.domain.transport.Vehicle;
 import adelina.luxtravel.exception.FailedInitializationException;
 
 import static adelina.luxtravel.utility.Constants.MINUTE;
-import static adelina.luxtravel.utility.Constants.TEN_PERCENT;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -45,10 +43,10 @@ public class Booking {
         double durationInMinutes = getDurationInMinutes();
 
         if (vehicle instanceof Airplane) {
-            AirplaneClass airplaneClass = ((Airplane) vehicle).getAirplaneClass();
-            price = durationInMinutes / airplaneClass.getPriceCoefficient();
+        //    AirplaneClass airplaneClass = ((Airplane) vehicle).getAirplaneClass();
+         //   price = durationInMinutes / airplaneClass.getPriceCoefficient();
         } else {
-            price = durationInMinutes / TEN_PERCENT;
+           // price = durationInMinutes / TEN_PERCENT;
         }
     }
 

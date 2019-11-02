@@ -4,12 +4,21 @@ import adelina.luxtravel.domain.City;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+@Table(name = "vehicle", schema = "lux_travel_agency")
+@MappedSuperclass
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 abstract public class Vehicle {
-    private String brandName;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "vehicle_id")
+    protected long id;
+    @Column(name = "brand_name", unique = true, nullable = false, length = 32)
+    protected String brandName;
 
     public Vehicle(String brandName) {
         initializeFields(brandName);

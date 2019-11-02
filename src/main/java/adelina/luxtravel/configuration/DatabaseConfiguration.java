@@ -7,12 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.sql.SQLException;
 
 import static adelina.luxtravel.utility.Database.*;
 
 @Configuration
+@EnableTransactionManagement
 @PropertySource(value = {"classpath:db.properties"})
 public class DatabaseConfiguration {
     private MysqlDataSource dataSource;
