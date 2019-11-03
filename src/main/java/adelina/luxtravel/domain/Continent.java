@@ -2,11 +2,22 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "continent")
 public class Continent {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private long id;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "name", nullable = false, unique = true, length = 5)
     ContinentList continent;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "country_id", referencedColumnName = "id")
     List<Country> countries;
 
     public Continent(ContinentList continent, List<Country> countries) {

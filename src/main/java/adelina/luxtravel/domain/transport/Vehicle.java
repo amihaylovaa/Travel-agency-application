@@ -8,14 +8,14 @@ import javax.persistence.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-@Table(name = "vehicle", schema = "lux_travel_agency")
+@Table(name = "vehicle")
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 abstract public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "vehicle_id")
+    @Column(name = "id")
     protected long id;
     @Column(name = "brand_name", unique = true, nullable = false, length = 32)
     protected String brandName;
@@ -31,7 +31,7 @@ abstract public class Vehicle {
         this.brandName = new String(brandName);
     }
 
-    public abstract LocalTime calculateDuration(City to);
+    public abstract void calculateDuration(City to);
 
     public LocalTime parseToLocalTime(Double duration) {
         String durationString = duration.toString().replace('.', ':');

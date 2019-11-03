@@ -18,9 +18,9 @@ public class Airplane extends Vehicle {
     }
 
     @Override
-    public LocalTime calculateDuration(City to) {
-        double duration = to.getDistance() / AIRPLANE_MAX_SPEED;
-
-        return parseToLocalTime(duration);
+    public void calculateDuration(City to) {
+        //double duration = to.getDistance() / AIRPLANE_MAX_SPEED;
+        ;
+        //return parseToLocalTime(duration);
     }
 }

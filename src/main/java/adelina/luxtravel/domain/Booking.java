@@ -40,19 +40,19 @@ public class Booking {
     }
 
     private void calculatePrice() {
-        double durationInMinutes = getDurationInMinutes();
+      //  double durationInMinutes = getDurationInMinutes();
 
-        if (vehicle instanceof Airplane) {
+     //   if (vehicle instanceof Airplane) {
         //    AirplaneClass airplaneClass = ((Airplane) vehicle).getAirplaneClass();
          //   price = durationInMinutes / airplaneClass.getPriceCoefficient();
-        } else {
+       // } else {
            // price = durationInMinutes / TEN_PERCENT;
-        }
+        //}
     }
 
-    private double getDurationInMinutes() {
-        LocalTime duration = vehicle.calculateDuration(endingPoint);
+  //  private double getDurationInMinutes() {
+      //  LocalTime duration = vehicle.calculateDuration(endingPoint);
 
-        return (duration.getHour() * MINUTE) + duration.getMinute();
-    }
+     //   return (duration.getHour() * MINUTE) + duration.getMinute();
+   // }
 }

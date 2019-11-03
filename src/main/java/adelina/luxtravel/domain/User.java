@@ -2,9 +2,20 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "user")
 public class User {
-    private String username;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private long id;
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+    @Column(name = "username", unique = true, nullable = false, length = 32)
+    private String username;
+    @Column(name = "password", nullable = false)
     private String password;
 
     public User(String username, String email, String password) {
@@ -21,6 +32,6 @@ public class User {
         }
         this.username = new String(username);
         this.email = new String(email);
-        this.password = new String( password);
+        this.password = new String(password);
     }
 }
