@@ -13,12 +13,12 @@ public class User {
     private long id;
     @Column(name = "email", unique = true, nullable = false)
     private String email;
-    @Column(name = "username", unique = true, nullable = false, length = 32)
-    private String username;
     @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "username", unique = true, nullable = false, length = 32)
+    private String username;
 
-    public User(String username, String email, String password) {
+    public User(String email, String password, String username) {
         initializeFields(username, email, password);
     }
 
