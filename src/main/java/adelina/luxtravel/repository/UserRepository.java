@@ -12,10 +12,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT * FROM  user WHERE username = ?1")
     User getUserByUsername(String username);
 
-    @Query("DELETE FROM user WHERE username = 1?")
+    @Query("DELETE FROM user WHERE username = ?1")
     void deleteUserByUserName(String username);
 
     @Modifying
-    @Query("UPDATE user SET password = 1? WHERE currentPassword = 2? and username = 3?")
+    @Query("UPDATE user SET password = ?1 WHERE currentPassword = ?2 and username = ?3")
     void updateUserPassword(String currentPassword, String newPassword, String userName);
 }
