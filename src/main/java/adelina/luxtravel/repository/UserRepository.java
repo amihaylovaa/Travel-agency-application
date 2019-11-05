@@ -16,6 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void deleteUserByUserName(String username);
 
     @Modifying
-    @Query("UPDATE user SET = 1? WHERE currentPassword = 2? and username = 3?")
+    @Query("UPDATE user SET password = 1? WHERE currentPassword = 2? and username = 3?")
     void updateUserPassword(String currentPassword, String newPassword, String userName);
 }
