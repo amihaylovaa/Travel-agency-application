@@ -24,6 +24,7 @@ public class DatabaseConfiguration {
         if (dataSource == null) {
             dataSource = new MysqlDataSource();
         }
+
         dataSource.setURL(env.getProperty(DB_URL));
         dataSource.setUser(env.getProperty(DB_USERNAME));
         dataSource.setPassword(env.getProperty(DB_PASSWORD));
