@@ -6,12 +6,25 @@ import adelina.luxtravel.domain.Country;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name = "travel_point")
 @Getter
 public class TravelPoint {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private long id;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "continent_id", referencedColumnName = "id")
     private Continent continent;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "country_id", referencedColumnName = "id")
     private Country country;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
     private City city;
 
     public TravelPoint(Continent continent, Country country, City city) {

@@ -4,6 +4,8 @@ import adelina.luxtravel.exception.FailedInitializationException;
 import adelina.luxtravel.wrapper.BookingData;
 import lombok.Getter;
 
+import javax.persistence.Entity;
+
 @Getter
 public class Booking {
     private double price;

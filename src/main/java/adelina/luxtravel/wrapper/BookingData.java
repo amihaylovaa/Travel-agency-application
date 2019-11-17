@@ -4,15 +4,26 @@ import adelina.luxtravel.domain.transport.Vehicle;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "booking_data")
 @Getter
 public class BookingData {
-   private LocalDate from;
-   private LocalDate to;
-   private TravelPoint source;
-   private TravelPoint destination;
-   private Vehicle vehicle;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "source_id", referencedColumnName = "id")
+    private TravelPoint source;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "destination_id", referencedColumnName = "id")
+    private TravelPoint destination;
+    @Column(name = "from", nullable = false)
+    private LocalDate from;
+    @Column(name = "to", nullable = false)
+    private LocalDate to;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
+    private Vehicle vehicle;
 
     public BookingData(LocalDate from, LocalDate to, TravelPoint source, TravelPoint destination, Vehicle vehicle) {
         setBookingDates(from, to);

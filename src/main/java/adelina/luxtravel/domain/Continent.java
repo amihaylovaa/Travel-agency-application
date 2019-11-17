@@ -19,7 +19,7 @@ public class Continent {
     @Column(name = "name", nullable = false, unique = true, length = 5)
     ContinentList continent;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id", referencedColumnName = "id")
+    @JoinColumn(name = "continent_id", referencedColumnName = "id")
     List<Country> countries;
 
     public Continent(ContinentList continent, List<Country> countries) {

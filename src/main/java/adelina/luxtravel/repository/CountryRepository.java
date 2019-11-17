@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CountryRepository extends JpaRepository<Country, Long> {
 
-    @Query("SELECT * FROM country WHERE name = ?1 ")
-    Country getContinentByName(String countryName);
+    @Query(value = "SELECT * FROM country WHERE name = ?1 ", nativeQuery = true)
+    Country getCountryByName(String countryName);
 }

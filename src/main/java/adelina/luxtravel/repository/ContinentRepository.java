@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ContinentRepository extends JpaRepository<Continent, Long> {
 
-    @Query("SELECT * FROM continent WHERE name = ?1 ")
+    @Query(value = "SELECT * FROM continent WHERE name = ?1 ", nativeQuery = true)
     Continent getContinentByName(ContinentList continent);
 }
