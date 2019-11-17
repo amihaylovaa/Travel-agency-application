@@ -1,58 +1,41 @@
 package adelina.luxtravel.domain;
 
-import adelina.luxtravel.domain.transport.Airplane;
-import adelina.luxtravel.domain.transport.Vehicle;
 import adelina.luxtravel.exception.FailedInitializationException;
+import adelina.luxtravel.wrapper.BookingData;
+import lombok.Getter;
 
-import static adelina.luxtravel.utility.Constants.MINUTE;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-
+@Getter
 public class Booking {
     private double price;
-    private LocalDate from;
-    private LocalDate to;
-    private Vehicle vehicle;
-    private City startingPoint;
-    private City endingPoint;
+    private User user;
+    private BookingData bookingData;
 
-    public Booking(LocalDate from, LocalDate to, Vehicle vehicle, City startingPoint, City endingPoint) {
-        initializeFields(from, to, vehicle, startingPoint, endingPoint);
+    public Booking(double price, BookingData bookingData) {
+        initializeFields(price, bookingData);
     }
 
-    private void initializeFields(LocalDate from, LocalDate to, Vehicle vehicle, City startingPoint, City endingPoint) {
-        if (from.isAfter(to) || from.isEqual(to) || from.isBefore(LocalDate.now())) {
-            throw new FailedInitializationException("Invalid dates");
+    private void initializeFields(double price, BookingData bookingData) {
+        if (bookingData == null){
+            throw new FailedInitializationException("Null booking date");
         }
-        if (vehicle == null) {
-            throw new FailedInitializationException("Invalid vehicle");
-        }
-        if (startingPoint == null || endingPoint == null) {
-            throw new FailedInitializationException("Starting or ending point is not set");
-        }
-        this.from = from;
-        this.to = to;
-        this.vehicle = vehicle;
-        this.startingPoint = startingPoint;
-        this.endingPoint = endingPoint;
+        this.bookingData = bookingData;
         calculatePrice();
     }
 
     private void calculatePrice() {
-      //  double durationInMinutes = getDurationInMinutes();
+        //  double durationInMinutes = getDurationInMinutes();
 
-     //   if (vehicle instanceof Airplane) {
+        //   if (vehicle instanceof Airplane) {
         //    AirplaneClass airplaneClass = ((Airplane) vehicle).getAirplaneClass();
-         //   price = durationInMinutes / airplaneClass.getPriceCoefficient();
-       // } else {
-           // price = durationInMinutes / TEN_PERCENT;
+        //   price = durationInMinutes / airplaneClass.getPriceCoefficient();
+        // } else {
+        // price = durationInMinutes / TEN_PERCENT;
         //}
     }
 
-  //  private double getDurationInMinutes() {
-      //  LocalTime duration = vehicle.calculateDuration(endingPoint);
+    //  private double getDurationInMinutes() {
+    //  LocalTime duration = vehicle.calculateDuration(endingPoint);
 
-     //   return (duration.getHour() * MINUTE) + duration.getMinute();
-   // }
+    //   return (duration.getHour() * MINUTE) + duration.getMinute();
+    // }
 }
