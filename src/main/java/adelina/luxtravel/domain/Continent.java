@@ -1,6 +1,7 @@
 package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
+import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "continent")
+@Getter
 public class Continent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
