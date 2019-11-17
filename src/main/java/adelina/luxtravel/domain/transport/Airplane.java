@@ -1,27 +1,26 @@
 package adelina.luxtravel.domain.transport;
 
-import adelina.luxtravel.exception.FailedInitializationException;
+import adelina.luxtravel.domain.City;
+import lombok.Getter;
 
-import java.time.LocalDate;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.time.LocalTime;
 
+import static adelina.luxtravel.utility.Constants.AIRPLANE_MAX_SPEED;
+
+@Entity
+@Table(name = "airplane")
+@Getter
 public class Airplane extends Vehicle {
-    private AirplaneClass airplaneClass;
-
-    public Airplane(LocalDate releaseDate, String brandName, AirplaneClass airplaneClass) {
-        super(releaseDate, brandName);
-        initializeAirplaneClass(airplaneClass);
+    public Airplane(String brandName) {
+        super(brandName);
     }
 
-    private void initializeAirplaneClass(AirplaneClass airplaneClass) {
-        if (airplaneClass == null) {
-            throw new FailedInitializationException("Airplane class is not set");
-        }
-        this.airplaneClass = airplaneClass;
-    }
-
-    // not finished
     @Override
-    public void findDuration() {
+    public void calculateDuration(City to) {
+        //double duration = to.getDistance() / AIRPLANE_MAX_SPEED;
         ;
+        //return parseToLocalTime(duration);
     }
 }
