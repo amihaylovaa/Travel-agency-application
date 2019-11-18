@@ -8,8 +8,8 @@ import javax.persistence.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
 @Table(name = "vehicle")
-@MappedSuperclass
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 abstract public class Vehicle {
@@ -17,18 +17,19 @@ abstract public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     protected long id;
-    @Column(name = "brand_name", unique = true, nullable = false, length = 32)
-    protected String brandName;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "name", nullable = false, unique = true, length = 12)
+    VehicleClass vehicleClass;
 
-    public Vehicle(String brandName) {
-        initializeFields(brandName);
+    public Vehicle(VehicleClass vehicleClass) {
+        initializeFields(vehicleClass);
     }
 
-    private void initializeFields(String brandName) {
-        if (brandName == null || brandName.isEmpty()) {
-            throw new FailedInitializationException("Invalid brand name");
+    private void initializeFields(VehicleClass vehicleClass) {
+        if (vehicleClass == null) {
+            throw new FailedInitializationException("Invalid vehicle class");
         }
-        this.brandName = new String(brandName);
+        this.vehicleClass = vehicleClass;
     }
 
     public abstract void calculateDuration(City to);

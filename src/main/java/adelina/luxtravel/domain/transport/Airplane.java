@@ -3,8 +3,7 @@ package adelina.luxtravel.domain.transport;
 import adelina.luxtravel.domain.City;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalTime;
 
 import static adelina.luxtravel.utility.Constants.AIRPLANE_MAX_SPEED;
@@ -13,8 +12,12 @@ import static adelina.luxtravel.utility.Constants.AIRPLANE_MAX_SPEED;
 @Table(name = "airplane")
 @Getter
 public class Airplane extends Vehicle {
-    public Airplane(String brandName) {
-        super(brandName);
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private long id;
+
+    public Airplane(VehicleClass vehicleClass) {
+        super(vehicleClass);
     }
 
     @Override

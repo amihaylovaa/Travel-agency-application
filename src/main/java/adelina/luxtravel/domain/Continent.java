@@ -18,8 +18,9 @@ public class Continent {
     @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false, unique = true, length = 5)
     ContinentList continent;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "continent_id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "continent",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     List<Country> countries;
 
     public Continent(ContinentList continent, List<Country> countries) {

@@ -4,6 +4,7 @@ import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.persistence.criteria.Fetch;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +18,13 @@ public class Country {
     private long id;
     @Column(name = "name", length = 64, nullable = false)
     private String name;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "country",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<City> cities;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "continent_id")
+    private Continent continent;
 
     public Country(String name, List<City> cities) {
         initializeFields(name, cities);

@@ -7,39 +7,34 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "booking_data")
-@Getter
+//@Entity
+//@Table(name = "booking_data")
+//@Getter
 public class BookingData {
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "source_id", referencedColumnName = "id")
-    private TravelPoint source;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "destination_id", referencedColumnName = "id")
-    private TravelPoint destination;
+   /* @EmbeddedId
+    SourceDestinationId sourceDestinationId;
     @Column(name = "from", nullable = false)
     private LocalDate from;
     @Column(name = "to", nullable = false)
     private LocalDate to;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
-    public BookingData(LocalDate from, LocalDate to, TravelPoint source, TravelPoint destination, Vehicle vehicle) {
+    public BookingData(LocalDate from, LocalDate to, Vehicle vehicle, SourceDestinationId sourceDestinationId) {
         setBookingDates(from, to);
-        initializeFields(vehicle, source, destination);
+        initializeFields(vehicle, sourceDestinationId);
     }
 
-    private void initializeFields(Vehicle vehicle, TravelPoint source, TravelPoint destination) {
+    private void initializeFields(Vehicle vehicle, SourceDestinationId sourceDestinationId) {
         if (vehicle == null) {
             throw new FailedInitializationException("Invalid vehicle");
         }
-        if (source == null || destination == null) {
+        if (sourceDestinationId == null) {
             throw new FailedInitializationException("Starting or ending point is not set");
         }
         this.vehicle = vehicle;
-        this.source = source;
-        this.destination = destination;
+        this.sourceDestinationId = sourceDestinationId;
     }
 
     private void setBookingDates(LocalDate from, LocalDate to) {
@@ -52,5 +47,5 @@ public class BookingData {
         }
         this.from = from;
         this.to = to;
-    }
+    }*/
 }

@@ -17,14 +17,17 @@ public class TravelPoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "continent_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JoinColumn(name = "continent_id")
     private Continent continent;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "country_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JoinColumn(name = "country_id")
     private Country country;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @JoinColumn(name = "city_id")
     private City city;
 
     public TravelPoint(Continent continent, Country country, City city) {
