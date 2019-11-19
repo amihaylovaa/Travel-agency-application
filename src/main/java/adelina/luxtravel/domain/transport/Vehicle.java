@@ -18,7 +18,7 @@ abstract public class Vehicle {
     @Column(name = "id")
     protected long id;
     @Enumerated(EnumType.STRING)
-    @Column(name = "name", nullable = false, unique = true, length = 12)
+    @Column(name = "class", nullable = false, unique = true, length = 12)
     VehicleClass vehicleClass;
 
     public Vehicle(VehicleClass vehicleClass) {

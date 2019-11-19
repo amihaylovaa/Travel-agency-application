@@ -1,16 +1,14 @@
 package adelina.luxtravel.repository;
 
-import adelina.luxtravel.domain.Country;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CountryRepository extends JpaRepository<Country, Long> {
-
+public interface Booking extends JpaRepository<Booking, Long> {
     @Query(value = "SELECT *" +
-            " FROM country" +
-            " WHERE name = ?1 ",
+            "FROM booking+" +
+            "WHERE userId=?1",
             nativeQuery = true)
-    Country getCountryByName(String countryName);
+    Booking getBookings(long userId);
 }
