@@ -1,4 +1,4 @@
-package adelina.luxtravel.wrapper;
+package adelina.luxtravel.domain.wrapper;
 
 import adelina.luxtravel.domain.transport.Vehicle;
 import adelina.luxtravel.exception.FailedInitializationException;
@@ -20,7 +20,6 @@ public class BookingData {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
-
     @MapsId("travel_point")
     @ManyToOne
     TravelPoint source;
@@ -30,18 +29,22 @@ public class BookingData {
 
     public BookingData(LocalDate from, LocalDate to, Vehicle vehicle, SourceDestinationId sourceDestinationId) {
         setBookingDates(from, to);
-        initializeFields(vehicle, sourceDestinationId);
+        setVehicle(vehicle);
+        setSourceDestinationId(sourceDestinationId);
     }
 
-    private void initializeFields(Vehicle vehicle, SourceDestinationId sourceDestinationId) {
-        if (vehicle == null) {
-            throw new FailedInitializationException("Invalid vehicle");
-        }
+    private void setSourceDestinationId(SourceDestinationId sourceDestinationId) {
         if (sourceDestinationId == null) {
             throw new FailedInitializationException("Starting or ending point is not set");
         }
-        this.vehicle = vehicle;
         this.sourceDestinationId = sourceDestinationId;
+    }
+
+    private void setVehicle(Vehicle vehicle) {
+        if (vehicle == null) {
+            throw new FailedInitializationException("Invalid vehicle");
+        }
+        this.vehicle = vehicle;
     }
 
     private void setBookingDates(LocalDate from, LocalDate to) {

@@ -1,4 +1,4 @@
-package adelina.luxtravel.wrapper;
+package adelina.luxtravel.domain.wrapper;
 
 import lombok.*;
 

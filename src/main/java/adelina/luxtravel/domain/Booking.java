@@ -1,7 +1,7 @@
 package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
-import adelina.luxtravel.wrapper.BookingData;
+import adelina.luxtravel.domain.wrapper.BookingData;
 import lombok.Getter;
 
 import javax.persistence.*;

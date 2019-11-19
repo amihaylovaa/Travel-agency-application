@@ -1,6 +1,6 @@
 package adelina.luxtravel.repository;
 
-import adelina.luxtravel.wrapper.BookingData;
+import adelina.luxtravel.domain.wrapper.BookingData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

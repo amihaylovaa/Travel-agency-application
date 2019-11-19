@@ -18,7 +18,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             "FROM vehicle" +
             "WHERE class = ?1",
             nativeQuery = true)
-    Vehicle getQueryByClass(VehicleClass vehicleClass);
+    Vehicle getVehicleByClass(VehicleClass vehicleClass);
 
     @Query(value = "SELECT *" +
             "FROM vehicle" +
