@@ -7,19 +7,26 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-//@Entity
-//@Table(name = "booking_data")
-//@Getter
+@Entity
+@Table(name = "booking_data")
+@Getter
 public class BookingData {
-   /* @EmbeddedId
+    @EmbeddedId
     SourceDestinationId sourceDestinationId;
-    @Column(name = "from", nullable = false)
+    @Column(name = "fromDate", nullable = false)
     private LocalDate from;
-    @Column(name = "to", nullable = false)
+    @Column(name = "toDate", nullable = false)
     private LocalDate to;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
+
+    @MapsId("travel_point")
+    @ManyToOne
+    TravelPoint source;
+    @MapsId("travel_point")
+    @ManyToOne
+    TravelPoint destination;
 
     public BookingData(LocalDate from, LocalDate to, Vehicle vehicle, SourceDestinationId sourceDestinationId) {
         setBookingDates(from, to);
@@ -47,5 +54,5 @@ public class BookingData {
         }
         this.from = from;
         this.to = to;
-    }*/
+    }
 }

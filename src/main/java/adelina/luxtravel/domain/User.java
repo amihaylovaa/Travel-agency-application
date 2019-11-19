@@ -4,6 +4,7 @@ import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -19,6 +20,10 @@ public class User {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    List<Booking> bookings;
 
     public User(String email, String password, String username) {
         initializeFields(username, email, password);
