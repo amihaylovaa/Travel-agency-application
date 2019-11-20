@@ -8,29 +8,31 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
-    @Query(value = "SELECT * " +
+    @Query(value = "SELECT *" +
             "FROM vehicle" +
-            "WHERE id=?1",
-            nativeQuery = true)
-    Vehicle getVehicleById(long id);
+            "WHERE class = ?1 id IN" +
+            "(SELECT id FROM bus WHERE id=vehicle.id)"
+            , nativeQuery = true)
+    Vehicle getAllBusesByClass(VehicleClass vehicleClass);
 
     @Query(value = "SELECT *" +
             "FROM vehicle" +
-            "WHERE class = ?1",
-            nativeQuery = true)
-    Vehicle getVehicleByClass(VehicleClass vehicleClass);
+            "WHERE class = ?1 id IN" +
+            "(SELECT id FROM airplane WHERE id=vehicle.id)"
+            , nativeQuery = true)
+    Vehicle getAllAirplanesByClass(VehicleClass vehicleClass);
 
     @Query(value = "SELECT *" +
             "FROM vehicle" +
             "WHERE id IN" +
             "(SELECT id FROM bus WHERE id=vehicle.id)",
             nativeQuery = true)
-    Vehicle getBus();
+    Vehicle getAllBuses();
 
     @Query(value = "SELECT *" +
             "FROM vehicle" +
             "WHERE id IN" +
             "(SELECT id FROM airplane WHERE id=vehicle.id)",
             nativeQuery = true)
-    Vehicle getAirplane();
+    Vehicle getAllAirplanes();
 }

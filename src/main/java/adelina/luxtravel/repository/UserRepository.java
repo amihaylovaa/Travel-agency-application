@@ -15,16 +15,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User getUserByUsername(String username);
 
     @Modifying
+    @Query(value = "UPDATE user " +
+            "SET password = ?1" +
+            " WHERE username = ?2",
+            nativeQuery = true)
+    void updatePasswordByUsername(String newPassword, String userName);
+
+    @Modifying
+    @Query(value = "UPDATE user " +
+            "SET email = ?1" +
+            " WHERE username = ?3",
+            nativeQuery = true)
+    void updateEmailByUsername(String newEmail, String userName);
+
+    @Modifying
     @Query(value = "DELETE " +
             "FROM user " +
             "WHERE username = ?1",
             nativeQuery = true)
-    void deleteUserByUserName(String username);
-
-    @Modifying
-    @Query(value = "UPDATE user " +
-            "SET password = ?1" +
-            " WHERE currentPassword = ?2 and username = ?3",
-            nativeQuery = true)
-    void updateUserPassword(String currentPassword, String newPassword, String userName);
+    void deleteUserByUsername(String username);
 }
