@@ -12,24 +12,29 @@ import java.time.format.DateTimeFormatter;
 @Table(name = "vehicle")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
-abstract public class Vehicle {
+abstract public class Transport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     protected long id;
     @Enumerated(EnumType.STRING)
     @Column(name = "class", nullable = false, unique = true, length = 12)
-    VehicleClass vehicleClass;
+    TransportClass transportClass;
 
-    public Vehicle(VehicleClass vehicleClass) {
-        initializeFields(vehicleClass);
+    public Transport(TransportClass transportClass) {
+        initializeFields(transportClass);
     }
 
-    private void initializeFields(VehicleClass vehicleClass) {
+    public Transport(Transport transport) {
+        id = transport.id;
+        transportClass = transport.transportClass;
+    }
+
+    private void initializeFields(TransportClass vehicleClass) {
         if (vehicleClass == null) {
             throw new FailedInitializationException("Invalid vehicle class");
         }
-        this.vehicleClass = vehicleClass;
+        this.transportClass = vehicleClass;
     }
 
     public abstract void calculateDuration(City to);

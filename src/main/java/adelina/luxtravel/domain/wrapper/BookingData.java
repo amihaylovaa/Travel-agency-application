@@ -1,7 +1,7 @@
 package adelina.luxtravel.domain.wrapper;
 
 import adelina.luxtravel.domain.City;
-import adelina.luxtravel.domain.transport.Vehicle;
+import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
@@ -20,7 +20,7 @@ public class BookingData {
     private LocalDate to;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
-    private Vehicle vehicle;
+    private Transport transport;
     @MapsId("city")
     @ManyToOne
     City source;
@@ -28,10 +28,17 @@ public class BookingData {
     @ManyToOne
     City destination;
 
-    public BookingData(LocalDate from, LocalDate to, Vehicle vehicle, SourceDestinationId sourceDestinationId) {
+    public BookingData(LocalDate from, LocalDate to, Transport transport, SourceDestinationId sourceDestinationId) {
         setBookingDates(from, to);
-        setVehicle(vehicle);
+        setTransport(transport);
         setSourceDestinationId(sourceDestinationId);
+    }
+
+    public BookingData(BookingData bookingData) {
+        from = bookingData.from;
+        to = bookingData.to;
+        transport = bookingData.transport;
+        sourceDestinationId = bookingData.sourceDestinationId;
     }
 
     private void setSourceDestinationId(SourceDestinationId sourceDestinationId) {
@@ -41,11 +48,11 @@ public class BookingData {
         this.sourceDestinationId = sourceDestinationId;
     }
 
-    private void setVehicle(Vehicle vehicle) {
-        if (vehicle == null) {
+    private void setTransport(Transport transport) {
+        if (transport == null) {
             throw new FailedInitializationException("Invalid vehicle");
         }
-        this.vehicle = vehicle;
+        this.transport = transport;
     }
 
     private void setBookingDates(LocalDate from, LocalDate to) {

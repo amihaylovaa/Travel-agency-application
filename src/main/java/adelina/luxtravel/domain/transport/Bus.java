@@ -6,12 +6,12 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "bus")
-public class Bus extends Vehicle {
+public class Bus extends Transport {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private long id;
 
-    public Bus(VehicleClass vehicleClass) {
+    public Bus(TransportClass vehicleClass) {
         super(vehicleClass);
     }
 

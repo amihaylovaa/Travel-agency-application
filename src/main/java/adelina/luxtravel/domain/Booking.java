@@ -29,6 +29,13 @@ public class Booking {
         initializeFields(price, bookingData);
     }
 
+    public Booking(Booking booking) {
+        id = booking.id;
+        user = booking.user;
+        bookingData = booking.bookingData;
+        price = booking.price;
+    }
+
     private void initializeFields(double price, BookingData bookingData) {
         if (bookingData == null) {
             throw new FailedInitializationException("Null booking date");

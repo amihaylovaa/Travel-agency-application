@@ -4,19 +4,16 @@ import adelina.luxtravel.domain.City;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.time.LocalTime;
-
-import static adelina.luxtravel.utility.Constants.AIRPLANE_MAX_SPEED;
 
 @Entity
 @Table(name = "airplane")
 @Getter
-public class Airplane extends Vehicle {
+public class Airplane extends Transport {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private long id;
 
-    public Airplane(VehicleClass vehicleClass) {
+    public Airplane(TransportClass vehicleClass) {
         super(vehicleClass);
     }
 

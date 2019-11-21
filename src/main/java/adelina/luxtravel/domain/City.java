@@ -23,6 +23,12 @@ public class City {
         initializeName(name);
     }
 
+    public City(City city) {
+        id = city.id;
+        name = city.name;
+        country = city.country;
+    }
+
     private void initializeName(String name) {
         if (name == null || name.isEmpty()) {
             throw new FailedInitializationException("Invalid city name");

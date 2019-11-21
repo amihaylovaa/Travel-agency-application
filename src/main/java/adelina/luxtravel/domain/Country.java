@@ -30,6 +30,13 @@ public class Country {
         initializeFields(name, cities);
     }
 
+    public Country(Country country) {
+        id = country.id;
+        name = country.name;
+        cities = new ArrayList<>(country.cities);
+        continent = country.continent;
+    }
+
     private void initializeFields(String name, List<City> cities) {
         if (name == null || name.isEmpty()) {
             throw new FailedInitializationException("Invalid country name");

@@ -29,6 +29,13 @@ public class User {
         initializeFields(username, email, password);
     }
 
+    public User(User user) {
+        id = user.id;
+        username = user.username;
+        email = user.email;
+        password = user.password;
+    }
+
     private void initializeFields(String username, String email, String password) {
         if (username == null || username.isEmpty()) {
             throw new FailedInitializationException("Invalid username");
@@ -37,8 +44,8 @@ public class User {
         } else if (password == null || password.isEmpty() || password.length() < 8) {
             throw new FailedInitializationException("Invalid password");
         }
-        this.username = new String(username);
-        this.email = new String(email);
-        this.password = new String(password);
+        this.username = username;
+        this.email = email;
+        this.password = password;
     }
 }

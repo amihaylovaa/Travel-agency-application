@@ -2,6 +2,7 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class Continent {
     private long id;
     @Enumerated(EnumType.STRING)
     @Column(name = "name", nullable = false, unique = true, length = 5)
-    ContinentList continent;
+    ContinentList continentName;
     @OneToMany(mappedBy = "continent",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
@@ -27,14 +28,20 @@ public class Continent {
         initializeFields(continent, countries);
     }
 
-    private void initializeFields(ContinentList continent, List<Country> countries) {
+    public Continent(Continent continent) {
+        id = continent.id;
+        continentName = continent.continentName;
+        countries = new ArrayList<>(continent.countries);
+    }
+
+    private void initializeFields(ContinentList continentName, List<Country> countries) {
         if (countries == null || countries.contains(null)) {
             throw new FailedInitializationException("Invalid list of countries");
         }
-        if (continent == null) {
+        if (continentName == null) {
             throw new FailedInitializationException("Continent is not set");
         }
-        this.continent = continent;
+        this.continentName = continentName;
         this.countries = new ArrayList<>(countries);
     }
 }

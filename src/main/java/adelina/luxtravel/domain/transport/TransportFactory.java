@@ -1,8 +1,8 @@
 package adelina.luxtravel.domain.transport;
 
-public class VehicleFactory {
+public class TransportFactory {
 
-    public Vehicle getVehicle(String type, VehicleClass vehicleClass) {
+    public Transport getVehicle(String type, TransportClass vehicleClass) {
         if (type.equalsIgnoreCase("Airplane")) {
             return new Airplane(vehicleClass);
         } else {
