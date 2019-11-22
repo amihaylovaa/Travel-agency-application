@@ -12,12 +12,12 @@ public interface BookingRepository extends JpaRepository<BookingRepository, Long
                    "FROM booking" +
                    "WHERE id = ?1",
             nativeQuery = true)
-    Booking getBookingById(long id);
+    Booking getBooking(long id);
 
     @Modifying
     @Query(value = "DELETE " +
                    "FROM booking" +
                    "WHERE id = ?1",
             nativeQuery = true)
-    void deleteBookingById(long id);
+    void deleteBooking(long id);
 }

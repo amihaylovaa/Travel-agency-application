@@ -18,7 +18,7 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
     BookingData getBookingDataBySrcDstId(long srcId, long dstId);
 
     @Query(value = "SELECT *" +
-                   "FROM  booking_data" +
+                   "FROM booking_data" +
                    "WHERE from_date = ?1 AND to_date = ?2",
             nativeQuery = true)
     BookingData getBookingDataByDates(LocalDate from, LocalDate to);
@@ -41,40 +41,26 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
 
     @Modifying
     @Query(value = "UPDATE booking_data" +
-                   "SET from_date = ?1" +
-                   "WHERE from_date = ?2" +
-                   "AND to_date = ?3", nativeQuery = true)
-    void updateBookingDateByFromDate(LocalDate newFromDate, LocalDate prevFromDate,
-                                     LocalDate toDate);
-
-    @Modifying
-    @Query(value = "UPDATE booking_data" +
-                   "SET to_date = ?1" +
-                   "WHERE to_date = ?2" +
-                   "AND from_date = ?3",
+                   "SET from_date = ?1 AND to_date = ?2 " +
+                   "WHERE to_date = ?3" +
+                   "AND from_date = ?4",
             nativeQuery = true)
-    void updateBookingDataByDates(LocalDate newToDate, LocalDate prevToDate,
-                                  LocalDate fromDate);
-
-    @Modifying
-    @Query(value = "UPDATE booking_data" +
-                    "SET from_date = ?1 AND to_date = ?2 " +
-                    "WHERE to_date = ?3" +
-                    "AND from_date = ?4", nativeQuery = true)
     void updateBookingDataByDates(LocalDate newFromDate, LocalDate newToDate,
                                   LocalDate prevFromDate, LocalDate prevToDate);
 
     @Modifying
     @Query(value = "UPDATE booking_data" +
                    "SET transport_id = ?1 " +
-                   "WHERE source_id = ?2" +
-                   "AND destination_id = ?3", nativeQuery = true)
+                    "WHERE source_id = ?2" +
+                   "AND destination_id = ?3",
+            nativeQuery = true)
     void updateTransport(long transportId, long srcId, long dstId);
 
     @Modifying
     @Query(value = "DELETE *" +
                    "FROM booking_data" +
                    "WHERE source_id = ?1" +
-                   "AND destination_id = ?2", nativeQuery = true)
-    void deleteBySourceAndDestinationId(long srcId, long dstId);
+                   "AND destination_id = ?2",
+            nativeQuery = true)
+    void deleteBookingData(long srcId, long dstId);
 }

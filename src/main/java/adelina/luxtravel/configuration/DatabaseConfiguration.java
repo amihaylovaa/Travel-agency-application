@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @PropertySource(value = {"classpath:db.properties"})
 public class DatabaseConfiguration {
-    private MysqlDataSource dataSource;
-    private final String DB_URL = "MYSQL_DB_URL";
-    private final String DB_USERNAME = "MYSQL_DB_USERNAME";
-    private final String DB_PASSWORD = "MYSQL_DB_PASSWORD";
+    private static MysqlDataSource dataSource;
+    private static final String DB_URL = "MYSQL_DB_URL";
+    private static final String DB_USERNAME = "MYSQL_DB_USERNAME";
+    private static final String DB_PASSWORD = "MYSQL_DB_PASSWORD";
 
     @Autowired
     private Environment env;
