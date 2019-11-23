@@ -1,6 +1,5 @@
-package adelina.luxtravel.domain.wrapper;
+package adelina.luxtravel.domain;
 
-import adelina.luxtravel.domain.City;
 import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
@@ -12,40 +11,35 @@ import java.time.LocalDate;
 @Table(name = "booking_data")
 @Getter
 public class BookingData {
-    @EmbeddedId
-    SourceDestinationId sourceDestinationId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @OneToOne
+    @JoinColumn(name = "source_id")
+    private City citySource;
+    @OneToOne
+    @JoinColumn(name = "destination_id")
+    private City cityDestination;
+    @OneToOne
+    @JoinColumn(name = "transport_id")
+    private Transport transport;
     @Column(name = "fromDate", nullable = false)
     private LocalDate from;
     @Column(name = "toDate", nullable = false)
     private LocalDate to;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_id")
-    private Transport transport;
-    @MapsId("city")
-    @ManyToOne
-    City source;
-    @MapsId("city")
-    @ManyToOne
-    City destination;
 
-    public BookingData(LocalDate from, LocalDate to, Transport transport, SourceDestinationId sourceDestinationId) {
+    public BookingData(LocalDate from, LocalDate to, Transport transport, City citySource, City cityDestination) {
         setBookingDates(from, to);
+        setSourceDestination(citySource, cityDestination);
         setTransport(transport);
-        setSourceDestinationId(sourceDestinationId);
     }
 
     public BookingData(BookingData bookingData) {
         from = bookingData.from;
         to = bookingData.to;
         transport = bookingData.transport;
-        sourceDestinationId = bookingData.sourceDestinationId;
-    }
-
-    private void setSourceDestinationId(SourceDestinationId sourceDestinationId) {
-        if (sourceDestinationId == null) {
-            throw new FailedInitializationException("Starting or ending point is not set");
-        }
-        this.sourceDestinationId = sourceDestinationId;
+        citySource = bookingData.citySource;
+        cityDestination = bookingData.cityDestination;
     }
 
     private void setTransport(Transport transport) {
@@ -53,6 +47,14 @@ public class BookingData {
             throw new FailedInitializationException("Invalid vehicle");
         }
         this.transport = transport;
+    }
+
+    private void setSourceDestination(City citySource, City cityDestination) {
+        if (citySource == null || cityDestination == null) {
+            throw new FailedInitializationException("Invalid source or destination is not set");
+        }
+        this.citySource = cityDestination;
+        this.cityDestination = cityDestination;
     }
 
     private void setBookingDates(LocalDate from, LocalDate to) {

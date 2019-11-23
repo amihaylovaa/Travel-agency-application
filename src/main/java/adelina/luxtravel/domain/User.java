@@ -21,8 +21,8 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
     @OneToMany(mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+               cascade = CascadeType.ALL,
+               orphanRemoval = true)
     List<Booking> bookings;
 
     public User(String email, String password, String username) {

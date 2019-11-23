@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BookingRepository extends JpaRepository<BookingRepository, Long> {
+public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "SELECT * " +
                    "FROM booking" +
                    "WHERE id = ?1",

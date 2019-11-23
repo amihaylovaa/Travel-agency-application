@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "bus")
 public class Bus extends Transport {
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "id")
     private long id;
 

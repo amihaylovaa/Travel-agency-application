@@ -19,8 +19,8 @@ public class Country {
     @Column(name = "name", length = 64, nullable = false)
     private String name;
     @OneToMany(mappedBy = "country",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+               cascade = CascadeType.ALL,
+               orphanRemoval = true)
     private List<City> cities;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "continent_id")

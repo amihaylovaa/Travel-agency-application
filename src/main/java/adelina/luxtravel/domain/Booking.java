@@ -1,7 +1,6 @@
 package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
-import adelina.luxtravel.domain.wrapper.BookingData;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -16,11 +15,8 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "source_id"),
-            @JoinColumn(name = "destination_id")
-    })
+    @OneToOne
+    @JoinColumn(name = "booking_data_id")
     private BookingData bookingData;
     @Column(name = "price")
     private double price;

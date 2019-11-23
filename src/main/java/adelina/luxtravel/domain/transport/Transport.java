@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
-@Table(name = "vehicle")
+@Table(name = "transport")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 abstract public class Transport {
@@ -30,18 +30,18 @@ abstract public class Transport {
         transportClass = transport.transportClass;
     }
 
-    private void initializeFields(TransportClass vehicleClass) {
-        if (vehicleClass == null) {
-            throw new FailedInitializationException("Invalid vehicle class");
-        }
-        this.transportClass = vehicleClass;
-    }
-
     public abstract void calculateDuration(City to);
 
     public LocalTime parseToLocalTime(Double duration) {
         String durationString = duration.toString().replace('.', ':');
 
         return LocalTime.parse(durationString, DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    private void initializeFields(TransportClass vehicleClass) {
+        if (vehicleClass == null) {
+            throw new FailedInitializationException("Invalid vehicle class");
+        }
+        this.transportClass = vehicleClass;
     }
 }

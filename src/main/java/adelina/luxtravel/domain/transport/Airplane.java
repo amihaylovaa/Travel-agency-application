@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "airplane")
 @Getter
 public class Airplane extends Transport {
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "id")
     private long id;
 

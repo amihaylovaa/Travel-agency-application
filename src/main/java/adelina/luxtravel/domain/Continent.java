@@ -2,7 +2,6 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
-import org.springframework.data.annotation.PersistenceConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,8 +19,8 @@ public class Continent {
     @Column(name = "name", nullable = false, unique = true, length = 5)
     ContinentList continentName;
     @OneToMany(mappedBy = "continent",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+               cascade = CascadeType.ALL,
+               orphanRemoval = true)
     List<Country> countries;
 
     public Continent(ContinentList continent, List<Country> countries) {
