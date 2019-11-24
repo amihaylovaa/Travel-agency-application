@@ -46,7 +46,7 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
     @Modifying
     @Query(value = "UPDATE booking_data" +
                    "SET transport_id = ?1 " +
-                    "WHERE id = ?2",
+                   "WHERE id = ?2",
             nativeQuery = true)
     void updateTransport(long transportId, long id);
 

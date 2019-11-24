@@ -18,7 +18,7 @@ public class Booking {
     @OneToOne
     @JoinColumn(name = "booking_data_id")
     private BookingData bookingData;
-    @Column(name = "price")
+    @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
 
     public Booking(double price, BookingData bookingData) {

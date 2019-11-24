@@ -16,30 +16,31 @@ public class BookingData {
     private long id;
     @OneToOne
     @JoinColumn(name = "source_id")
-    private City citySource;
+    private TravelingPoint source;
     @OneToOne
     @JoinColumn(name = "destination_id")
-    private City cityDestination;
+    private TravelingPoint destination;
     @OneToOne
     @JoinColumn(name = "transport_id")
     private Transport transport;
-    @Column(name = "fromDate", nullable = false)
+    @Column(name = "from_date", nullable = false)
     private LocalDate from;
-    @Column(name = "toDate", nullable = false)
+    @Column(name = "to_date", nullable = false)
     private LocalDate to;
 
-    public BookingData(LocalDate from, LocalDate to, Transport transport, City citySource, City cityDestination) {
+    public BookingData(LocalDate from, LocalDate to, Transport transport, TravelingPoint source, TravelingPoint destination) {
         setBookingDates(from, to);
-        setSourceDestination(citySource, cityDestination);
+        setSourceDestination(source, destination);
         setTransport(transport);
     }
 
     public BookingData(BookingData bookingData) {
+        id = bookingData.id;
         from = bookingData.from;
         to = bookingData.to;
         transport = bookingData.transport;
-        citySource = bookingData.citySource;
-        cityDestination = bookingData.cityDestination;
+        source = bookingData.source;
+        destination = bookingData.destination;
     }
 
     private void setTransport(Transport transport) {
@@ -49,12 +50,12 @@ public class BookingData {
         this.transport = transport;
     }
 
-    private void setSourceDestination(City citySource, City cityDestination) {
-        if (citySource == null || cityDestination == null) {
+    private void setSourceDestination(TravelingPoint source, TravelingPoint destination) {
+        if (source == null || destination == null) {
             throw new FailedInitializationException("Invalid source or destination is not set");
         }
-        this.citySource = cityDestination;
-        this.cityDestination = cityDestination;
+        this.source = source;
+        this.destination = destination;
     }
 
     private void setBookingDates(LocalDate from, LocalDate to) {

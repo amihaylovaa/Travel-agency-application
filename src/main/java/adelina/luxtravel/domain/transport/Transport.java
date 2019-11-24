@@ -1,6 +1,6 @@
 package adelina.luxtravel.domain.transport;
 
-import adelina.luxtravel.domain.City;
+import adelina.luxtravel.domain.TravelingPoint;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
@@ -30,7 +30,7 @@ abstract public class Transport {
         transportClass = transport.transportClass;
     }
 
-    public abstract void calculateDuration(City to);
+    public abstract LocalTime calculateDuration(TravelingPoint source, TravelingPoint destination);
 
     public LocalTime parseToLocalTime(Double duration) {
         String durationString = duration.toString().replace('.', ':');
