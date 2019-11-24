@@ -9,10 +9,10 @@ public class DistanceCalculator {
                                             double longitudeDestination, double latitudeDestination) {
         double latitudeDifference = Math.toRadians(abs(latitudeDestination - latitudeSource));
         double longitudeDifference = Math.toRadians(abs(longitudeDestination - longitudeSource));
-        double a = sin(latitudeDifference / 2) * sin(latitudeDifference / 2) +
+        double x = sin(latitudeDifference / 2) * sin(latitudeDifference / 2) +
                 cos(Math.toRadians(latitudeSource)) * cos(Math.toRadians(latitudeDestination)) *
                         sin(longitudeDifference / 2) * sin(longitudeDifference / 2);
-        double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-        return EARTH_RADIUS_IN_METERS * c;
+        double dist = 2 * atan2(sqrt(x), sqrt(1 - x));
+        return EARTH_RADIUS_IN_METERS * dist;
     }
 }
