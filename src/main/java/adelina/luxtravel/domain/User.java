@@ -1,25 +1,41 @@
 package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
+import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
+@Getter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "id")
     private long id;
+    @Column(name = "username", unique = true, nullable = false, length = 32)
+    private String username;
     @Column(name = "email", unique = true, nullable = false)
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "username", unique = true, nullable = false, length = 32)
-    private String username;
+    @OneToMany(mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    List<Booking> bookings;
 
     public User(String email, String password, String username) {
         initializeFields(username, email, password);
+    }
+
+    public User(long id, String email, String password, String username) {
+        this(email, password, username);
+        this.id = id;
+    }
+
+    public User(User user) {
+        this(user.id, user.email, user.password, user.username);
     }
 
     private void initializeFields(String username, String email, String password) {
@@ -29,9 +45,10 @@ public class User {
             throw new FailedInitializationException("Invalid email");
         } else if (password == null || password.isEmpty() || password.length() < 8) {
             throw new FailedInitializationException("Invalid password");
+        } else {
+            this.username = username;
+            this.email = email;
+            this.password = password;
         }
-        this.username = new String(username);
-        this.email = new String(email);
-        this.password = new String(password);
     }
 }
