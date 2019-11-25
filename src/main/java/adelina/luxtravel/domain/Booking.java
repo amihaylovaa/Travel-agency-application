@@ -26,27 +26,33 @@ public class Booking {
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
 
-    public Booking(double price, BookingData bookingData) {
-        initializeFields(price, bookingData);
+    public Booking(double price, BookingData bookingData, User user) {
+        initializeFields(price, bookingData, user);
+    }
+
+    public Booking(long id, double price, BookingData bookingData, User user) {
+        this(price, bookingData, user);
+        this.id = id;
     }
 
     public Booking(Booking booking) {
-        id = booking.id;
-        user = booking.user;
-        bookingData = booking.bookingData;
-        price = booking.price;
+        this(booking.id, booking.price, booking.bookingData, booking.user);
     }
 
-    private void initializeFields(double price, BookingData bookingData) {
+    private void initializeFields(double price, BookingData bookingData, User user) {
         if (bookingData == null) {
             throw new FailedInitializationException("Null booking date");
+        } else if (user == null) {
+            throw new FailedInitializationException("Invalid user");
+        } else {
+            this.user = user;
+            this.bookingData = bookingData;
+            calculatePrice();
         }
-        this.bookingData = bookingData;
-        calculatePrice();
     }
 
     private void calculatePrice() {
-          double durationInMinutes = getDurationInMinutes();
+        //  double durationInMinutes = getDurationInMinutes();
 
         //   if (vehicle instanceof Airplane) {
         //    AirplaneClass airplaneClass = ((Airplane) vehicle).getAirplaneClass();
@@ -56,6 +62,7 @@ public class Booking {
         //}
     }
 
+    /*
     private double getDurationInMinutes() {
         Transport transport = bookingData.getTransport();
         TravelingPoint source = bookingData.getSource();
@@ -63,5 +70,5 @@ public class Booking {
         LocalTime duration = transport.calculateDuration(source, destination);
 
         return (duration.getHour() * MINUTE) + duration.getMinute();
-    }
+    }*/
 }
