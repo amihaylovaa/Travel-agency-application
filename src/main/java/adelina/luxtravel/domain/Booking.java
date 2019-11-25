@@ -5,10 +5,6 @@ import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.time.LocalTime;
-
-import static adelina.luxtravel.utility.Constants.MINUTE;
-
 
 @Entity
 @Table(name = "booking")
@@ -47,28 +43,7 @@ public class Booking {
         } else {
             this.user = user;
             this.bookingData = bookingData;
-            calculatePrice();
+            this.price = price;
         }
     }
-
-    private void calculatePrice() {
-        //  double durationInMinutes = getDurationInMinutes();
-
-        //   if (vehicle instanceof Airplane) {
-        //    AirplaneClass airplaneClass = ((Airplane) vehicle).getAirplaneClass();
-        //   price = durationInMinutes / airplaneClass.getPriceCoefficient();
-        // } else {
-        // price = durationInMinutes / TEN_PERCENT;
-        //}
-    }
-
-    /*
-    private double getDurationInMinutes() {
-        Transport transport = bookingData.getTransport();
-        TravelingPoint source = bookingData.getSource();
-        TravelingPoint destination = bookingData.getDestination();
-        LocalTime duration = transport.calculateDuration(source, destination);
-
-        return (duration.getHour() * MINUTE) + duration.getMinute();
-    }*/
 }

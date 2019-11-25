@@ -21,8 +21,8 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
     @OneToMany(mappedBy = "user",
-               cascade = CascadeType.ALL,
-               orphanRemoval = true)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     List<Booking> bookings;
 
     public User(String email, String password, String username) {
@@ -45,9 +45,10 @@ public class User {
             throw new FailedInitializationException("Invalid email");
         } else if (password == null || password.isEmpty() || password.length() < 8) {
             throw new FailedInitializationException("Invalid password");
+        } else {
+            this.username = username;
+            this.email = email;
+            this.password = password;
         }
-        this.username = username;
-        this.email = email;
-        this.password = password;
     }
 }
