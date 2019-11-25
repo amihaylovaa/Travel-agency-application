@@ -1,13 +1,11 @@
 package adelina.luxtravel.domain;
 
-
 import adelina.luxtravel.exception.FailedInitializationException;
 
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.Objects;
-
 
 @Entity
 @Table(name = "traveling_point")

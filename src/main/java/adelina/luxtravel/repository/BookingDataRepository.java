@@ -20,7 +20,7 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
                    "FROM booking_data" +
                    "WHERE from_date = ?1 AND to_date = ?2",
             nativeQuery = true)
-    BookingData getBookingDataByDates(LocalDate from, LocalDate to);
+    BookingData getBookingsDataByDates(LocalDate from, LocalDate to);
 
     @Modifying
     @Query(value = "UPDATE booking_data" +

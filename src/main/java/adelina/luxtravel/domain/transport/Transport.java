@@ -26,8 +26,12 @@ abstract public class Transport {
     }
 
     public Transport(Transport transport) {
-        id = transport.id;
-        transportClass = transport.transportClass;
+        this(transport.id, transport.transportClass);
+    }
+
+    public Transport(long id, TransportClass transportClass) {
+        this(transportClass);
+        this.id = id;
     }
 
     public abstract LocalTime calculateDuration(TravelingPoint source, TravelingPoint destination);
@@ -38,10 +42,10 @@ abstract public class Transport {
         return LocalTime.parse(durationString, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    private void initializeFields(TransportClass vehicleClass) {
-        if (vehicleClass == null) {
+    private void initializeFields(TransportClass transportClass) {
+        if (transportClass == null) {
             throw new FailedInitializationException("Invalid vehicle class");
         }
-        this.transportClass = vehicleClass;
+        this.transportClass = transportClass;
     }
 }

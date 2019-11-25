@@ -14,6 +14,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             nativeQuery = true)
     Booking getBooking(long id);
 
+    @Query(value = "SELECT * " +
+            "FROM booking" +
+            "WHERE user_id IN (" +
+            "SELECT id FROM user WHERE username = ?1",
+            nativeQuery = true)
+    Booking getBookingsByUsername(String username);
+
     @Modifying
     @Query(value = "DELETE " +
                    "FROM booking" +
