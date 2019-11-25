@@ -6,6 +6,7 @@ import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 
 @Entity
@@ -26,6 +27,16 @@ public class TravelingPoint {
         initializeFields(name, longitude, latitude);
     }
 
+    public TravelingPoint(long id, String name, double longitude, double latitude) {
+        this(name, longitude, latitude);
+        this.id = id;
+    }
+
+    public TravelingPoint(TravelingPoint travelingPoint) {
+        this(travelingPoint.id, travelingPoint.name,
+                travelingPoint.longitude, travelingPoint.latitude);
+    }
+
     private void initializeFields(String name, double longitude, double latitude) {
         if (name == null || name.isEmpty()) {
             throw new FailedInitializationException("Invalid name");
@@ -36,5 +47,21 @@ public class TravelingPoint {
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TravelingPoint that = (TravelingPoint) o;
+        return id == that.id &&
+                Double.compare(that.longitude, longitude) == 0 &&
+                Double.compare(that.latitude, latitude) == 0 &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, longitude, latitude);
     }
 }

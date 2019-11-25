@@ -12,7 +12,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "id")
     private long id;
     @Column(name = "username", unique = true, nullable = false, length = 32)
     private String username;
@@ -29,11 +29,13 @@ public class User {
         initializeFields(username, email, password);
     }
 
+    public User(long id, String email, String password, String username) {
+        this(email, password, username);
+        this.id = id;
+    }
+
     public User(User user) {
-        id = user.id;
-        username = user.username;
-        email = user.email;
-        password = user.password;
+        this(user.id, user.email, user.password, user.username);
     }
 
     private void initializeFields(String username, String email, String password) {

@@ -1,11 +1,11 @@
 package adelina.luxtravel.domain;
 
 import adelina.luxtravel.domain.transport.Transport;
+import adelina.luxtravel.domain.wrapper.Date;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "booking_data")
@@ -23,24 +23,22 @@ public class BookingData {
     @OneToOne
     @JoinColumn(name = "transport_id")
     private Transport transport;
-    @Column(name = "from_date", nullable = false)
-    private LocalDate from;
-    @Column(name = "to_date", nullable = false)
-    private LocalDate to;
+    @Embedded
+    Date date;
 
-    public BookingData(LocalDate from, LocalDate to, Transport transport, TravelingPoint source, TravelingPoint destination) {
-        setBookingDates(from, to);
+    public BookingData(Transport transport, TravelingPoint source, TravelingPoint destination, Date date) {
         setSourceDestination(source, destination);
         setTransport(transport);
+        setDate(date);
     }
 
     public BookingData(BookingData bookingData) {
-        id = bookingData.id;
-        from = bookingData.from;
-        to = bookingData.to;
-        transport = bookingData.transport;
-        source = bookingData.source;
-        destination = bookingData.destination;
+        this(bookingData.id, bookingData.source, bookingData.destination, bookingData.transport, bookingData.date);
+    }
+
+    public BookingData(long id, TravelingPoint source, TravelingPoint destination, Transport transport, Date date) {
+        this(transport, source, destination, date);
+        this.id = id;
     }
 
     private void setTransport(Transport transport) {
@@ -51,22 +49,17 @@ public class BookingData {
     }
 
     private void setSourceDestination(TravelingPoint source, TravelingPoint destination) {
-        if (source == null || destination == null) {
-            throw new FailedInitializationException("Invalid source or destination is not set");
+        if (source == null || destination == null || source == destination) {
+            throw new FailedInitializationException("Invalid source or destination");
         }
         this.source = source;
         this.destination = destination;
     }
 
-    private void setBookingDates(LocalDate from, LocalDate to) {
-        try {
-            if (from.isAfter(to) || from.isEqual(to) || from.isBefore(LocalDate.now())) {
-                throw new FailedInitializationException("Invalid dates");
-            }
-        } catch (NullPointerException npe) {
-            throw new FailedInitializationException("Null dates are forbidden");
+    private void setDate(Date date) {
+        if (date == null) {
+            throw new FailedInitializationException("Invalid dates");
         }
-        this.from = from;
-        this.to = to;
+        this.date = date;
     }
 }

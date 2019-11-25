@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VehicleRepository extends JpaRepository<Transport, Long> {
+public interface TransportRepository extends JpaRepository<Transport, Long> {
     @Query(value = "SELECT *" +
                    "FROM transport" +
                    "WHERE class = ?1 AND id IN" +
