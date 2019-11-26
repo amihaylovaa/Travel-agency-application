@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                    "FROM  user" +
                    "WHERE username = ?1",
             nativeQuery = true)
-    User getUser(String username);
+    User findByUsername(String username);
 
     @Modifying
     @Query(value = "UPDATE user " +
@@ -33,5 +33,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
                    "FROM user " +
                    "WHERE username = ?1",
             nativeQuery = true)
-    void deleteUser(String username);
+    void delete(String username);
 }
