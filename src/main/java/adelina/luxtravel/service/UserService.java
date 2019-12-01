@@ -41,11 +41,11 @@ public class UserService {
         userRepository.updateEmail(newEmail, username);
     }
 
-    void delete(String username) {
-        if(!isFieldValid(username)){
-            throw new InvalidArgumentException("Invalid username");
+    void delete(String username, String password) {
+        if(!isFieldValid(username) || !isFieldValid(password) ){
+            throw new InvalidArgumentException("Invalid username or password");
         }
-        userRepository.delete(username);
+        userRepository.delete(username, password);
     }
 
     void validateUser(User user) {
