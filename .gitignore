@@ -1,0 +1,15 @@
+#IntelliJ generated
+
+out/
+
+.idea/
+
+#Maven generated
+
+target/
+
+luxtravel.iml
+
+lux-travel.iws
+
+lux-travel.ipr
