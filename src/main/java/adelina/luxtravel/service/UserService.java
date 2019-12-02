@@ -23,26 +23,22 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    void updatePassword(String newPassword, String username) {
-        if (!isFieldValid(newPassword) || !isFieldValid(username)) {
+    void updatePassword(String newPassword, String currentPassword, String username) {
+        if (!isFieldValid(newPassword) || !isFieldValid(username) || !isFieldValid(currentPassword)) {
             throw new InvalidArgumentException("Update can not be executed, bad parameters");
         }
-        userRepository.updatePassword(newPassword, username);
+        userRepository.updatePassword(newPassword, currentPassword, username);
     }
 
-    void updateEmail(String newEmail, String username) {
-        if (!isFieldValid(newEmail) || !isFieldValid(username)) {
+    void updateEmail(String newEmail, String currentEmail, String username) {
+        if (!isFieldValid(newEmail) || !isFieldValid(username) || !isFieldValid(currentEmail)) {
             throw new InvalidArgumentException("Update can not be executed, bad parameters");
         }
-        userRepository.updateEmail(newEmail, username);
+        userRepository.updateEmail(newEmail, currentEmail, username);
     }
 
     void delete(String username, String password) {
-        if(!isFieldValid(username) || !isFieldValid(password) ){
+        if (!isFieldValid(username) || !isFieldValid(password)) {
             throw new InvalidArgumentException("Invalid username or password");
         }
         userRepository.delete(username, password);
@@ -63,6 +59,6 @@ public class UserService {
     }
 
     boolean isFieldValid(String field) {
-        return field == null || field.isEmpty();
+        return field != null || !field.isEmpty();
     }
 }
