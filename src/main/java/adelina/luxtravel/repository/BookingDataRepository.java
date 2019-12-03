@@ -58,5 +58,5 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
                    "FROM booking_data" +
                    "WHERE id = ?1",
             nativeQuery = true)
-    void deleteBookingData(long id);
+    void deleteBookingDataById(long id);
 }

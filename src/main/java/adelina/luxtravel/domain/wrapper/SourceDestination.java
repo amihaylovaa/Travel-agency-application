@@ -2,12 +2,14 @@ package adelina.luxtravel.domain.wrapper;
 
 import adelina.luxtravel.domain.TravelingPoint;
 import adelina.luxtravel.exception.FailedInitializationException;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+@EqualsAndHashCode
 @Getter
 @Embeddable
 public class SourceDestination {

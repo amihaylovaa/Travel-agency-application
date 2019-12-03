@@ -1,6 +1,5 @@
 package adelina.luxtravel.service;
 
-import adelina.luxtravel.domain.transport.Bus;
 import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
 import adelina.luxtravel.exception.InvalidArgumentException;
@@ -19,22 +18,30 @@ public class TransportService {
         this.transportRepository = transportRepository;
     }
 
-    public List<Transport> getAllBusesByClass(TransportClass transportClass) {
+    public Transport findById(Transport transport) {
+        if (transport == null) {
+            throw new InvalidArgumentException("Invalid transport");
+        }
+        validateTransportClass(transport.getTransportClass());
+        return transportRepository.findById(transport.getId());
+    }
+
+    public List<Transport> findAllBusesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-        return transportRepository.getAllBusesByClass(transportClass);
+        return transportRepository.findAllBusesByClass(transportClass);
     }
 
-    public List<Transport> getAllAirplanesByClass(TransportClass transportClass) {
+    public List<Transport> findAllAirplanesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-        return transportRepository.getAllAirplanesByClass(transportClass);
+        return transportRepository.findAllAirplanesByClass(transportClass);
     }
 
-    public List<Transport> getAllAirplanes() {
-        return transportRepository.getAllAirplanes();
+    public List<Transport> findAllAirplanes() {
+        return transportRepository.findAllAirplanes();
     }
 
-    public List<Transport> getAllBuses() {
-        return transportRepository.getAllBuses();
+    public List<Transport> findAllBuses() {
+        return transportRepository.findAllBuses();
     }
 
     private void validateTransportClass(TransportClass transportClass) {

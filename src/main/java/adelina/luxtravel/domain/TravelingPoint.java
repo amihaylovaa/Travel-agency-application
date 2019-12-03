@@ -2,14 +2,17 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.Objects;
 
+
 @Entity
 @Table(name = "traveling_point")
 @Getter
+@EqualsAndHashCode
 public class TravelingPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,21 +48,5 @@ public class TravelingPoint {
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TravelingPoint that = (TravelingPoint) o;
-        return id == that.id &&
-                Double.compare(that.longitude, longitude) == 0 &&
-                Double.compare(that.latitude, latitude) == 0 &&
-                Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, longitude, latitude);
     }
 }

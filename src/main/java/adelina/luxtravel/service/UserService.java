@@ -5,6 +5,7 @@ import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class UserService {
@@ -21,35 +22,37 @@ public class UserService {
     }
 
     public User findByUsername(String username) {
-        if (!isFieldValid(username)) {
+        if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
         return userRepository.findByUsername(username);
     }
 
     public User findByEmail(String email) {
-        if (!isFieldValid(email)) {
+        if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException("Invalid username");
         }
         return userRepository.findByEmail(email);
     }
 
     public void updatePassword(String newPassword, String currentPassword, String username) {
-        if (!isFieldValid(newPassword) || !isFieldValid(username) || !isFieldValid(currentPassword)) {
+        if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(currentPassword) || StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
+        findByUsername(username);
         userRepository.updatePassword(newPassword, currentPassword, username);
     }
 
     public void updateEmail(String newEmail, String currentEmail, String username) {
-        if (!isFieldValid(newEmail) || !isFieldValid(username) || !isFieldValid(currentEmail)) {
+        if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(currentEmail) || StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
+        findByEmail(currentEmail);
         userRepository.updateEmail(newEmail, currentEmail, username);
     }
 
     public void deleteByUsername(String username, String password) {
-        if (!isFieldValid(username) || !isFieldValid(password)) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Invalid username or password");
         }
 
@@ -65,7 +68,7 @@ public class UserService {
     }
 
     public void deleteByEmail(String email, String password) {
-        if (!isFieldValid(email) || !isFieldValid(password)) {
+        if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Invalid email or password");
         }
 
@@ -89,12 +92,8 @@ public class UserService {
         String email = user.getEmail();
         String password = user.getPassword();
 
-        if (!isFieldValid(username) || !isFieldValid(email) || isFieldValid(password)) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException("Invalid fields");
         }
-    }
-
-    private boolean isFieldValid(String field) {
-        return field != null || !field.isEmpty();
     }
 }

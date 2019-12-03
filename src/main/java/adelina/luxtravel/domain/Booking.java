@@ -21,21 +21,23 @@ public class Booking {
     private BookingData bookingData;
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
+    @Column(name = "count_available_tickets", nullable = false)
+    private int countAvailableTickets;
 
-    public Booking(double price, BookingData bookingData, User user) {
-        initializeFields(price, bookingData, user);
+    public Booking(double price, BookingData bookingData, User user, int countAvailableTickets) {
+        initializeFields(price, bookingData, user, countAvailableTickets);
     }
 
-    public Booking(long id, double price, BookingData bookingData, User user) {
-        this(price, bookingData, user);
+    public Booking(long id, double price, BookingData bookingData, User user, int countAvailableTickets) {
+        this(price, bookingData, user, countAvailableTickets);
         this.id = id;
     }
 
     public Booking(Booking booking) {
-        this(booking.id, booking.price, booking.bookingData, booking.user);
+        this(booking.id, booking.price, booking.bookingData, booking.user, booking.countAvailableTickets);
     }
 
-    private void initializeFields(double price, BookingData bookingData, User user) {
+    private void initializeFields(double price, BookingData bookingData, User user, int countAvailableTickets) {
         if (bookingData == null) {
             throw new FailedInitializationException("Null booking date");
         } else if (user == null) {
@@ -44,6 +46,7 @@ public class Booking {
             this.user = user;
             this.bookingData = bookingData;
             this.price = price;
+            this.countAvailableTickets = countAvailableTickets;
         }
     }
 }
