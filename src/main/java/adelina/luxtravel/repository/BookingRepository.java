@@ -17,9 +17,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Booking findById(long id);
 
     @Query(value = "SELECT * " +
-            "FROM booking" +
-            "WHERE user_id IN (" +
-            "SELECT id FROM user WHERE username = ?1",
+                   "FROM booking" +
+                   "WHERE user_id IN (" +
+                   "SELECT id FROM user WHERE username = ?1",
             nativeQuery = true)
     List<Booking> findAllBookingsByUsername(String username);
 

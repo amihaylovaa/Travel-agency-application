@@ -1,6 +1,7 @@
 package adelina.luxtravel.service;
 
 import adelina.luxtravel.domain.TravelingPoint;
+import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.repository.TravelingPointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,13 @@ public class TravelingPointService {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
         }
-        return travelingPointRepository.findByName(name);
+
+        TravelingPoint travelingPoint = travelingPointRepository.findByName(name);
+
+        if (travelingPoint == null) {
+            throw new NonExistentItemException("Traveling point with that name does not exist");
+        }
+        return travelingPoint;
     }
 
     public void update(TravelingPoint travelingPoint, String currentName) {

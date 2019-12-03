@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TravelingPointRepository extends JpaRepository<TravelingPoint, Long> {
     @Query(value = "SELECT latitude, longitude, name " +
-            "FROM traveling_point" +
-            "WHERE name = ?1",
+                   "FROM traveling_point" +
+                   "WHERE name = ?1",
             nativeQuery = true)
     TravelingPoint findByName(String name);
 

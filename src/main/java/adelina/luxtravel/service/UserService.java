@@ -2,6 +2,7 @@ package adelina.luxtravel.service;
 
 import adelina.luxtravel.domain.User;
 import adelina.luxtravel.exception.InvalidArgumentException;
+import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,30 +26,44 @@ public class UserService {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
-        return userRepository.findByUsername(username);
+
+        User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new NonExistentItemException("User with that username does not exist");
+        }
+        return user;
     }
 
     public User findByEmail(String email) {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException("Invalid username");
         }
-        return userRepository.findByEmail(email);
+
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            throw new NonExistentItemException("User with that email does not exist");
+        }
+        return user;
     }
 
     public void updatePassword(String newPassword, String currentPassword, String username) {
         if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(currentPassword) || StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
+
         findByUsername(username);
         userRepository.updatePassword(newPassword, currentPassword, username);
     }
 
-    public void updateEmail(String newEmail, String currentEmail, String username) {
-        if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(currentEmail) || StringUtils.isEmpty(username)) {
+    public void updateEmail(String newEmail, String currentEmail) {
+        if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(currentEmail)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
+
         findByEmail(currentEmail);
-        userRepository.updateEmail(newEmail, currentEmail, username);
+        userRepository.updateEmail(newEmail, currentEmail);
     }
 
     public void deleteByUsername(String username, String password) {
@@ -58,12 +73,10 @@ public class UserService {
 
         User user = findByUsername(username);
 
-        if (user == null) {
-            throw new InvalidArgumentException("User with that username does not exist");
-        }
         if (!password.equals(user.getPassword())) {
             throw new InvalidArgumentException("Wrong password");
         }
+
         userRepository.deleteByUsername(username);
     }
 
@@ -74,12 +87,10 @@ public class UserService {
 
         User user = findByEmail(email);
 
-        if (user == null) {
-            throw new InvalidArgumentException("User with that username does not exist");
-        }
         if (!password.equals(user.getPassword())) {
             throw new InvalidArgumentException("Wrong password");
         }
+
         userRepository.deleteByEmail(email);
     }
 

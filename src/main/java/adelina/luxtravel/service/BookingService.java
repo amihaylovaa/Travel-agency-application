@@ -4,8 +4,10 @@ import adelina.luxtravel.domain.Booking;
 import adelina.luxtravel.domain.BookingData;
 import adelina.luxtravel.domain.User;
 import adelina.luxtravel.exception.InvalidArgumentException;
+import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.repository.BookingDataRepository;
 import adelina.luxtravel.repository.BookingRepository;
+import adelina.luxtravel.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,11 +18,13 @@ import java.util.List;
 public class BookingService {
     private BookingRepository bookingRepository;
     private BookingDataRepository bookingDataRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public BookingService(BookingRepository bookingRepository, BookingDataRepository bookingDataRepository) {
+    public BookingService(BookingRepository bookingRepository, BookingDataRepository bookingDataRepository, UserRepository userRepository) {
         this.bookingRepository = bookingRepository;
         this.bookingDataRepository = bookingDataRepository;
+        this.userRepository = userRepository;
     }
 
     public void save(Booking booking) {
@@ -33,7 +37,14 @@ public class BookingService {
         if (id <= 0) {
             throw new InvalidArgumentException("Invalid id");
         }
-        return bookingRepository.findById(id);
+
+        Booking booking = bookingRepository.findById(id);
+
+        if (booking == null) {
+            throw new NonExistentItemException("Booking with that id does not exist");
+        }
+
+        return booking;
     }
 
     public List<Booking> findAllBookingsByUserName(String username) {
@@ -47,6 +58,7 @@ public class BookingService {
         if (id <= 0) {
             throw new InvalidArgumentException("Invalid id");
         }
+        findBookingById(id);
         bookingRepository.deleteById(id);
     }
 
@@ -60,6 +72,16 @@ public class BookingService {
 
         if (user == null || bookingData == null || price <= 0.00) {
             throw new InvalidArgumentException("Invalid booking fields");
+        }
+        validateFieldsExist(user, bookingData);
+    }
+
+    private void validateFieldsExist(User user, BookingData bookingData) {
+        long userId = user.getId();
+        long bookingDataId = bookingData.getId();
+
+        if (userRepository.findById(userId) == null || bookingDataRepository.findBookingDataById(bookingDataId) == null) {
+            throw new NonExistentItemException("User or booking data does not exist");
         }
     }
 }

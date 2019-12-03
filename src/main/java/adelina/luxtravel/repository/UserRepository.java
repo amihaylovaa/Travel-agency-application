@@ -31,10 +31,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "UPDATE user " +
                    "SET email = ?1" +
-                   "WHERE username = ?2" +
-                   "AND email = ?3",
+                   "WHERE email = ?2",
             nativeQuery = true)
-    void updateEmail(String newEmail, String currentEmail, String username);
+    void updateEmail(String newEmail, String currentEmail);
 
     @Modifying
     @Query(value = "DELETE " +
