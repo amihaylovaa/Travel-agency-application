@@ -3,8 +3,8 @@ package adelina.luxtravel.service;
 import adelina.luxtravel.domain.BookingData;
 import adelina.luxtravel.domain.TravelingPoint;
 import adelina.luxtravel.domain.transport.Transport;
-import adelina.luxtravel.exception.InvalidArgumentException;
-import adelina.luxtravel.exception.NonExistentItemException;
+import adelina.luxtravel.domain.wrapper.*;
+import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.BookingDataRepository;
 import adelina.luxtravel.repository.TransportRepository;
 import adelina.luxtravel.repository.TravelingPointRepository;
@@ -28,11 +28,16 @@ public class BookingDataService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
+    public BookingData save(BookingData bookingData) {
+        validateBookingData(bookingData);
+        return save(bookingData);
+    }
+
     public BookingData findBookingDataById(long id) {
         if (id <= 0) {
             throw new InvalidArgumentException("Invalid id");
         }
-        return bookingDataRepository.findBookingDataById(id);
+        return getExistingData(bookingDataRepository.findBookingDataById(id));
     }
 
     public List<BookingData> findBookingDataByDates(LocalDate from, LocalDate to) {
@@ -51,7 +56,9 @@ public class BookingDataService {
             throw new NonExistentItemException("Traveling point does not exist");
         }
 
-        return bookingDataRepository.findBookingDataBySourceId(travelingPoint.getId());
+        long id = travelingPoint.getId();
+
+        return getExistingData(bookingDataRepository.findBookingDataBySourceId(id));
     }
 
     public BookingData findBookingDataByDestinationId(String destinationName) {
@@ -65,7 +72,9 @@ public class BookingDataService {
             throw new NonExistentItemException("Traveling point does not exist");
         }
 
-        return bookingDataRepository.findBookingDataByDestinationId(travelingPoint.getId());
+        long id = travelingPoint.getId();
+
+        return getExistingData(bookingDataRepository.findBookingDataByDestinationId(id));
     }
 
     public void updateTransport(long bookingDataId, Transport transport) {
@@ -75,10 +84,9 @@ public class BookingDataService {
 
         long transportId = transport.getId();
 
-        if (transportId <= 0) {
-            throw new NonExistentItemException("Transport does not exist");
+        if (transportId <= 0 || transportRepository.findById(transportId) == null) {
+            throw new NonExistentItemException("Transport does no exist");
         }
-
         bookingDataRepository.updateTransport(transportId, bookingDataId);
     }
 
@@ -86,12 +94,57 @@ public class BookingDataService {
         if (id <= 0) {
             throw new InvalidArgumentException("Invalid id");
         }
+        findBookingDataById(id);
         bookingDataRepository.deleteBookingDataById(id);
+    }
+
+    private void validateBookingData(BookingData bookingData) {
+        if (bookingData == null) {
+            throw new InvalidArgumentException("Invalid booking data");
+        }
+        validateBookingDataFields(bookingData);
+    }
+
+    private void validateBookingDataFields(BookingData bookingData) {
+        Date date = bookingData.getDate();
+        LocalDate from = date.getFromDate();
+        LocalDate to = date.getToDate();
+        SourceDestination sourceDestination = bookingData.getSourceDestination();
+        Transport transport = bookingData.getTransport();
+
+        validateDates(from, to);
+
+        if (sourceDestination == null || transport == null) {
+            throw new InvalidArgumentException("Invalid fields");
+        }
+
+        validateFieldsExist(sourceDestination, transport);
+    }
+
+    private void validateFieldsExist(SourceDestination sourceDestination, Transport transport) {
+        TravelingPoint source = sourceDestination.getSource();
+        TravelingPoint destination = sourceDestination.getDestination();
+        long sourceId = source.getId();
+        long destinationId = destination.getId();
+        long transportId = transport.getId();
+
+        if (transportRepository.findById(sourceId) == null
+                || travelingPointRepository.findById(destinationId) == null
+                || transportRepository.findById(transportId) == null) {
+            throw new NonExistentItemException("These fields do not exist");
+        }
     }
 
     private void validateDates(LocalDate from, LocalDate to) {
         if (from == null || to == null || from.isEqual(to) || from.isAfter(to)) {
             throw new InvalidArgumentException("Invalid dates");
         }
+    }
+
+    private BookingData getExistingData(BookingData bookingData) {
+        if (bookingData == null) {
+            throw new NonExistentItemException("This booking data does not exist");
+        }
+        return bookingData;
     }
 }

@@ -21,10 +21,8 @@ public interface TravelingPointRepository extends JpaRepository<TravelingPoint, 
 
     @Modifying
     @Query(value = "UPDATE traveling_point" +
-                   "SET latitude = ?1" +
-                   "AND longitude = ?2  " +
-                   "AND name = ?3" +
-                   "WHERE id = ?4",
+                   "SET name = ?1" +
+                   "WHERE name = ?2",
             nativeQuery = true)
-      void update(double latitude, double longitude, String newName, String currentName);
+      void updateName(String newName, String currentName);
 }

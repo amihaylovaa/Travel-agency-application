@@ -29,18 +29,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                    "WHERE id = ?1",
             nativeQuery = true)
     void deleteById(long id);
-
-    @Modifying
-    @Query(value = "UPDATE booking " +
-                   "SET count_available_tickets = count_available_tickets - ?1" +
-                   "WHERE id = ?2",
-            nativeQuery = true)
-    void decrementCountAvailableTickets(int countTickets, long id);
-
-    @Modifying
-    @Query(value = "UPDATE booking " +
-                   "SET count_available_tickets = count_available_tickets + ?1" +
-                   "WHERE id = ?2",
-            nativeQuery = true)
-    void incrementCountAvailableTickets(int countTickets, long id);
 }

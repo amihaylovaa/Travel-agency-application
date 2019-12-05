@@ -1,9 +1,7 @@
 package adelina.luxtravel.service;
 
-import adelina.luxtravel.domain.transport.Transport;
-import adelina.luxtravel.domain.transport.TransportClass;
-import adelina.luxtravel.exception.InvalidArgumentException;
-import adelina.luxtravel.exception.NonExistentItemException;
+import adelina.luxtravel.domain.transport.*;
+import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.TransportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,13 +17,22 @@ public class TransportService {
         this.transportRepository = transportRepository;
     }
 
-    public Transport findById(Transport transport) {
-        if (transport == null) {
-            throw new InvalidArgumentException("Invalid transport");
-        }
-        validateTransportClass(transport.getTransportClass());
+    public Transport save(Transport transport) {
+        validateTransport(transport);
+        return transportRepository.save(transport);
+    }
 
-        Transport foundTransport = transportRepository.findById(transport.getId());
+    public List<Transport> saveAll(List<Transport> transports) {
+        validateListOfTransport(transports);
+        return transportRepository.saveAll(transports);
+    }
+
+    public Transport findById(long id) {
+        if (id <= 0) {
+            throw new InvalidArgumentException("Invalid id");
+        }
+
+        Transport foundTransport = transportRepository.findById(id);
 
         if (foundTransport == null) {
             throw new NonExistentItemException("Transport with that id does not exist");
@@ -35,13 +42,11 @@ public class TransportService {
 
     public List<Transport> findAllBusesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-
         return getListOfTransports(transportRepository.findAllBusesByClass(transportClass));
     }
 
     public List<Transport> findAllAirplanesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-
         return getListOfTransports(transportRepository.findAllAirplanesByClass(transportClass));
     }
 
@@ -53,21 +58,45 @@ public class TransportService {
         return getListOfTransports(transportRepository.findAllBuses());
     }
 
+    public void delete(Transport transport) {
+        validateTransport(transport);
+        transportRepository.delete(transport);
+    }
+
+    public void deleteAll() {
+        transportRepository.deleteAll();
+    }
+
+    private void validateListOfTransport(List<Transport> transports) {
+        if (transports == null || transports.isEmpty()) {
+            throw new InvalidArgumentException("Invalid list of transport");
+        }
+        for (Transport transport : transports) {
+            validateTransport(transport);
+        }
+    }
+
+    private void validateTransport(Transport transport) {
+        if (transport == null) {
+            throw new InvalidArgumentException("Invalid transport");
+        }
+        validateTransportClass(transport.getTransportClass());
+    }
+
     private void validateTransportClass(TransportClass transportClass) {
         if (transportClass == null) {
             throw new InvalidArgumentException("Invalid transport class");
         }
     }
 
-    private void validateTransportsExist(List<Transport> transports) {
-        if (transports == null || transports.isEmpty()) {
-            throw new NonExistentItemException("This kind of transport is not found");
-        }
+    private List<Transport> getListOfTransports(List<Transport> transports) {
+        validateTransportsExist(transports);
+        return transports;
     }
 
-    private List<Transport> getListOfTransports(List<Transport> transports){
-        validateTransportsExist(transports);
-
-        return transports;
+    private void validateTransportsExist(List<Transport> transports) {
+        if (transports == null || transports.isEmpty()) {
+            throw new NonExistentItemException("Transport is not found");
+        }
     }
 }

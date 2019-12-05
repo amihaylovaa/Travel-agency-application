@@ -1,6 +1,5 @@
 package adelina.luxtravel.domain;
 
-import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
@@ -21,23 +20,23 @@ public class Booking {
     private BookingData bookingData;
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
-    @Column(name = "count_available_tickets", nullable = false)
-    private int countAvailableTickets;
+    @Column(name = "count_tickets", nullable = false)
+    private int countTickets;
 
-    public Booking(double price, BookingData bookingData, User user, int countAvailableTickets) {
-        initializeFields(price, bookingData, user, countAvailableTickets);
+    public Booking(double price, BookingData bookingData, User user, int countTickets) {
+        initializeFields(price, bookingData, user, countTickets);
     }
 
-    public Booking(long id, double price, BookingData bookingData, User user, int countAvailableTickets) {
-        this(price, bookingData, user, countAvailableTickets);
+    public Booking(long id, double price, BookingData bookingData, User user, int countTickets) {
+        this(price, bookingData, user, countTickets);
         this.id = id;
     }
 
     public Booking(Booking booking) {
-        this(booking.id, booking.price, booking.bookingData, booking.user, booking.countAvailableTickets);
+        this(booking.id, booking.price, booking.bookingData, booking.user, booking.countTickets);
     }
 
-    private void initializeFields(double price, BookingData bookingData, User user, int countAvailableTickets) {
+    private void initializeFields(double price, BookingData bookingData, User user, int countTickets) {
         if (bookingData == null) {
             throw new FailedInitializationException("Null booking date");
         } else if (user == null) {
@@ -46,7 +45,7 @@ public class Booking {
             this.user = user;
             this.bookingData = bookingData;
             this.price = price;
-            this.countAvailableTickets = countAvailableTickets;
+            this.countTickets = countTickets;
         }
     }
 }

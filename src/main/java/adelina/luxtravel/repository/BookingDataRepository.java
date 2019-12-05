@@ -33,9 +33,9 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
     BookingData findBookingDataBySourceId(long id);
 
     @Query(value = "SELECT from_date, to_date, traveling_point.name" +
-            "traveling_point.name, transport.class" +
-            "FROM booking_data" +
-            "WHERE destination_id = ?1",
+                   "traveling_point.name, transport.class" +
+                   "FROM booking_data" +
+                   "WHERE destination_id = ?1",
             nativeQuery = true)
     BookingData findBookingDataByDestinationId(long id);
 
@@ -59,4 +59,18 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
                    "WHERE id = ?1",
             nativeQuery = true)
     void deleteBookingDataById(long id);
+
+    @Modifying
+    @Query(value = "UPDATE booking " +
+                   "SET count_available_tickets = count_available_tickets - ?1" +
+                   "WHERE id = ?2",
+            nativeQuery = true)
+    void decrementCountAvailableTickets(int countTickets, long id);
+
+    @Modifying
+    @Query(value = "UPDATE booking " +
+                   "SET count_available_tickets = count_available_tickets + ?1" +
+                   "WHERE id = ?2",
+            nativeQuery = true)
+    void incrementCountAvailableTickets(int countTickets, long id);
 }

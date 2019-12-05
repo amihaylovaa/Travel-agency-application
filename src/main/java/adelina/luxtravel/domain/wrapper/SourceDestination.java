@@ -5,6 +5,7 @@ import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
