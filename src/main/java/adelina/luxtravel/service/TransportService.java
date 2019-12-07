@@ -3,6 +3,8 @@ package adelina.luxtravel.service;
 import adelina.luxtravel.domain.transport.*;
 import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.TransportRepository;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,7 @@ public class TransportService {
     }
 
     public Transport findById(long id) {
-        if (id <= 0) {
+        if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
 
@@ -42,20 +44,20 @@ public class TransportService {
 
     public List<Transport> findAllBusesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-        return getListOfTransports(transportRepository.findAllBusesByClass(transportClass));
+        return getListOfExistingTransports(transportRepository.findAllBusesByClass(transportClass));
     }
 
     public List<Transport> findAllAirplanesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-        return getListOfTransports(transportRepository.findAllAirplanesByClass(transportClass));
+        return getListOfExistingTransports(transportRepository.findAllAirplanesByClass(transportClass));
     }
 
     public List<Transport> findAllAirplanes() {
-        return getListOfTransports(transportRepository.findAllAirplanes());
+        return getListOfExistingTransports(transportRepository.findAllAirplanes());
     }
 
     public List<Transport> findAllBuses() {
-        return getListOfTransports(transportRepository.findAllBuses());
+        return getListOfExistingTransports(transportRepository.findAllBuses());
     }
 
     public void delete(Transport transport) {
@@ -68,7 +70,7 @@ public class TransportService {
     }
 
     private void validateListOfTransport(List<Transport> transports) {
-        if (transports == null || transports.isEmpty()) {
+        if (ObjectUtils.isEmpty(transports)) {
             throw new InvalidArgumentException("Invalid list of transport");
         }
         for (Transport transport : transports) {
@@ -89,14 +91,10 @@ public class TransportService {
         }
     }
 
-    private List<Transport> getListOfTransports(List<Transport> transports) {
-        validateTransportsExist(transports);
-        return transports;
-    }
-
-    private void validateTransportsExist(List<Transport> transports) {
-        if (transports == null || transports.isEmpty()) {
-            throw new NonExistentItemException("Transport is not found");
+    private List<Transport> getListOfExistingTransports(List<Transport> transports) {
+        if (ObjectUtils.isEmpty(transports)) {
+            throw new NonExistentItemException("List of transports is not found");
         }
+        return transports;
     }
 }

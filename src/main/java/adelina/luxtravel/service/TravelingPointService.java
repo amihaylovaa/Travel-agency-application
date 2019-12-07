@@ -3,12 +3,16 @@ package adelina.luxtravel.service;
 import adelina.luxtravel.domain.TravelingPoint;
 import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.repository.TravelingPointRepository;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import adelina.luxtravel.exception.InvalidArgumentException;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
+
+import static adelina.luxtravel.utility.Constants.NINETY_DEGREES;
+import static adelina.luxtravel.utility.Constants.NINETY_DEGREES_NEGATIVE;
 
 @Service
 public class TravelingPointService {
@@ -61,7 +65,7 @@ public class TravelingPointService {
     }
 
     private void validateListOfTravelingPoints(List<TravelingPoint> travelingPoints) {
-        if (travelingPoints == null || travelingPoints.isEmpty()) {
+        if (ObjectUtils.isEmpty(travelingPoints)) {
             throw new InvalidArgumentException("Invalid list of traveling points");
         }
         for (TravelingPoint travelingPoint : travelingPoints) {
@@ -81,7 +85,9 @@ public class TravelingPointService {
         double latitude = travelingPoint.getLatitude();
         double longitude = travelingPoint.getLongitude();
 
-        if (latitude < 0.00 || longitude < 0.00 || StringUtils.isEmpty(name)) {
+        if ((longitude > NINETY_DEGREES || longitude < NINETY_DEGREES_NEGATIVE) &&
+                (latitude > NINETY_DEGREES || latitude < NINETY_DEGREES_NEGATIVE) &&
+                StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid fields");
         }
     }

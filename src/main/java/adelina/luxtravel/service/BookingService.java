@@ -5,9 +5,11 @@ import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.BookingDataRepository;
 import adelina.luxtravel.repository.BookingRepository;
 import adelina.luxtravel.repository.UserRepository;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class BookingService {
     }
 
     public Booking findBookingById(long id) {
-        if (id <= 0) {
+        if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
         return getExistingBooking(bookingRepository.findById(id));
@@ -51,8 +53,10 @@ public class BookingService {
         return getExistingBooking(bookingRepository.findAll());
     }
 
+
+
     public void deleteBooking(long id) {
-        if (id <= 0) {
+        if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
 
@@ -77,10 +81,9 @@ public class BookingService {
     private void validateBookingFields(Booking booking) {
         User user = booking.getUser();
         BookingData bookingData = booking.getBookingData();
-        double price = booking.getPrice();
         int countTickets = booking.getCountTickets();
 
-        if (user == null || bookingData == null || price <= 0.00 || countTickets <= 0) {
+        if (user == null || bookingData == null || countTickets <= NumberUtils.INTEGER_ZERO) {
             throw new InvalidArgumentException("Invalid booking fields");
         }
         validateFieldsExist(user, bookingData, countTickets);
@@ -90,8 +93,7 @@ public class BookingService {
         long userId = user.getId();
         long bookingDataId = bookingData.getId();
 
-        if (userRepository.findById(userId) == null
-                || bookingDataRepository.findBookingDataById(bookingDataId) == null) {
+        if (userRepository.findById(userId) == null || bookingDataRepository.findById(bookingDataId) == null) {
             throw new NonExistentItemException("User or booking data does not exist");
         }
         if (countTickets > bookingData.getCountAvailableTickets()) {
@@ -100,7 +102,7 @@ public class BookingService {
     }
 
     private List<Booking> getExistingBooking(List<Booking> bookings) {
-        if (bookings == null || bookings.isEmpty()) {
+        if (ObjectUtils.isEmpty(bookings)) {
             throw new NonExistentItemException("Bookings did not exist");
         }
         return bookings;

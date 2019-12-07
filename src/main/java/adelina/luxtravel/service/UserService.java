@@ -3,9 +3,11 @@ package adelina.luxtravel.service;
 import adelina.luxtravel.domain.User;
 import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.UserRepository;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+
 
 import java.util.List;
 
@@ -94,7 +96,7 @@ public class UserService {
     }
 
     private void validateListOfUsers(List<User> users) {
-        if (users == null || users.isEmpty()) {
+        if (ObjectUtils.isEmpty(users)) {
             throw new InvalidArgumentException("Invalid list of users");
         }
         for (User user : users) {

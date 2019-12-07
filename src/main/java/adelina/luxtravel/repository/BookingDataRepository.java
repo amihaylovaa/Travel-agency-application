@@ -16,35 +16,35 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
                    "FROM booking_data, traveling_point, transport" +
                    "WHERE id = ?1",
             nativeQuery = true)
-    BookingData findBookingDataById(long id);
+    BookingData findById(long id);
 
     @Query(value = "SELECT from_date, to_date, traveling_point.name" +
                    "traveling_point.name, transport.class" +
                    "FROM booking_data" +
                    "WHERE from_date = ?1 AND to_date = ?2",
             nativeQuery = true)
-    List<BookingData> findBookingsDataByDates(LocalDate from, LocalDate to);
+    List<BookingData> findByDates(LocalDate from, LocalDate to);
 
     @Query(value = "SELECT from_date, to_date, traveling_point.name" +
                    "traveling_point.name, transport.class" +
                    "FROM booking_data" +
                    "WHERE source_id = ?1",
             nativeQuery = true)
-    BookingData findBookingDataBySourceId(long id);
+    BookingData findBySourceId(long id);
 
     @Query(value = "SELECT from_date, to_date, traveling_point.name" +
                    "traveling_point.name, transport.class" +
                    "FROM booking_data" +
                    "WHERE destination_id = ?1",
             nativeQuery = true)
-    BookingData findBookingDataByDestinationId(long id);
+    BookingData findByDestinationId(long id);
 
     @Modifying
     @Query(value = "UPDATE booking_data" +
                    "SET from_date = ?1 AND to_date = ?2 " +
                    "WHERE id = ?3",
             nativeQuery = true)
-    void updateBookingDataByDates(LocalDate newFromDate, LocalDate newToDate, long id);
+    void updateDates(LocalDate newFromDate, LocalDate newToDate, long id);
 
     @Modifying
     @Query(value = "UPDATE booking_data" +

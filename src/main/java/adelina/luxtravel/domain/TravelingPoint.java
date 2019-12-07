@@ -2,12 +2,15 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 
+import adelina.luxtravel.utility.Constants.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
-import java.util.Objects;
 
+import static adelina.luxtravel.utility.Constants.NINETY_DEGREES;
+import static adelina.luxtravel.utility.Constants.NINETY_DEGREES_NEGATIVE;
 
 @Entity
 @Table(name = "traveling_point")
@@ -39,10 +42,11 @@ public class TravelingPoint {
     }
 
     private void initializeFields(String name, double longitude, double latitude) {
-        if (name == null || name.isEmpty()) {
+        if (StringUtils.isEmpty(name)) {
             throw new FailedInitializationException("Invalid name");
         }
-        if (longitude <= 0.00 || latitude == 0.00 || longitude == latitude) {
+        if ((longitude > NINETY_DEGREES || longitude < NINETY_DEGREES_NEGATIVE) &&
+                (latitude > NINETY_DEGREES || latitude < NINETY_DEGREES_NEGATIVE)) {
             throw new FailedInitializationException("Invalid coordinates");
         }
         this.name = name;
