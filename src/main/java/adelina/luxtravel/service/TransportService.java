@@ -65,10 +65,6 @@ public class TransportService {
         transportRepository.delete(transport);
     }
 
-    public void deleteAll() {
-        transportRepository.deleteAll();
-    }
-
     private void validateListOfTransport(List<Transport> transports) {
         if (ObjectUtils.isEmpty(transports)) {
             throw new InvalidArgumentException("Invalid list of transport");

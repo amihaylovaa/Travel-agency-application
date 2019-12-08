@@ -53,8 +53,6 @@ public class BookingService {
         return getExistingBooking(bookingRepository.findAll());
     }
 
-
-
     public void deleteBooking(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
@@ -68,6 +66,9 @@ public class BookingService {
     }
 
     public void deleteAll() {
+        if (ObjectUtils.isEmpty(findAll())) {
+            throw new NonExistentItemException("There is nothing to delete");
+        }
         bookingRepository.deleteAll();
     }
 

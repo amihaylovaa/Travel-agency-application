@@ -36,7 +36,7 @@ public class BookingDataService {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
-        return getExistingData(bookingDataRepository.findById(id));
+        return getExistingBookingData(bookingDataRepository.findById(id));
     }
 
     public List<BookingData> findByDates(LocalDate from, LocalDate to) {
@@ -51,7 +51,7 @@ public class BookingDataService {
 
         long id = getTravelingPointId(travelingPointRepository.findByName(sourceName));
 
-        return getExistingData(bookingDataRepository.findBySourceId(id));
+        return getExistingBookingData(bookingDataRepository.findBySourceId(id));
     }
 
     public BookingData findByDestinationId(String destinationName) {
@@ -61,7 +61,7 @@ public class BookingDataService {
 
         long id = getTravelingPointId(travelingPointRepository.findByName(destinationName));
 
-        return getExistingData(bookingDataRepository.findByDestinationId(id));
+        return getExistingBookingData(bookingDataRepository.findByDestinationId(id));
     }
 
     public void updateTransport(long bookingDataId, Transport transport) {
@@ -129,7 +129,7 @@ public class BookingDataService {
         }
     }
 
-    private BookingData getExistingData(BookingData bookingData) {
+    private BookingData getExistingBookingData(BookingData bookingData) {
         if (bookingData == null) {
             throw new NonExistentItemException("This booking data does not exist");
         }

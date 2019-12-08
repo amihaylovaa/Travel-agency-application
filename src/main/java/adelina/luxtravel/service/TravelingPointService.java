@@ -48,6 +48,7 @@ public class TravelingPointService {
         if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(currentName)) {
             throw new InvalidArgumentException("Invalid arguments");
         }
+
         findByName(currentName);
         travelingPointRepository.updateName(newName, currentName);
     }
@@ -56,11 +57,15 @@ public class TravelingPointService {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
         }
+
         findByName(name);
         travelingPointRepository.deleteByName(name);
     }
 
     public void deleteAll() {
+        if (ObjectUtils.isEmpty(findAll())) {
+            throw new NonExistentItemException("There is nothing to delete");
+        }
         travelingPointRepository.deleteAll();
     }
 

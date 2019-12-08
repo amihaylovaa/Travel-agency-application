@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
 
 @Service
@@ -70,11 +69,7 @@ public class UserService {
             throw new InvalidArgumentException("Invalid username or password");
         }
 
-        User user = findByUsername(username);
-
-        if (!password.equals(user.getPassword())) {
-            throw new InvalidArgumentException("Wrong password");
-        }
+        validatePasswordMatch(password, findByUsername(username));
         userRepository.deleteByUsername(username);
     }
 
@@ -83,15 +78,14 @@ public class UserService {
             throw new InvalidArgumentException("Invalid email or password");
         }
 
-        User user = findByEmail(email);
-
-        if (!password.equals(user.getPassword())) {
-            throw new InvalidArgumentException("Wrong password");
-        }
+        validatePasswordMatch(password, findByEmail(email));
         userRepository.deleteByEmail(email);
     }
 
     public void deleteAll() {
+        if (ObjectUtils.isEmpty(findAll())) {
+            throw new NonExistentItemException("There is nothing to delete");
+        }
         userRepository.deleteAll();
     }
 
@@ -116,9 +110,14 @@ public class UserService {
         String email = user.getEmail();
         String password = user.getPassword();
 
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)
-                || StringUtils.isEmpty(email)) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException("Invalid fields");
+        }
+    }
+
+    private void validatePasswordMatch(String password, User user) {
+        if (!password.equals(user.getPassword())) {
+            throw new InvalidArgumentException("Invalid password");
         }
     }
 
