@@ -65,12 +65,12 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
                    "SET count_available_tickets = count_available_tickets - ?1" +
                    "WHERE id = ?2",
             nativeQuery = true)
-    void decrementCountAvailableTickets(int countTickets, long id);
+    void reserveTickets(int countTickets, long id);
 
     @Modifying
     @Query(value = "UPDATE booking " +
                    "SET count_available_tickets = count_available_tickets + ?1" +
                    "WHERE id = ?2",
             nativeQuery = true)
-    void incrementCountAvailableTickets(int countTickets, long id);
+    void cancelTicketReservation(int countTickets, long id);
 }

@@ -32,25 +32,35 @@ public class BookingService {
 
         BookingData bookingData = booking.getBookingData();
 
-        bookingDataRepository.decrementCountAvailableTickets(booking.getCountTickets(), bookingData.getId());
+        bookingDataRepository.reserveTickets(booking.getCountTickets(), bookingData.getId());
     }
 
     public Booking findBookingById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
-        return getExistingBooking(bookingRepository.findById(id));
+        return getExistingBooking(id);
     }
 
     public List<Booking> findAllBookingsByUserName(String username) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
-        return getExistingBooking(bookingRepository.findAllBookingsByUsername(username));
+        List<Booking> bookings = bookingRepository.findAllBookingsByUsername(username);
+
+        if (ObjectUtils.isEmpty(bookings)) {
+            throw new NonExistentItemException("Bookings for that user are not found");
+        }
+        return bookings;
     }
 
     public List<Booking> findAll() {
-        return getExistingBooking(bookingRepository.findAll());
+        List<Booking> bookings = bookingRepository.findAll();
+
+        if (ObjectUtils.isEmpty(bookings)) {
+            throw new NonExistentItemException("Bookings not found");
+        }
+        return bookings;
     }
 
     public void deleteBooking(long id) {
@@ -61,7 +71,7 @@ public class BookingService {
         Booking booking = findBookingById(id);
         BookingData bookingData = booking.getBookingData();
 
-        bookingDataRepository.incrementCountAvailableTickets(booking.getCountTickets(), bookingData.getId());
+        bookingDataRepository.cancelTicketReservation(booking.getCountTickets(), bookingData.getId());
         bookingRepository.deleteById(id);
     }
 
@@ -102,16 +112,10 @@ public class BookingService {
         }
     }
 
-    private List<Booking> getExistingBooking(List<Booking> bookings) {
-        if (ObjectUtils.isEmpty(bookings)) {
-            throw new NonExistentItemException("Bookings did not exist");
-        }
-        return bookings;
-    }
-
-    private Booking getExistingBooking(Booking booking) {
+    private Booking getExistingBooking(long id) {
+        Booking booking = bookingRepository.findById(id);
         if (booking == null) {
-            throw new NonExistentItemException("Booking does not exist");
+            throw new NonExistentItemException("This booking does not exist");
         }
         return booking;
     }

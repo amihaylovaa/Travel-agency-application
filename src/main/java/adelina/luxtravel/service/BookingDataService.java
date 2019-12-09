@@ -29,13 +29,14 @@ public class BookingDataService {
 
     public BookingData save(BookingData bookingData) {
         validateBookingData(bookingData);
-        return save(bookingData);
+        return bookingDataRepository.save(bookingData);
     }
 
     public BookingData findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
+        //TODO: SEE BOOKING SERVICE LOGIC
         return getExistingBookingData(bookingDataRepository.findById(id));
     }
 
@@ -44,6 +45,7 @@ public class BookingDataService {
         return bookingDataRepository.findByDates(from, to);
     }
 
+    // TODO : SHOULD BE LIST OF BOOKING DATA
     public BookingData findBySourceId(String sourceName) {
         if (StringUtils.isEmpty(sourceName)) {
             throw new InvalidArgumentException("Invalid source name");
@@ -54,6 +56,7 @@ public class BookingDataService {
         return getExistingBookingData(bookingDataRepository.findBySourceId(id));
     }
 
+    // TODO : SAME AS ABOVE
     public BookingData findByDestinationId(String destinationName) {
         if (StringUtils.isEmpty(destinationName)) {
             throw new InvalidArgumentException("Invalid destination name");
@@ -64,17 +67,16 @@ public class BookingDataService {
         return getExistingBookingData(bookingDataRepository.findByDestinationId(id));
     }
 
+    // TODO : CHECK IF UPDATE ON NONEXISTENT FIELD FAILS
     public void updateTransport(long bookingDataId, Transport transport) {
-        if (bookingDataId <= NumberUtils.LONG_ZERO || transport == null) {
+        if (bookingDataId <= NumberUtils.LONG_ZERO || transport == null || transport.getId() <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
-        long transportId = transport.getId();
-
-        if (transportId <= NumberUtils.LONG_ZERO || transportRepository.findById(transportId) == null) {
+        if (transportRepository.findById(transport.getId()) == null) {
             throw new NonExistentItemException("Transport does not exist");
         }
-        bookingDataRepository.updateTransport(transportId, bookingDataId);
+        bookingDataRepository.updateTransport(transport.getId(), bookingDataId);
     }
 
     public void deleteBookingDataById(long id) {
@@ -96,10 +98,11 @@ public class BookingDataService {
         Date date = bookingData.getDate();
         LocalDate from = date.getFromDate();
         LocalDate to = date.getToDate();
-        SourceDestination sourceDestination = bookingData.getSourceDestination();
-        Transport transport = bookingData.getTransport();
 
         validateDates(from, to);
+
+        SourceDestination sourceDestination = bookingData.getSourceDestination();
+        Transport transport = bookingData.getTransport();
 
         if (sourceDestination == null || transport == null) {
             throw new InvalidArgumentException("Invalid fields");
@@ -115,7 +118,7 @@ public class BookingDataService {
         long destinationId = destination.getId();
         long transportId = transport.getId();
 
-        if (transportRepository.findById(sourceId) == null
+        if (travelingPointRepository.findById(sourceId) == null
                 || travelingPointRepository.findById(destinationId) == null
                 || transportRepository.findById(transportId) == null) {
             throw new NonExistentItemException("These fields do not exist");
