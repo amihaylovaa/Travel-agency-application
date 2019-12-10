@@ -29,7 +29,7 @@ public class TravelingPointService {
     }
 
     public List<TravelingPoint> saveAll(List<TravelingPoint> travelingPoints) {
-        validateListOfTravelingPoints(travelingPoints);
+        validateTravelingPoints(travelingPoints);
         return travelingPointRepository.saveAll(travelingPoints);
     }
 
@@ -44,11 +44,12 @@ public class TravelingPointService {
         List<TravelingPoint> travelingPoints = travelingPointRepository.findAll();
 
         if (ObjectUtils.isEmpty(travelingPoints)) {
-            throw new NonExistentItemException("There no traveling points found");
+            throw new NonExistentItemException("There are no traveling points found");
         }
         return travelingPoints;
     }
 
+    // TODO : RETURN RESULT MAYBE
     public void updateName(String newName, String currentName) {
         if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(currentName)) {
             throw new InvalidArgumentException("Invalid arguments");
@@ -57,20 +58,19 @@ public class TravelingPointService {
         travelingPointRepository.updateName(newName, currentName);
     }
 
+    // TODO : or id and use find by name
     public void deleteByName(String name) {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
         }
-        findByName(name);
         travelingPointRepository.deleteByName(name);
     }
 
     public void deleteAll() {
-        findAll();
         travelingPointRepository.deleteAll();
     }
 
-    private void validateListOfTravelingPoints(List<TravelingPoint> travelingPoints) {
+    private void validateTravelingPoints(List<TravelingPoint> travelingPoints) {
         if (ObjectUtils.isEmpty(travelingPoints)) {
             throw new InvalidArgumentException("Invalid list of traveling points");
         }
@@ -92,9 +92,11 @@ public class TravelingPointService {
         double longitude = travelingPoint.getLongitude();
 
         if ((longitude > NINETY_DEGREES || longitude < NINETY_DEGREES_NEGATIVE) &&
-                (latitude > NINETY_DEGREES || latitude < NINETY_DEGREES_NEGATIVE) &&
-                StringUtils.isEmpty(name)) {
-            throw new InvalidArgumentException("Invalid fields");
+                (latitude > NINETY_DEGREES || latitude < NINETY_DEGREES_NEGATIVE)) {
+            throw new InvalidArgumentException("Invalid coordinates");
+        }
+        if (StringUtils.isEmpty(name)) {
+            throw new InvalidArgumentException("Invalid name");
         }
     }
 

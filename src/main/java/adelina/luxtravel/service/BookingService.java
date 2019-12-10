@@ -32,7 +32,7 @@ public class BookingService {
 
         BookingData bookingData = booking.getBookingData();
 
-        bookingDataRepository.reserveTickets(booking.getCountTickets(), bookingData.getId());
+        bookingDataRepository.reserveTickets(booking.getTicketsCount(), bookingData.getId());
     }
 
     public Booking findBookingById(long id) {
@@ -42,7 +42,7 @@ public class BookingService {
         return getExistingBooking(id);
     }
 
-    public List<Booking> findAllBookingsByUserName(String username) {
+    public List<Booking> findAllBookingsByUsername(String username) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
@@ -64,15 +64,16 @@ public class BookingService {
         return bookings;
     }
 
-    public void updateTickets(long id, int countTickets) {
+    // TODO : return
+    public void updateTickets(long id, int ticketsCount) {
         Booking booking = findBookingById(id);
         BookingData bookingData = booking.getBookingData();
         int availableTickets = bookingData.getCountAvailableTickets();
 
-        if (countTickets > availableTickets) {
+        if (ticketsCount > availableTickets) {
             throw new NonExistentItemException("Unavailable count of tickets, update can not be executed");
         }
-        bookingRepository.updateByTickets(countTickets, id);
+        bookingRepository.updateByTickets(ticketsCount, id);
     }
 
     public void deleteBooking(long id) {
@@ -83,12 +84,11 @@ public class BookingService {
         Booking booking = findBookingById(id);
         BookingData bookingData = booking.getBookingData();
 
-        bookingDataRepository.cancelTicketReservation(booking.getCountTickets(), bookingData.getId());
+        bookingDataRepository.cancelTicketReservation(booking.getTicketsCount(), bookingData.getId());
         bookingRepository.deleteById(id);
     }
 
     public void deleteAll() {
-        findAll();
         bookingRepository.deleteAll();
     }
 
@@ -99,10 +99,11 @@ public class BookingService {
         validateBookingFields(booking);
     }
 
+    // TODO : refactor validations
     private void validateBookingFields(Booking booking) {
         User user = booking.getUser();
         BookingData bookingData = booking.getBookingData();
-        int countTickets = booking.getCountTickets();
+        int countTickets = booking.getTicketsCount();
 
         if (user == null || bookingData == null || countTickets <= NumberUtils.INTEGER_ZERO) {
             throw new InvalidArgumentException("Invalid booking fields");
@@ -127,6 +128,7 @@ public class BookingService {
 
     private Booking getExistingBooking(long id) {
         Booking booking = bookingRepository.findById(id);
+
         if (booking == null) {
             throw new NonExistentItemException("This booking does not exist");
         }

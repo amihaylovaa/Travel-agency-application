@@ -24,11 +24,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public List<User> saveAll(List<User> users) {
-        validateListOfUsers(users);
-        return userRepository.saveAll(users);
-    }
-
     public User findByUsername(String username) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
@@ -52,20 +47,20 @@ public class UserService {
         return users;
     }
 
+    // TODO : return result
     public void updatePassword(String newPassword, String currentPassword, String username) {
         if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(currentPassword)
                 || StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
-        findByUsername(username);
         userRepository.updatePassword(newPassword, currentPassword, username);
     }
 
+    // TODO : same
     public void updateEmail(String newEmail, String currentEmail) {
         if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(currentEmail)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
-        findByEmail(currentEmail);
         userRepository.updateEmail(newEmail, currentEmail);
     }
 
@@ -86,17 +81,7 @@ public class UserService {
     }
 
     public void deleteAll() {
-        findAll();
         userRepository.deleteAll();
-    }
-
-    private void validateListOfUsers(List<User> users) {
-        if (ObjectUtils.isEmpty(users)) {
-            throw new InvalidArgumentException("Invalid list of users");
-        }
-        for (User user : users) {
-            validateUser(user);
-        }
     }
 
     private void validateUser(User user) {
@@ -106,6 +91,7 @@ public class UserService {
         validateUserFields(user);
     }
 
+    // TODO : refactor validations to be more clear
     private void validateUserFields(User user) {
         String username = user.getUsername();
         String email = user.getEmail();
@@ -122,6 +108,7 @@ public class UserService {
         }
     }
 
+    // TODO : THINK AGAIN !!!!
     private User getExistingUser(User user) {
         if (user == null) {
             throw new NonExistentItemException("User does not exist");

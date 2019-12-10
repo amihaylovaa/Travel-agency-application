@@ -19,19 +19,19 @@ public class Booking {
     @JoinColumn(name = "booking_data_id")
     private BookingData bookingData;
     @Column(name = "count_tickets", nullable = false)
-    private int countTickets;
+    private int ticketsCount;
 
-    public Booking(BookingData bookingData, User user, int countTickets) {
-        initializeFields(bookingData, user, countTickets);
+    public Booking(BookingData bookingData, User user, int ticketsCount) {
+        initializeFields(bookingData, user, ticketsCount);
     }
 
-    public Booking(long id, BookingData bookingData, User user, int countTickets) {
-        this(bookingData, user, countTickets);
+    public Booking(long id, BookingData bookingData, User user, int ticketsCount) {
+        this(bookingData, user, ticketsCount);
         this.id = id;
     }
 
     public Booking(Booking booking) {
-        this(booking.id, booking.bookingData, booking.user, booking.countTickets);
+        this(booking.id, booking.bookingData, booking.user, booking.ticketsCount);
     }
 
     private void initializeFields(BookingData bookingData, User user, int countTickets) {
@@ -42,7 +42,7 @@ public class Booking {
         } else {
             this.user = user;
             this.bookingData = bookingData;
-            this.countTickets = countTickets;
+            this.ticketsCount = countTickets;
         }
     }
 }

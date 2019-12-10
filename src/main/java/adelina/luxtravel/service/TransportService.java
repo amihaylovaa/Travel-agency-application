@@ -25,7 +25,7 @@ public class TransportService {
     }
 
     public List<Transport> saveAll(List<Transport> transports) {
-        validateListOfTransport(transports);
+        validateTransportList(transports);
         return transportRepository.saveAll(transports);
     }
 
@@ -34,49 +34,45 @@ public class TransportService {
             throw new InvalidArgumentException("Invalid id");
         }
 
-        Transport foundTransport = transportRepository.findById(id);
+        Transport transport = transportRepository.findById(id);
 
-        if (foundTransport == null) {
+        if (transport == null) {
             throw new NonExistentItemException("Transport with that id does not exist");
         }
-        return foundTransport;
+        return transport;
     }
 
+    // TODO : maybe extract the result from repository method
     public List<Transport> findAllBusesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-        return getListOfExistingTransports(transportRepository.findAllBusesByClass(transportClass));
+        return validateTransportListExist(transportRepository.findAllBusesByClass(transportClass));
     }
 
     public List<Transport> findAllAirplanesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-        return getListOfExistingTransports(transportRepository.findAllAirplanesByClass(transportClass));
+        return validateTransportListExist(transportRepository.findAllAirplanesByClass(transportClass));
     }
 
     public List<Transport> findAllAirplanes() {
-        return getListOfExistingTransports(transportRepository.findAllAirplanes());
+        return validateTransportListExist(transportRepository.findAllAirplanes());
     }
 
     public List<Transport> findAllBuses() {
-        return getListOfExistingTransports(transportRepository.findAllBuses());
+        return validateTransportListExist(transportRepository.findAllBuses());
     }
 
+    // TODO: think about another solution because the result is not used (same for bookings' services)
     public void updateClass(TransportClass transportClass, long id) {
         findById(id);
         transportRepository.updateClass(transportClass, id);
     }
 
-    public void delete(Transport transport) {
-        validateTransport(transport);
-        findById(transport.getId());
-        transportRepository.delete(transport);
-    }
-
+    // TODO : THINK (maybe transport class and then get id and then delete)
     public void deleteById(long id) {
-        findById(id);
         transportRepository.deleteById(id);
     }
 
-    private void validateListOfTransport(List<Transport> transports) {
+    private void validateTransportList(List<Transport> transports) {
         if (ObjectUtils.isEmpty(transports)) {
             throw new InvalidArgumentException("Invalid list of transport");
         }
@@ -98,7 +94,7 @@ public class TransportService {
         }
     }
 
-    private List<Transport> getListOfExistingTransports(List<Transport> transports) {
+    private List<Transport> validateTransportListExist(List<Transport> transports) {
         if (ObjectUtils.isEmpty(transports)) {
             throw new NonExistentItemException("List of transports is not found");
         }

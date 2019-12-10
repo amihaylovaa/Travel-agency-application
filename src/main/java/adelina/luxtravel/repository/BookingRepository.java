@@ -27,8 +27,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "UPDATE booking" +
                    "SET count_tickets= ?1" +
                    "WHERE id = ?2 )",
-           nativeQuery = true)
-    void updateByTickets(int countTickets, long id);
+            nativeQuery = true)
+    void updateByTickets(int ticketsCount, long id);
 
     @Modifying
     @Query(value = "DELETE " +

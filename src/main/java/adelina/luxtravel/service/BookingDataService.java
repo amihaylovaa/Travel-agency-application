@@ -45,7 +45,7 @@ public class BookingDataService {
         List<BookingData> bookingData = bookingDataRepository.findByDates(from, to);
 
         if (ObjectUtils.isEmpty(bookingData)) {
-            throw new NonExistentItemException("There no booking data for these days");
+            throw new NonExistentItemException("There are no booking data for these days");
         }
         return bookingData;
     }
@@ -66,16 +66,15 @@ public class BookingDataService {
         bookingDataRepository.updateTransport(transport.getId(), bookingDataId);
     }
 
+    // TODO : return result
     public void deleteBookingDataById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
-        findById(id);
         bookingDataRepository.deleteBookingDataById(id);
     }
 
     public void deleteAll() {
-        findAll();
         bookingDataRepository.deleteAll();
     }
 
@@ -86,6 +85,7 @@ public class BookingDataService {
         validateBookingDataFields(bookingData);
     }
 
+    // TODO : refactor validations
     private void validateBookingDataFields(BookingData bookingData) {
         Date date = bookingData.getDate();
         LocalDate from = date.getFromDate();
@@ -103,6 +103,7 @@ public class BookingDataService {
         validateFieldsExist(sourceDestination, transport);
     }
 
+    // TODO: refactor checks
     private void validateFieldsExist(SourceDestination sourceDestination, Transport transport) {
         TravelingPoint source = sourceDestination.getSource();
         TravelingPoint destination = sourceDestination.getDestination();
