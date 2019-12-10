@@ -24,6 +24,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllBookingsByUsername(String username);
 
     @Modifying
+    @Query(value = "UPDATE booking" +
+                   "SET count_tickets= ?1" +
+                   "WHERE id = ?2 )",
+           nativeQuery = true)
+    void updateByTickets(int countTickets, long id);
+
+    @Modifying
     @Query(value = "DELETE " +
                    "FROM booking" +
                    "WHERE id = ?1",

@@ -64,6 +64,17 @@ public class BookingService {
         return bookings;
     }
 
+    public void updateTickets(long id, int countTickets) {
+        Booking booking = findBookingById(id);
+        BookingData bookingData = booking.getBookingData();
+        int availableTickets = bookingData.getCountAvailableTickets();
+
+        if (countTickets > availableTickets) {
+            throw new NonExistentItemException("Unavailable count of tickets, update can not be executed");
+        }
+        bookingRepository.updateByTickets(countTickets, id);
+    }
+
     public void deleteBooking(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
