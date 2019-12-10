@@ -38,13 +38,18 @@ public class UserService {
 
     public User findByEmail(String email) {
         if (StringUtils.isEmpty(email)) {
-            throw new InvalidArgumentException("Invalid username");
+            throw new InvalidArgumentException("Invalid email");
         }
         return getExistingUser(userRepository.findByEmail(email));
     }
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+
+        if (ObjectUtils.isEmpty(users)) {
+            throw new NonExistentItemException("There no users found");
+        }
+        return users;
     }
 
     public void updatePassword(String newPassword, String currentPassword, String username) {
@@ -68,7 +73,6 @@ public class UserService {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Invalid username or password");
         }
-
         validatePasswordMatch(password, findByUsername(username));
         userRepository.deleteByUsername(username);
     }
@@ -77,15 +81,12 @@ public class UserService {
         if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Invalid email or password");
         }
-
         validatePasswordMatch(password, findByEmail(email));
         userRepository.deleteByEmail(email);
     }
 
     public void deleteAll() {
-        if (ObjectUtils.isEmpty(findAll())) {
-            throw new NonExistentItemException("There is nothing to delete");
-        }
+        findAll();
         userRepository.deleteAll();
     }
 
@@ -111,7 +112,7 @@ public class UserService {
         String password = user.getPassword();
 
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
-            throw new InvalidArgumentException("Invalid fields");
+            throw new InvalidArgumentException("Invalid User's fields");
         }
     }
 
@@ -123,7 +124,7 @@ public class UserService {
 
     private User getExistingUser(User user) {
         if (user == null) {
-            throw new NonExistentItemException("This user does not exist");
+            throw new NonExistentItemException("User does not exist");
         }
         return user;
     }

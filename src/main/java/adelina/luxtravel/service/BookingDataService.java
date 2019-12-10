@@ -6,7 +6,7 @@ import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.wrapper.*;
 import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.*;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,45 +36,32 @@ public class BookingDataService {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
-        //TODO: SEE BOOKING SERVICE LOGIC
-        return getExistingBookingData(bookingDataRepository.findById(id));
+        return getExistingBookingData(id);
     }
 
     public List<BookingData> findByDates(LocalDate from, LocalDate to) {
         validateDates(from, to);
-        return bookingDataRepository.findByDates(from, to);
-    }
 
-    // TODO : SHOULD BE LIST OF BOOKING DATA
-    public BookingData findBySourceId(String sourceName) {
-        if (StringUtils.isEmpty(sourceName)) {
-            throw new InvalidArgumentException("Invalid source name");
+        List<BookingData> bookingData = bookingDataRepository.findByDates(from, to);
+
+        if (ObjectUtils.isEmpty(bookingData)) {
+            throw new NonExistentItemException("There no booking data for these days");
         }
-
-        long id = getTravelingPointId(travelingPointRepository.findByName(sourceName));
-
-        return getExistingBookingData(bookingDataRepository.findBySourceId(id));
+        return bookingData;
     }
 
-    // TODO : SAME AS ABOVE
-    public BookingData findByDestinationId(String destinationName) {
-        if (StringUtils.isEmpty(destinationName)) {
-            throw new InvalidArgumentException("Invalid destination name");
+    public List<BookingData> findAll() {
+        List<BookingData> bookingData = bookingDataRepository.findAll();
+
+        if (ObjectUtils.isEmpty(bookingData)) {
+            throw new NonExistentItemException("No booking data found");
         }
-
-        long id = getTravelingPointId(travelingPointRepository.findByName(destinationName));
-
-        return getExistingBookingData(bookingDataRepository.findByDestinationId(id));
+        return bookingData;
     }
 
-    // TODO : CHECK IF UPDATE ON NONEXISTENT FIELD FAILS
     public void updateTransport(long bookingDataId, Transport transport) {
         if (bookingDataId <= NumberUtils.LONG_ZERO || transport == null || transport.getId() <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
-        }
-
-        if (transportRepository.findById(transport.getId()) == null) {
-            throw new NonExistentItemException("Transport does not exist");
         }
         bookingDataRepository.updateTransport(transport.getId(), bookingDataId);
     }
@@ -85,6 +72,11 @@ public class BookingDataService {
         }
         findById(id);
         bookingDataRepository.deleteBookingDataById(id);
+    }
+
+    public void deleteAll() {
+        findAll();
+        bookingDataRepository.deleteAll();
     }
 
     private void validateBookingData(BookingData bookingData) {
@@ -121,7 +113,7 @@ public class BookingDataService {
         if (travelingPointRepository.findById(sourceId) == null
                 || travelingPointRepository.findById(destinationId) == null
                 || transportRepository.findById(transportId) == null) {
-            throw new NonExistentItemException("These fields do not exist");
+            throw new NonExistentItemException("Booking data fields do not exist");
         }
     }
 
@@ -132,7 +124,9 @@ public class BookingDataService {
         }
     }
 
-    private BookingData getExistingBookingData(BookingData bookingData) {
+    private BookingData getExistingBookingData(long id) {
+        BookingData bookingData = bookingDataRepository.findById(id);
+
         if (bookingData == null) {
             throw new NonExistentItemException("This booking data does not exist");
         }

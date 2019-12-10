@@ -37,18 +37,22 @@ public class TravelingPointService {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
         }
-        return getExistingTravelingPoint(travelingPointRepository.findByName(name));
+        return getExistingTravelingPoint(name);
     }
 
     public List<TravelingPoint> findAll() {
-        return travelingPointRepository.findAll();
+        List<TravelingPoint> travelingPoints = travelingPointRepository.findAll();
+
+        if (ObjectUtils.isEmpty(travelingPoints)) {
+            throw new NonExistentItemException("There no traveling points found");
+        }
+        return travelingPoints;
     }
 
     public void updateName(String newName, String currentName) {
         if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(currentName)) {
             throw new InvalidArgumentException("Invalid arguments");
         }
-
         findByName(currentName);
         travelingPointRepository.updateName(newName, currentName);
     }
@@ -57,15 +61,12 @@ public class TravelingPointService {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
         }
-
         findByName(name);
         travelingPointRepository.deleteByName(name);
     }
 
     public void deleteAll() {
-        if (ObjectUtils.isEmpty(findAll())) {
-            throw new NonExistentItemException("There is nothing to delete");
-        }
+        findAll();
         travelingPointRepository.deleteAll();
     }
 
@@ -97,7 +98,9 @@ public class TravelingPointService {
         }
     }
 
-    private TravelingPoint getExistingTravelingPoint(TravelingPoint travelingPoint) {
+    private TravelingPoint getExistingTravelingPoint(String name) {
+        TravelingPoint travelingPoint = travelingPointRepository.findByName(name);
+
         if (travelingPoint == null) {
             throw new NonExistentItemException("This traveling point does not exist");
         }

@@ -46,6 +46,7 @@ public class BookingService {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
+
         List<Booking> bookings = bookingRepository.findAllBookingsByUsername(username);
 
         if (ObjectUtils.isEmpty(bookings)) {
@@ -76,9 +77,7 @@ public class BookingService {
     }
 
     public void deleteAll() {
-        if (ObjectUtils.isEmpty(findAll())) {
-            throw new NonExistentItemException("There is nothing to delete");
-        }
+        findAll();
         bookingRepository.deleteAll();
     }
 
@@ -104,8 +103,11 @@ public class BookingService {
         long userId = user.getId();
         long bookingDataId = bookingData.getId();
 
-        if (userRepository.findById(userId) == null || bookingDataRepository.findById(bookingDataId) == null) {
-            throw new NonExistentItemException("User or booking data does not exist");
+        if (userRepository.findById(userId) == null) {
+            throw new NonExistentItemException("User does not exist");
+        }
+        if (bookingDataRepository.findById(bookingDataId) == null) {
+            throw new NonExistentItemException("Booking data does not exist");
         }
         if (countTickets > bookingData.getCountAvailableTickets()) {
             throw new NonExistentItemException("Unavailable tickets");

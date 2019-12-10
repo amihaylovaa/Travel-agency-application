@@ -60,9 +60,20 @@ public class TransportService {
         return getListOfExistingTransports(transportRepository.findAllBuses());
     }
 
+    public void updateClass(TransportClass transportClass, long id) {
+        findById(id);
+        transportRepository.updateClass(transportClass, id);
+    }
+
     public void delete(Transport transport) {
         validateTransport(transport);
+        findById(transport.getId());
         transportRepository.delete(transport);
+    }
+
+    public void deleteById(long id) {
+        findById(id);
+        transportRepository.deleteById(id);
     }
 
     private void validateListOfTransport(List<Transport> transports) {

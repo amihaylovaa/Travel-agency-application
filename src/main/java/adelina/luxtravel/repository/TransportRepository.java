@@ -10,7 +10,6 @@ import java.util.List;
 
 @Repository
 public interface TransportRepository extends JpaRepository<Transport, Long> {
-
     @Query(value = "SELECT class" +
                    "FROM transport" +
                    "WHERE id = ?1",
@@ -44,4 +43,10 @@ public interface TransportRepository extends JpaRepository<Transport, Long> {
                    "(SELECT id FROM airplane WHERE id=transport.id)",
             nativeQuery = true)
     List<Transport> findAllAirplanes();
+
+    @Query(value = "UPDATE transport" +
+                   "SET class = ?1" +
+                   "WHERE id = ?2",
+           nativeQuery = true)
+    void updateClass(TransportClass transportClass, long id);
 }
