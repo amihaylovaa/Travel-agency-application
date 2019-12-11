@@ -63,7 +63,10 @@ public class BookingDataService {
         if (bookingDataId <= NumberUtils.LONG_ZERO || transport == null || transport.getId() <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
-        bookingDataRepository.updateTransport(transport.getId(), bookingDataId);
+
+        long transportId = transport.getId();
+
+        bookingDataRepository.updateTransport(transportId, bookingDataId);
         return findById(bookingDataId);
     }
 
@@ -113,6 +116,7 @@ public class BookingDataService {
         long sourceId = source.getId();
         long destinationId = destination.getId();
 
+        // TODO : REFACTOR do not break demeter's law
         if (!travelingPointRepository.findById(sourceId).isPresent()) {
             throw new NonExistentItemException("Source traveling point does not exist");
         }
@@ -121,7 +125,7 @@ public class BookingDataService {
         }
 
         long transportId = transport.getId();
-
+       // TODO : use optional
         if (transportRepository.findById(transportId) == null) {
             throw new NonExistentItemException("Transport does not exist");
         }

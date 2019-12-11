@@ -29,6 +29,7 @@ public class TransportService {
         return transportRepository.saveAll(transports);
     }
 
+    // TODO : return optional
     public Transport findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
@@ -59,13 +60,13 @@ public class TransportService {
     }
 
     public List<Transport> findAllAirplanes() {
-        List <Transport> transports = transportRepository.findAllAirplanes();
+        List<Transport> transports = transportRepository.findAllAirplanes();
 
         return validateTransportListExist(transports);
     }
 
     public List<Transport> findAllBuses() {
-        List <Transport> transports = transportRepository.findAllBuses();
+        List<Transport> transports = transportRepository.findAllBuses();
 
         return validateTransportListExist(transports);
     }
@@ -92,7 +93,10 @@ public class TransportService {
         if (transport == null) {
             throw new InvalidArgumentException("Invalid transport");
         }
-        validateTransportClass(transport.getTransportClass());
+
+        TransportClass transportClass = transport.getTransportClass();
+
+        validateTransportClass(transportClass);
     }
 
     private void validateTransportClass(TransportClass transportClass) {

@@ -21,7 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                    "WHERE user_id IN (" +
                    "SELECT id FROM user WHERE username = ?1",
             nativeQuery = true)
-    List<Booking> findAllBookingsByUsername(String username);
+    List<Booking> findAllUserBookings(String username);
 
     @Modifying
     @Query(value = "UPDATE booking" +
@@ -29,11 +29,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                    "WHERE id = ?2 )",
             nativeQuery = true)
     void updateByTickets(int ticketsCount, long id);
-
-    @Modifying
-    @Query(value = "DELETE " +
-                   "FROM booking" +
-                   "WHERE id = ?1",
-            nativeQuery = true)
-    void deleteById(long id);
 }

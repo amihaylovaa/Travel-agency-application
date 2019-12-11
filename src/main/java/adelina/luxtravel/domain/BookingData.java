@@ -28,29 +28,29 @@ public class BookingData {
     @JoinColumn(name = "transport_id")
     private Transport transport;
     @Column(name = "count_available_tickets", nullable = false)
-    private int countAvailableTickets;
+    private int availableTicketsCount;
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
 
     public BookingData(BookingData bookingData) {
         this(bookingData.id, bookingData.sourceDestination,
                 bookingData.transport, bookingData.date,
-                bookingData.countAvailableTickets);
+                bookingData.availableTicketsCount);
     }
 
     public BookingData(long id, SourceDestination sourceDestination,
-                       Transport transport, Date date, int countAvailableTickets) {
-        this(transport, sourceDestination, date, countAvailableTickets);
+                       Transport transport, Date date, int availableTicketsCount) {
+        this(transport, sourceDestination, date, availableTicketsCount);
         this.id = id;
     }
 
     public BookingData(Transport transport, SourceDestination sourceDestination,
-                       Date date, int countAvailableTickets) {
-        initializeFields(transport, sourceDestination, date, countAvailableTickets);
+                       Date date, int availableTicketsCount) {
+        initializeFields(transport, sourceDestination, date, availableTicketsCount);
     }
 
     private void initializeFields(Transport transport, SourceDestination sourceDestination,
-                                  Date date, int countAvailableTickets) {
+                                  Date date, int availableTicketsCount) {
         if (transport == null) {
             throw new FailedInitializationException("Invalid transport");
         } else if (date == null) {
@@ -61,7 +61,7 @@ public class BookingData {
             this.date = date;
             this.sourceDestination = sourceDestination;
             this.transport = transport;
-            this.countAvailableTickets = countAvailableTickets;
+            this.availableTicketsCount = availableTicketsCount;
             setPrice();
         }
     }

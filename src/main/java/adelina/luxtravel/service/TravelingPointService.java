@@ -5,6 +5,7 @@ import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.repository.TravelingPointRepository;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import adelina.luxtravel.exception.InvalidArgumentException;
@@ -33,6 +34,8 @@ public class TravelingPointService {
         return travelingPointRepository.saveAll(travelingPoints);
     }
 
+    // TODO : add find by id as return optional
+
     public TravelingPoint findByName(String name) {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
@@ -57,13 +60,10 @@ public class TravelingPointService {
         return findByName(newName);
     }
 
-    public void deleteById(String travelingPointName) {
-        if (StringUtils.isEmpty(travelingPointName)) {
-            throw new InvalidArgumentException("Invalid name");
+    public void deleteById(long id) {
+        if (id <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException("Invalid id");
         }
-        TravelingPoint travelingPoint = findByName(travelingPointName);
-        long id = travelingPoint.getId();
-
         travelingPointRepository.deleteById(id);
     }
 

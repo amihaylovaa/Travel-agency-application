@@ -111,8 +111,11 @@ public class UserService {
         }
     }
 
+    // TODO : maybe return boolean
     private void validatePasswordMatch(String password, User user) {
-        if (!password.equals(user.getPassword())) {
+        String passwordUser = user.getPassword();
+
+        if (!password.equals(passwordUser)) {
             throw new InvalidArgumentException("Passwords do not match");
         }
     }
