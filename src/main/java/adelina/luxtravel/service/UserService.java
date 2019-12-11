@@ -28,14 +28,14 @@ public class UserService {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
-        return getExistingUser(userRepository.findByUsername(username));
+        return getExistingUserByUsername(username);
     }
 
     public User findByEmail(String email) {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException("Invalid email");
         }
-        return getExistingUser(userRepository.findByEmail(email));
+        return getExistingUserByEmail(email);
     }
 
     public List<User> findAll() {
@@ -47,26 +47,26 @@ public class UserService {
         return users;
     }
 
-    // TODO : return result
-    public void updatePassword(String newPassword, String currentPassword, String username) {
+    public User updatePassword(String newPassword, String currentPassword, String username) {
         if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(currentPassword)
                 || StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
         userRepository.updatePassword(newPassword, currentPassword, username);
+        return findByUsername(username);
     }
 
-    // TODO : same
-    public void updateEmail(String newEmail, String currentEmail) {
+    public User updateEmail(String newEmail, String currentEmail) {
         if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(currentEmail)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
         userRepository.updateEmail(newEmail, currentEmail);
+        return findByEmail(newEmail);
     }
 
     public void deleteByUsername(String username, String password) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            throw new InvalidArgumentException("Invalid username or password");
+            throw new InvalidArgumentException("Delete can not be executed, invalid parameters");
         }
         validatePasswordMatch(password, findByUsername(username));
         userRepository.deleteByUsername(username);
@@ -74,7 +74,7 @@ public class UserService {
 
     public void deleteByEmail(String email, String password) {
         if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
-            throw new InvalidArgumentException("Invalid email or password");
+            throw new InvalidArgumentException("Delete can not be executed, invalid parameters");
         }
         validatePasswordMatch(password, findByEmail(email));
         userRepository.deleteByEmail(email);
@@ -91,27 +91,46 @@ public class UserService {
         validateUserFields(user);
     }
 
-    // TODO : refactor validations to be more clear
     private void validateUserFields(User user) {
         String username = user.getUsername();
-        String email = user.getEmail();
+
+        if (StringUtils.isEmpty(username)) {
+            throw new InvalidArgumentException("Invalid username");
+        }
+
         String password = user.getPassword();
 
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
-            throw new InvalidArgumentException("Invalid User's fields");
+        if (StringUtils.isEmpty(password)) {
+            throw new InvalidArgumentException("Invalid password");
+        }
+
+        String email = user.getEmail();
+
+        if (StringUtils.isEmpty(email)) {
+            throw new InvalidArgumentException("Invalid email");
         }
     }
 
     private void validatePasswordMatch(String password, User user) {
         if (!password.equals(user.getPassword())) {
-            throw new InvalidArgumentException("Invalid password");
+            throw new InvalidArgumentException("Passwords do not match");
         }
     }
 
-    // TODO : THINK AGAIN !!!!
-    private User getExistingUser(User user) {
+    private User getExistingUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+
         if (user == null) {
-            throw new NonExistentItemException("User does not exist");
+            throw new NonExistentItemException("User with that username not exist");
+        }
+        return user;
+    }
+
+    private User getExistingUserByEmail(String email) {
+        User user = userRepository.findByUsername(email);
+
+        if (user == null) {
+            throw new NonExistentItemException("User with that email does not exist");
         }
         return user;
     }

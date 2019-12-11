@@ -13,16 +13,9 @@ public interface TravelingPointRepository extends JpaRepository<TravelingPoint, 
     TravelingPoint findByName(String name);
 
     @Modifying
-    @Query(value = "DELETE " +
-                   "FROM traveling_point" +
-                   "WHERE name = ?1",
-            nativeQuery = true)
-    void deleteByName(String name);
-
-    @Modifying
     @Query(value = "UPDATE traveling_point" +
                    "SET name = ?1" +
-                   "WHERE name = ?2",
+                   "WHERE id = ?2",
             nativeQuery = true)
       void updateName(String newName, String currentName);
 }

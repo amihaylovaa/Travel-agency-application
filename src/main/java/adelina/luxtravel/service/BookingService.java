@@ -35,7 +35,7 @@ public class BookingService {
         bookingDataRepository.reserveTickets(booking.getTicketsCount(), bookingData.getId());
     }
 
-    public Booking findBookingById(long id) {
+    public Booking findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
@@ -59,14 +59,13 @@ public class BookingService {
         List<Booking> bookings = bookingRepository.findAll();
 
         if (ObjectUtils.isEmpty(bookings)) {
-            throw new NonExistentItemException("Bookings not found");
+            throw new NonExistentItemException("Bookings are not found");
         }
         return bookings;
     }
 
-    // TODO : return
-    public void updateTickets(long id, int ticketsCount) {
-        Booking booking = findBookingById(id);
+    public Booking updateTickets(long id, int ticketsCount) {
+        Booking booking = findById(id);
         BookingData bookingData = booking.getBookingData();
         int availableTickets = bookingData.getCountAvailableTickets();
 
@@ -74,6 +73,7 @@ public class BookingService {
             throw new NonExistentItemException("Unavailable count of tickets, update can not be executed");
         }
         bookingRepository.updateByTickets(ticketsCount, id);
+        return findById(id);
     }
 
     public void deleteBooking(long id) {
@@ -81,7 +81,7 @@ public class BookingService {
             throw new InvalidArgumentException("Invalid id");
         }
 
-        Booking booking = findBookingById(id);
+        Booking booking = findById(id);
         BookingData bookingData = booking.getBookingData();
 
         bookingDataRepository.cancelTicketReservation(booking.getTicketsCount(), bookingData.getId());
@@ -99,23 +99,28 @@ public class BookingService {
         validateBookingFields(booking);
     }
 
-    // TODO : refactor validations
     private void validateBookingFields(Booking booking) {
         User user = booking.getUser();
         BookingData bookingData = booking.getBookingData();
-        int countTickets = booking.getTicketsCount();
+        int ticketsCount = booking.getTicketsCount();
 
-        if (user == null || bookingData == null || countTickets <= NumberUtils.INTEGER_ZERO) {
-            throw new InvalidArgumentException("Invalid booking fields");
+        if (user == null) {
+            throw new InvalidArgumentException("Invalid user");
         }
-        validateFieldsExist(user, bookingData, countTickets);
+        if (bookingData == null) {
+            throw new InvalidArgumentException("Invalid booking data");
+        }
+        if (ticketsCount <= NumberUtils.INTEGER_ZERO) {
+            throw new InvalidArgumentException("Tickets' count can not be less than or equal to zero");
+        }
+        validateFieldsExist(user, bookingData, ticketsCount);
     }
 
     private void validateFieldsExist(User user, BookingData bookingData, int countTickets) {
         long userId = user.getId();
         long bookingDataId = bookingData.getId();
 
-        if (userRepository.findById(userId) == null) {
+        if (!userRepository.findById(userId).isPresent()) {
             throw new NonExistentItemException("User does not exist");
         }
         if (bookingDataRepository.findById(bookingDataId) == null) {
@@ -128,7 +133,6 @@ public class BookingService {
 
     private Booking getExistingBooking(long id) {
         Booking booking = bookingRepository.findById(id);
-
         if (booking == null) {
             throw new NonExistentItemException("This booking does not exist");
         }

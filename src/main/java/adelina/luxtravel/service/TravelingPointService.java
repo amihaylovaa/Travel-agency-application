@@ -49,21 +49,22 @@ public class TravelingPointService {
         return travelingPoints;
     }
 
-    // TODO : RETURN RESULT MAYBE
-    public void updateName(String newName, String currentName) {
+    public TravelingPoint updateName(String newName, String currentName) {
         if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(currentName)) {
             throw new InvalidArgumentException("Invalid arguments");
         }
-        findByName(currentName);
         travelingPointRepository.updateName(newName, currentName);
+        return findByName(newName);
     }
 
-    // TODO : or id and use find by name
-    public void deleteByName(String name) {
-        if (StringUtils.isEmpty(name)) {
+    public void deleteById(String travelingPointName) {
+        if (StringUtils.isEmpty(travelingPointName)) {
             throw new InvalidArgumentException("Invalid name");
         }
-        travelingPointRepository.deleteByName(name);
+        TravelingPoint travelingPoint = findByName(travelingPointName);
+        long id = travelingPoint.getId();
+
+        travelingPointRepository.deleteById(id);
     }
 
     public void deleteAll() {
@@ -104,7 +105,7 @@ public class TravelingPointService {
         TravelingPoint travelingPoint = travelingPointRepository.findByName(name);
 
         if (travelingPoint == null) {
-            throw new NonExistentItemException("This traveling point does not exist");
+            throw new NonExistentItemException("Traveling point does not exist");
         }
         return travelingPoint;
     }

@@ -40,13 +40,6 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
     void updateTransport(long transportId, long id);
 
     @Modifying
-    @Query(value = "DELETE " +
-                   "FROM booking_data" +
-                   "WHERE id = ?1",
-            nativeQuery = true)
-    void deleteBookingDataById(long id);
-
-    @Modifying
     @Query(value = "UPDATE booking " +
                    "SET count_available_tickets = count_available_tickets - ?1" +
                    "WHERE id = ?2",

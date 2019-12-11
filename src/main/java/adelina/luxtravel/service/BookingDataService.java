@@ -59,19 +59,19 @@ public class BookingDataService {
         return bookingData;
     }
 
-    public void updateTransport(long bookingDataId, Transport transport) {
+    public BookingData updateTransport(long bookingDataId, Transport transport) {
         if (bookingDataId <= NumberUtils.LONG_ZERO || transport == null || transport.getId() <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
         bookingDataRepository.updateTransport(transport.getId(), bookingDataId);
+        return findById(bookingDataId);
     }
 
-    // TODO : return result
-    public void deleteBookingDataById(long id) {
+    public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
-        bookingDataRepository.deleteBookingDataById(id);
+        bookingDataRepository.deleteById(id);
     }
 
     public void deleteAll() {
@@ -85,7 +85,6 @@ public class BookingDataService {
         validateBookingDataFields(bookingData);
     }
 
-    // TODO : refactor validations
     private void validateBookingDataFields(BookingData bookingData) {
         Date date = bookingData.getDate();
         LocalDate from = date.getFromDate();
@@ -94,27 +93,37 @@ public class BookingDataService {
         validateDates(from, to);
 
         SourceDestination sourceDestination = bookingData.getSourceDestination();
+
+        if (sourceDestination == null) {
+            throw new InvalidArgumentException("Invalid source destination");
+        }
+
         Transport transport = bookingData.getTransport();
 
-        if (sourceDestination == null || transport == null) {
-            throw new InvalidArgumentException("Invalid fields");
+        if (transport == null) {
+            throw new InvalidArgumentException("Invalid transport");
         }
 
         validateFieldsExist(sourceDestination, transport);
     }
 
-    // TODO: refactor checks
     private void validateFieldsExist(SourceDestination sourceDestination, Transport transport) {
         TravelingPoint source = sourceDestination.getSource();
         TravelingPoint destination = sourceDestination.getDestination();
         long sourceId = source.getId();
         long destinationId = destination.getId();
+
+        if (!travelingPointRepository.findById(sourceId).isPresent()) {
+            throw new NonExistentItemException("Source traveling point does not exist");
+        }
+        if (!travelingPointRepository.findById(destinationId).isPresent()) {
+            throw new NonExistentItemException("Destination traveling point does not exist");
+        }
+
         long transportId = transport.getId();
 
-        if (travelingPointRepository.findById(sourceId) == null
-                || travelingPointRepository.findById(destinationId) == null
-                || transportRepository.findById(transportId) == null) {
-            throw new NonExistentItemException("Booking data fields do not exist");
+        if (transportRepository.findById(transportId) == null) {
+            throw new NonExistentItemException("Transport does not exist");
         }
     }
 
@@ -132,12 +141,5 @@ public class BookingDataService {
             throw new NonExistentItemException("This booking data does not exist");
         }
         return bookingData;
-    }
-
-    private long getTravelingPointId(TravelingPoint travelingPoint) {
-        if (travelingPoint == null) {
-            throw new NonExistentItemException("Traveling point does not exist");
-        }
-        return travelingPoint.getId();
     }
 }

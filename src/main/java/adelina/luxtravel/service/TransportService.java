@@ -42,32 +42,39 @@ public class TransportService {
         return transport;
     }
 
-    // TODO : maybe extract the result from repository method
     public List<Transport> findAllBusesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-        return validateTransportListExist(transportRepository.findAllBusesByClass(transportClass));
+
+        List<Transport> transports = transportRepository.findAllBusesByClass(transportClass);
+
+        return validateTransportListExist(transports);
     }
 
     public List<Transport> findAllAirplanesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
-        return validateTransportListExist(transportRepository.findAllAirplanesByClass(transportClass));
+
+        List<Transport> transports = transportRepository.findAllAirplanesByClass(transportClass);
+
+        return validateTransportListExist(transports);
     }
 
     public List<Transport> findAllAirplanes() {
-        return validateTransportListExist(transportRepository.findAllAirplanes());
+        List <Transport> transports = transportRepository.findAllAirplanes();
+
+        return validateTransportListExist(transports);
     }
 
     public List<Transport> findAllBuses() {
-        return validateTransportListExist(transportRepository.findAllBuses());
+        List <Transport> transports = transportRepository.findAllBuses();
+
+        return validateTransportListExist(transports);
     }
 
-    // TODO: think about another solution because the result is not used (same for bookings' services)
-    public void updateClass(TransportClass transportClass, long id) {
-        findById(id);
+    public Transport updateClass(TransportClass transportClass, long id) {
         transportRepository.updateClass(transportClass, id);
+        return findById(id);
     }
 
-    // TODO : THINK (maybe transport class and then get id and then delete)
     public void deleteById(long id) {
         transportRepository.deleteById(id);
     }
