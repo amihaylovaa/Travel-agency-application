@@ -11,13 +11,6 @@ import java.util.List;
 
 @Repository
 public interface BookingDataRepository extends JpaRepository<BookingData, Long> {
-    @Query(value = "SELECT from_date, to_date, traveling_point.name," +
-                   "traveling_point.name, transport.class" +
-                   "FROM booking_data, traveling_point, transport" +
-                   "WHERE id = ?1",
-            nativeQuery = true)
-    BookingData findById(long id);
-
     @Query(value = "SELECT from_date, to_date, traveling_point.name" +
                    "traveling_point.name, transport.class" +
                    "FROM booking_data" +

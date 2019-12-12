@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -52,7 +53,7 @@ public class BookingService {
         List<Booking> bookings = bookingRepository.findAllUserBookings(username);
 
         if (ObjectUtils.isEmpty(bookings)) {
-            throw new NonExistentItemException("Bookings for that user are not found");
+            throw new NonExistentItemException("Bookings for this user are not found");
         }
         return bookings;
     }
@@ -103,7 +104,6 @@ public class BookingService {
         validateBookingFields(booking);
     }
 
-    // TODO : is present optional
     private void validateBookingFields(Booking booking) {
         User user = booking.getUser();
         BookingData bookingData = booking.getBookingData();
@@ -121,7 +121,7 @@ public class BookingService {
         validateFieldsExist(user, bookingData, ticketsCount);
     }
 
-    // todo : do not break demeter's law and use is present
+    // todo : do not break demeter's law
     private void validateFieldsExist(User user, BookingData bookingData, int countTickets) {
         long userId = user.getId();
         long bookingDataId = bookingData.getId();
@@ -130,7 +130,7 @@ public class BookingService {
         if (!userRepository.findById(userId).isPresent()) {
             throw new NonExistentItemException("User does not exist");
         }
-        if (bookingDataRepository.findById(bookingDataId) == null) {
+        if (!bookingDataRepository.findById(bookingDataId).isPresent()) {
             throw new NonExistentItemException("Booking data does not exist");
         }
         if (countTickets > availableTicketsCount) {
@@ -139,11 +139,11 @@ public class BookingService {
     }
 
     private Booking getExistingBooking(long id) {
-        Booking booking = bookingRepository.findById(id);
+        Optional<Booking> booking = bookingRepository.findById(id);
 
-        if (booking == null) {
+        if (!booking.isPresent()) {
             throw new NonExistentItemException("This booking does not exist");
         }
-        return booking;
+        return booking.get();
     }
 }

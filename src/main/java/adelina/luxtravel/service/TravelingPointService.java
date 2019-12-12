@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import adelina.luxtravel.exception.InvalidArgumentException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static adelina.luxtravel.utility.Constants.NINETY_DEGREES;
 import static adelina.luxtravel.utility.Constants.NINETY_DEGREES_NEGATIVE;
@@ -34,7 +35,19 @@ public class TravelingPointService {
         return travelingPointRepository.saveAll(travelingPoints);
     }
 
-    // TODO : add find by id as return optional
+    public TravelingPoint findById(long id) {
+        if (id <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException("Invalid id");
+        }
+
+        Optional<TravelingPoint> travelingPoint = travelingPointRepository.findById(id);
+
+        if (!travelingPoint.isPresent()) {
+            throw new NonExistentItemException("Traveling point with this id does not exist");
+        }
+
+        return travelingPoint.get();
+    }
 
     public TravelingPoint findByName(String name) {
         if (StringUtils.isEmpty(name)) {

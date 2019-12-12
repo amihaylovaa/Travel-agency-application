@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransportService {
@@ -29,18 +30,17 @@ public class TransportService {
         return transportRepository.saveAll(transports);
     }
 
-    // TODO : return optional
     public Transport findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
 
-        Transport transport = transportRepository.findById(id);
+        Optional<Transport> transport = transportRepository.findById(id);
 
-        if (transport == null) {
+        if (!transport.isPresent()) {
             throw new NonExistentItemException("Transport with that id does not exist");
         }
-        return transport;
+        return transport.get();
     }
 
     public List<Transport> findAllBusesByClass(TransportClass transportClass) {
