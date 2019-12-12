@@ -22,15 +22,15 @@ public class Bus extends Transport {
     }
 
     @Override
-    public LocalTime calculateDuration(TravelingPoint source, TravelingPoint destination) {
-        double sourceLongitude = source.getLongitude();
-        double sourceLatitude = source.getLatitude();
-        double destinationLongitude = destination.getLongitude();
-        double destinationLatitude = destination.getLatitude();
+    public LocalTime calculateDuration(TravelingPoint startingPoint, TravelingPoint targetPoint) {
+        double startingPointLongitude = startingPoint.getLongitude();
+        double startingPointLatitude = startingPoint.getLatitude();
+        double targetPointLongitude = targetPoint.getLongitude();
+        double targetPointLatitude = targetPoint.getLatitude();
 
-        double duration = findDistance(sourceLongitude, sourceLatitude,
-                destinationLongitude, destinationLatitude) * BUS_AVG_SPEED;
+        double duration = findDistance(startingPointLongitude, startingPointLatitude,
+                targetPointLongitude, targetPointLatitude) * BUS_AVG_SPEED;
 
-           return parseToLocalTime(duration);
+        return parseToLocalTime(duration);
     }
 }

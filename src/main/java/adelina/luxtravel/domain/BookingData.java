@@ -21,7 +21,7 @@ public class BookingData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Embedded
-    SourceDestination sourceDestination;
+    StartingEndingPoint startingEndingPoint;
     @Embedded
     Date date;
     @OneToOne
@@ -33,33 +33,33 @@ public class BookingData {
     private double price;
 
     public BookingData(BookingData bookingData) {
-        this(bookingData.id, bookingData.sourceDestination,
+        this(bookingData.id, bookingData.startingEndingPoint,
                 bookingData.transport, bookingData.date,
                 bookingData.availableTicketsCount);
     }
 
-    public BookingData(long id, SourceDestination sourceDestination,
+    public BookingData(long id, StartingEndingPoint startingEndingPoint,
                        Transport transport, Date date, int availableTicketsCount) {
-        this(transport, sourceDestination, date, availableTicketsCount);
+        this(transport, startingEndingPoint, date, availableTicketsCount);
         this.id = id;
     }
 
-    public BookingData(Transport transport, SourceDestination sourceDestination,
+    public BookingData(Transport transport, StartingEndingPoint startingEndingPoint,
                        Date date, int availableTicketsCount) {
-        initializeFields(transport, sourceDestination, date, availableTicketsCount);
+        initializeFields(transport, startingEndingPoint, date, availableTicketsCount);
     }
 
-    private void initializeFields(Transport transport, SourceDestination sourceDestination,
+    private void initializeFields(Transport transport, StartingEndingPoint startingEndingPoint,
                                   Date date, int availableTicketsCount) {
         if (transport == null) {
             throw new FailedInitializationException("Invalid transport");
         } else if (date == null) {
             throw new FailedInitializationException("Invalid dates");
-        } else if (sourceDestination == null) {
+        } else if (startingEndingPoint == null) {
             throw new FailedInitializationException("Invalid source or destination");
         } else {
             this.date = date;
-            this.sourceDestination = sourceDestination;
+            this.startingEndingPoint = startingEndingPoint;
             this.transport = transport;
             this.availableTicketsCount = availableTicketsCount;
             setPrice();
@@ -69,8 +69,8 @@ public class BookingData {
     private void setPrice() {
         TransportClass transportClass = transport.getTransportClass();
         double priceCoefficient = transportClass.getPriceCoefficient();
-        TravelingPoint source = sourceDestination.getSource();
-        TravelingPoint destination = sourceDestination.getDestination();
+        TravelingPoint source = startingEndingPoint.getStartingPoint();
+        TravelingPoint destination = startingEndingPoint.getTargetPoint();
 
         LocalTime localTime = transport.calculateDuration(source, destination);
 

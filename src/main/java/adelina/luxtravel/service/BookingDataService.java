@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookingDataService {
@@ -36,7 +37,7 @@ public class BookingDataService {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
-        return getExistingBookingData(id);
+        return getBookingData(id);
     }
 
     public List<BookingData> findByDates(LocalDate from, LocalDate to) {
@@ -95,10 +96,10 @@ public class BookingDataService {
 
         validateDates(from, to);
 
-        SourceDestination sourceDestination = bookingData.getSourceDestination();
+        StartingEndingPoint startingEndingPoint = bookingData.getStartingEndingPoint();
 
-        if (sourceDestination == null) {
-            throw new InvalidArgumentException("Invalid source destination");
+        if (startingEndingPoint == null) {
+            throw new InvalidArgumentException("Invalid traveling points");
         }
 
         Transport transport = bookingData.getTransport();
@@ -107,26 +108,27 @@ public class BookingDataService {
             throw new InvalidArgumentException("Invalid transport");
         }
 
-        validateFieldsExist(sourceDestination, transport);
+        TravelingPoint startingPoint = startingEndingPoint.getStartingPoint();
+        TravelingPoint targetPoint = startingEndingPoint.getTargetPoint();
+
+        validateFieldsExist(startingPoint, targetPoint, transport);
     }
 
-    private void validateFieldsExist(SourceDestination sourceDestination, Transport transport) {
-        TravelingPoint source = sourceDestination.getSource();
-        TravelingPoint destination = sourceDestination.getDestination();
-        long sourceId = source.getId();
-        long destinationId = destination.getId();
+    private void validateFieldsExist(TravelingPoint startingPoint, TravelingPoint targetPoint, Transport transport) {
+        long transportId = transport.getId();
+        long startingPointId = startingPoint.getId();
+        long targetPointId = targetPoint.getId();
+        Optional<TravelingPoint> fromPoint = travelingPointRepository.findById(startingPointId);
+        Optional<TravelingPoint> toPoint = travelingPointRepository.findById(targetPointId);
+        Optional<Transport> transports = transportRepository.findById(transportId);
 
-        // TODO : REFACTOR do not break demeter's law
-        if (!travelingPointRepository.findById(sourceId).isPresent()) {
+        if (!fromPoint.isPresent()) {
             throw new NonExistentItemException("Source traveling point does not exist");
         }
-        if (!travelingPointRepository.findById(destinationId).isPresent()) {
+        if (!toPoint.isPresent()) {
             throw new NonExistentItemException("Destination traveling point does not exist");
         }
-
-        long transportId = transport.getId();
-       // TODO : use optional
-        if (transportRepository.findById(transportId) == null) {
+        if (!transports.isPresent()) {
             throw new NonExistentItemException("Transport does not exist");
         }
     }
@@ -138,7 +140,7 @@ public class BookingDataService {
         }
     }
 
-    private BookingData getExistingBookingData(long id) {
+    private BookingData getBookingData(long id) {
         BookingData bookingData = bookingDataRepository.findById(id);
 
         if (bookingData == null) {
