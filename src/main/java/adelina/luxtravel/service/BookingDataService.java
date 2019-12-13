@@ -1,7 +1,6 @@
 package adelina.luxtravel.service;
 
-import adelina.luxtravel.domain.BookingData;
-import adelina.luxtravel.domain.TravelingPoint;
+import adelina.luxtravel.domain.*;
 import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.wrapper.*;
 import adelina.luxtravel.exception.*;
@@ -37,7 +36,13 @@ public class BookingDataService {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
-        return getBookingData(id);
+
+        Optional<BookingData> bookingData = bookingDataRepository.findById(id);
+
+        if (!bookingData.isPresent()) {
+            throw new NonExistentItemException("This booking data does not exist");
+        }
+        return bookingData.get();
     }
 
     public List<BookingData> findByDates(LocalDate from, LocalDate to) {
@@ -61,7 +66,7 @@ public class BookingDataService {
     }
 
     public BookingData updateTransport(long bookingDataId, Transport transport) {
-        if (bookingDataId <= NumberUtils.LONG_ZERO || transport == null || transport.getId() <= NumberUtils.LONG_ZERO) {
+        if (transport == null || bookingDataId <= NumberUtils.LONG_ZERO || transport.getId() <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
@@ -96,9 +101,9 @@ public class BookingDataService {
 
         validateDates(from, to);
 
-        StartingEndingPoint startingEndingPoint = bookingData.getStartingEndingPoint();
+        DepartureDestination departureDestination = bookingData.getDepartureDestination();
 
-        if (startingEndingPoint == null) {
+        if (departureDestination == null) {
             throw new InvalidArgumentException("Invalid traveling points");
         }
 
@@ -108,8 +113,8 @@ public class BookingDataService {
             throw new InvalidArgumentException("Invalid transport");
         }
 
-        TravelingPoint startingPoint = startingEndingPoint.getStartingPoint();
-        TravelingPoint targetPoint = startingEndingPoint.getTargetPoint();
+        TravelingPoint startingPoint = departureDestination.getDeparturePoint();
+        TravelingPoint targetPoint = departureDestination.getDestinationPoint();
 
         validateFieldsExist(startingPoint, targetPoint, transport);
     }
@@ -138,14 +143,5 @@ public class BookingDataService {
                 || from.isAfter(to) || from.isBefore(LocalDate.now())) {
             throw new InvalidArgumentException("Invalid dates");
         }
-    }
-
-    private BookingData getBookingData(long id) {
-        BookingData bookingData = bookingDataRepository.findById(id);
-
-        if (bookingData == null) {
-            throw new NonExistentItemException("This booking data does not exist");
-        }
-        return bookingData;
     }
 }

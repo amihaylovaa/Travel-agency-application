@@ -72,11 +72,19 @@ public class TransportService {
     }
 
     public Transport updateClass(TransportClass transportClass, long id) {
+        if (id <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException("Invalid id");
+        }
+
+        validateTransportClass(transportClass);
         transportRepository.updateClass(transportClass, id);
         return findById(id);
     }
 
     public void deleteById(long id) {
+        if (id <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException("Invalid id");
+        }
         transportRepository.deleteById(id);
     }
 
@@ -93,10 +101,7 @@ public class TransportService {
         if (transport == null) {
             throw new InvalidArgumentException("Invalid transport");
         }
-
-        TransportClass transportClass = transport.getTransportClass();
-
-        validateTransportClass(transportClass);
+        validateTransportClass(transport.getTransportClass());
     }
 
     private void validateTransportClass(TransportClass transportClass) {

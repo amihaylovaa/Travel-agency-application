@@ -23,14 +23,14 @@ public class Airplane extends Transport {
     }
 
     @Override
-    public LocalTime calculateDuration(TravelingPoint startingPoint, TravelingPoint targetPoint) {
-        double startingPointLongitude = startingPoint.getLongitude();
-        double startingPointLatitude = startingPoint.getLatitude();
-        double targetPointLongitude = targetPoint.getLongitude();
-        double targetPointLatitude = targetPoint.getLatitude();
+    public LocalTime calculateDuration(TravelingPoint departurePoint, TravelingPoint destinationPoint) {
+        double departurePointLongitude = departurePoint.getLongitude();
+        double departurePointLatitude = departurePoint.getLatitude();
+        double destinationPointLongitude = destinationPoint.getLongitude();
+        double destinationPointLatitude = destinationPoint.getLatitude();
 
-        double duration = findDistance(startingPointLongitude, startingPointLatitude,
-                targetPointLongitude, targetPointLatitude) * AIRPLANE_AVG_SPEED;
+        double duration = findDistance(departurePointLongitude, departurePointLatitude,
+                destinationPointLongitude, destinationPointLatitude) * AIRPLANE_AVG_SPEED;
 
         return parseToLocalTime(duration);
     }

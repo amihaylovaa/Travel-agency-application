@@ -2,7 +2,6 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 
-import adelina.luxtravel.utility.Constants.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;

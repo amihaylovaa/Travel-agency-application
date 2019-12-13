@@ -34,7 +34,7 @@ abstract public class Transport {
         this.id = id;
     }
 
-    public abstract LocalTime calculateDuration(TravelingPoint source, TravelingPoint destination);
+    public abstract LocalTime calculateDuration(TravelingPoint departurePoint, TravelingPoint destinationPoint);
 
     public LocalTime parseToLocalTime(Double duration) {
         String durationString = duration.toString().replace('.', ':');

@@ -28,14 +28,14 @@ public class UserService {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
-        return getExistingUserByUsername(username);
+        return getUserByUsername(username);
     }
 
     public User findByEmail(String email) {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException("Invalid email");
         }
-        return getExistingUserByEmail(email);
+        return getUserByEmail(email);
     }
 
     public List<User> findAll() {
@@ -48,8 +48,7 @@ public class UserService {
     }
 
     public User updatePassword(String newPassword, String currentPassword, String username) {
-        if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(currentPassword)
-                || StringUtils.isEmpty(username)) {
+        if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(currentPassword) || StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
         userRepository.updatePassword(newPassword, currentPassword, username);
@@ -120,20 +119,20 @@ public class UserService {
         }
     }
 
-    private User getExistingUserByUsername(String username) {
+    private User getUserByUsername(String username) {
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
-            throw new NonExistentItemException("User with that username not exist");
+            throw new NonExistentItemException("User with this username not exist");
         }
         return user;
     }
 
-    private User getExistingUserByEmail(String email) {
+    private User getUserByEmail(String email) {
         User user = userRepository.findByUsername(email);
 
         if (user == null) {
-            throw new NonExistentItemException("User with that email does not exist");
+            throw new NonExistentItemException("User with this email does not exist");
         }
         return user;
     }

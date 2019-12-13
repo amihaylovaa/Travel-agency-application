@@ -13,7 +13,7 @@ import java.util.List;
 public interface BookingDataRepository extends JpaRepository<BookingData, Long> {
     @Query(value = "SELECT from_date, to_date, traveling_point.name" +
                    "traveling_point.name, transport.class" +
-                   "FROM booking_data" +
+                   "FROM booking_data, traveling_point" +
                    "WHERE from_date = ?1 AND to_date = ?2",
             nativeQuery = true)
     List<BookingData> findByDates(LocalDate from, LocalDate to);
