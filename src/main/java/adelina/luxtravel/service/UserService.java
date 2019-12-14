@@ -54,27 +54,33 @@ public class UserService {
         return users;
     }
 
-    public User updatePassword(String newPassword, String currentPassword, String username) {
-        if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(currentPassword) || StringUtils.isEmpty(username)) {
+    // TODO : think about return result - need optimization
+    public void updatePassword(String username, String newPassword, String oldPassword) {
+        if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(oldPassword) || StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
         User user = findByUsername(username);
 
-        validatePasswordMatch(currentPassword, user.getPassword());
+        validatePasswordMatch(oldPassword, user.getPassword());
 
         String hashedPassword = passwordEncoder.encode(newPassword);
 
-        userRepository.updatePassword(hashedPassword, currentPassword, username);
-        return findByUsername(username);
+        userRepository.updatePassword(hashedPassword, oldPassword, username);
     }
 
-    public User updateEmail(String newEmail, String currentEmail) {
-        if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(currentEmail)) {
+    // TODO : same
+    public void updateEmail(String newEmail, String oldEmail, String password) {
+        if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(oldEmail) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
-        userRepository.updateEmail(newEmail, currentEmail);
-        return findByEmail(newEmail);
+
+        User user = findByEmail(password);
+
+        validatePasswordMatch(password, user.getPassword());
+
+        userRepository.updateEmail(newEmail, oldEmail);
+       // return findByEmail(newEmail);
     }
 
     public void deleteByUsername(String username, String password) {
@@ -127,12 +133,6 @@ public class UserService {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException("Invalid email");
         }
-    }
-
-    private void encodePassword(User user, String password) {
-        String hashedPassword = passwordEncoder.encode(password);
-
-        user.setPassword(hashedPassword);
     }
 
     private void validatePasswordMatch(String expectedPassword, String actualPassword) {
