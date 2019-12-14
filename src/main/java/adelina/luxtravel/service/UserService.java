@@ -6,6 +6,7 @@ import adelina.luxtravel.repository.UserRepository;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,14 +14,20 @@ import java.util.List;
 @Service
 public class UserService {
     private UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User save(User user) {
         validateUser(user);
+
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+
+        user.setPassword(hashedPassword);
         return userRepository.save(user);
     }
 
@@ -42,7 +49,7 @@ public class UserService {
         List<User> users = userRepository.findAll();
 
         if (ObjectUtils.isEmpty(users)) {
-            throw new NonExistentItemException("There no users found");
+            throw new NonExistentItemException("There are no users found");
         }
         return users;
     }
@@ -51,7 +58,14 @@ public class UserService {
         if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(currentPassword) || StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
-        userRepository.updatePassword(newPassword, currentPassword, username);
+
+        User user = findByUsername(username);
+
+        validatePasswordMatch(currentPassword, user.getPassword());
+
+        String hashedPassword = passwordEncoder.encode(newPassword);
+
+        userRepository.updatePassword(hashedPassword, currentPassword, username);
         return findByUsername(username);
     }
 
@@ -67,7 +81,10 @@ public class UserService {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Delete can not be executed, invalid parameters");
         }
-        validatePasswordMatch(password, findByUsername(username));
+
+        User user = findByUsername(username);
+
+        validatePasswordMatch(password, user.getPassword());
         userRepository.deleteByUsername(username);
     }
 
@@ -75,7 +92,10 @@ public class UserService {
         if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Delete can not be executed, invalid parameters");
         }
-        validatePasswordMatch(password, findByEmail(email));
+
+        User user = findByEmail(email);
+
+        validatePasswordMatch(password, user.getPassword());
         userRepository.deleteByEmail(email);
     }
 
@@ -102,7 +122,6 @@ public class UserService {
         if (StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Invalid password");
         }
-
         String email = user.getEmail();
 
         if (StringUtils.isEmpty(email)) {
@@ -110,11 +129,14 @@ public class UserService {
         }
     }
 
-    // TODO : maybe return boolean
-    private void validatePasswordMatch(String password, User user) {
-        String passwordUser = user.getPassword();
+    private void encodePassword(User user, String password) {
+        String hashedPassword = passwordEncoder.encode(password);
 
-        if (!password.equals(passwordUser)) {
+        user.setPassword(hashedPassword);
+    }
+
+    private void validatePasswordMatch(String expectedPassword, String actualPassword) {
+        if (!passwordEncoder.matches(expectedPassword, actualPassword)) {
             throw new InvalidArgumentException("Passwords do not match");
         }
     }

@@ -2,6 +2,7 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ public class User {
     private String username;
     @Column(name = "email", unique = true, nullable = false)
     private String email;
+    @Setter
     @Column(name = "password", nullable = false)
     private String password;
     @OneToMany(mappedBy = "user",

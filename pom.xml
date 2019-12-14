@@ -20,6 +20,7 @@
         <mysql-connector.version>8.0.15</mysql-connector.version>
         <spring-boot-starter-data.verson>2.1.4.RELEASE</spring-boot-starter-data.verson>
         <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
+        <spring.security.core.version>5.2.0.RELEASE</spring.security.core.version>
     </properties>
 
     <dependencies>
@@ -53,6 +54,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${apache.commons.lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.security.core.version}</version>
         </dependency>
     </dependencies>
 
