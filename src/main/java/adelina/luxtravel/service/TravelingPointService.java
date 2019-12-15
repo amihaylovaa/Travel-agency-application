@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import adelina.luxtravel.exception.InvalidArgumentException;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,17 +26,17 @@ public class TravelingPointService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
-    public TravelingPoint save(TravelingPoint travelingPoint) {
+    public TravelingPoint save(TravelingPoint travelingPoint) throws InvalidArgumentException {
         validateTravelingPoint(travelingPoint);
         return travelingPointRepository.save(travelingPoint);
     }
 
-    public List<TravelingPoint> saveAll(List<TravelingPoint> travelingPoints) {
+    public List<TravelingPoint> saveAll(List<TravelingPoint> travelingPoints) throws InvalidArgumentException {
         validateTravelingPoints(travelingPoints);
         return travelingPointRepository.saveAll(travelingPoints);
     }
 
-    public TravelingPoint findById(long id) {
+    public TravelingPoint findById(long id) throws InvalidArgumentException, NonExistentItemException {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
@@ -48,14 +49,14 @@ public class TravelingPointService {
         return travelingPoint.get();
     }
 
-    public TravelingPoint findByName(String name) {
+    public TravelingPoint findByName(String name) throws InvalidArgumentException, NonExistentItemException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
         }
         return getTravelingPoint(name);
     }
 
-    public List<TravelingPoint> findAll() {
+    public List<TravelingPoint> findAll() throws NonExistentItemException {
         List<TravelingPoint> travelingPoints = travelingPointRepository.findAll();
 
         if (ObjectUtils.isEmpty(travelingPoints)) {
@@ -64,7 +65,7 @@ public class TravelingPointService {
         return travelingPoints;
     }
 
-    public TravelingPoint updateName(String newName, String currentName) {
+    public TravelingPoint updateName(String newName, String currentName) throws InvalidArgumentException, NonExistentItemException {
         if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(currentName)) {
             throw new InvalidArgumentException("Invalid arguments");
         }
@@ -72,7 +73,7 @@ public class TravelingPointService {
         return findByName(newName);
     }
 
-    public void deleteById(long id) {
+    public void deleteById(long id) throws InvalidArgumentException {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
@@ -83,7 +84,7 @@ public class TravelingPointService {
         travelingPointRepository.deleteAll();
     }
 
-    private void validateTravelingPoints(List<TravelingPoint> travelingPoints) {
+    private void validateTravelingPoints(List<TravelingPoint> travelingPoints) throws InvalidArgumentException {
         if (ObjectUtils.isEmpty(travelingPoints)) {
             throw new InvalidArgumentException("Invalid list of traveling points");
         }
@@ -92,14 +93,14 @@ public class TravelingPointService {
         }
     }
 
-    private void validateTravelingPoint(TravelingPoint travelingPoint) {
+    private void validateTravelingPoint(TravelingPoint travelingPoint) throws InvalidArgumentException {
         if (travelingPoint == null) {
             throw new InvalidArgumentException("Invalid traveling point");
         }
         validateTravelingPointFields(travelingPoint);
     }
 
-    private void validateTravelingPointFields(TravelingPoint travelingPoint) {
+    private void validateTravelingPointFields(TravelingPoint travelingPoint) throws InvalidArgumentException {
         String name = travelingPoint.getName();
         double latitude = travelingPoint.getLatitude();
         double longitude = travelingPoint.getLongitude();
@@ -113,7 +114,7 @@ public class TravelingPointService {
         }
     }
 
-    private TravelingPoint getTravelingPoint(String name) {
+    private TravelingPoint getTravelingPoint(String name) throws NonExistentItemException {
         TravelingPoint travelingPoint = travelingPointRepository.findByName(name);
 
         if (travelingPoint == null) {

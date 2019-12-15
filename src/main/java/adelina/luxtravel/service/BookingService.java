@@ -27,7 +27,7 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
-    public void save(Booking booking) {
+    public void save(Booking booking) throws InvalidArgumentException, NonExistentItemException {
         validateBooking(booking);
         bookingRepository.save(booking);
 
@@ -38,7 +38,7 @@ public class BookingService {
         bookingDataRepository.reserveTickets(ticketsCount, bookingDataId);
     }
 
-    public Booking findById(long id) {
+    public Booking findById(long id) throws InvalidArgumentException, NonExistentItemException {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
@@ -51,7 +51,7 @@ public class BookingService {
         return booking.get();
     }
 
-    public List<Booking> findAllUserBookings(String username) {
+    public List<Booking> findAllUserBookings(String username) throws InvalidArgumentException, NonExistentItemException {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
@@ -64,7 +64,7 @@ public class BookingService {
         return bookings;
     }
 
-    public List<Booking> findAll() {
+    public List<Booking> findAll() throws NonExistentItemException {
         List<Booking> bookings = bookingRepository.findAll();
 
         if (ObjectUtils.isEmpty(bookings)) {
@@ -73,7 +73,7 @@ public class BookingService {
         return bookings;
     }
 
-    public Booking updateTickets(long id, int ticketsCount) {
+    public Booking updateTickets(long id, int ticketsCount) throws NonExistentItemException, InvalidArgumentException {
         Booking booking = findById(id);
         BookingData bookingData = booking.getBookingData();
         int availableTicketsCount = bookingData.getAvailableTicketsCount();
@@ -85,7 +85,7 @@ public class BookingService {
         return findById(id);
     }
 
-    public void deleteById(long id) {
+    public void deleteById(long id) throws InvalidArgumentException, NonExistentItemException {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
@@ -103,14 +103,14 @@ public class BookingService {
         bookingRepository.deleteAll();
     }
 
-    private void validateBooking(Booking booking) {
+    private void validateBooking(Booking booking) throws InvalidArgumentException, NonExistentItemException {
         if (booking == null) {
             throw new InvalidArgumentException("Invalid booking");
         }
         validateBookingFields(booking);
     }
 
-    private void validateBookingFields(Booking booking) {
+    private void validateBookingFields(Booking booking) throws InvalidArgumentException, NonExistentItemException {
         User user = booking.getUser();
         BookingData bookingData = booking.getBookingData();
         int ticketsCount = booking.getTicketsCount();
@@ -127,7 +127,7 @@ public class BookingService {
         validateFieldsExist(user, bookingData, ticketsCount);
     }
 
-    private void validateFieldsExist(User user, BookingData bookingData, int countTickets) {
+    private void validateFieldsExist(User user, BookingData bookingData, int countTickets) throws NonExistentItemException {
         long userId = user.getId();
         long bookingDataId = bookingData.getId();
         int availableTicketsCount = bookingData.getAvailableTicketsCount();

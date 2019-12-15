@@ -22,7 +22,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User save(User user) {
+    public User save(User user) throws InvalidArgumentException {
         validateUser(user);
 
         String hashedPassword = passwordEncoder.encode(user.getPassword());
@@ -31,21 +31,21 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User findByUsername(String username) {
+    public User findByUsername(String username) throws NonExistentItemException, InvalidArgumentException {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
         return getUserByUsername(username);
     }
 
-    public User findByEmail(String email) {
+    public User findByEmail(String email) throws NonExistentItemException, InvalidArgumentException {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException("Invalid email");
         }
         return getUserByEmail(email);
     }
 
-    public List<User> findAll() {
+    public List<User> findAll() throws NonExistentItemException {
         List<User> users = userRepository.findAll();
 
         if (ObjectUtils.isEmpty(users)) {
@@ -54,36 +54,39 @@ public class UserService {
         return users;
     }
 
-    // TODO : think about return result - need optimization
-    public void updatePassword(String username, String newPassword, String oldPassword) {
+    public void updatePassword(String username, String newPassword, String oldPassword) throws InvalidArgumentException {
         if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(oldPassword) || StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
-        User user = findByUsername(username);
+        try {
+            User user = findByUsername(username);
 
-        validatePasswordMatch(oldPassword, user.getPassword());
-
+            validatePasswordMatch(oldPassword, user.getPassword());
+        } catch (NonExistentItemException nonExistentItemException) {
+            // logger should be added
+        }
         String hashedPassword = passwordEncoder.encode(newPassword);
 
         userRepository.updatePassword(hashedPassword, oldPassword, username);
     }
 
-    // TODO : same
-    public void updateEmail(String newEmail, String oldEmail, String password) {
+    public void updateEmail(String newEmail, String oldEmail, String password) throws InvalidArgumentException {
         if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(oldEmail) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
-        User user = findByEmail(password);
+        try {
+            User user = findByEmail(password);
 
-        validatePasswordMatch(password, user.getPassword());
-
+            validatePasswordMatch(password, user.getPassword());
+        } catch (NonExistentItemException nonExistentItemException) {
+            // logger should be added
+        }
         userRepository.updateEmail(newEmail, oldEmail);
-       // return findByEmail(newEmail);
     }
 
-    public void deleteByUsername(String username, String password) {
+    public void deleteByUsername(String username, String password) throws NonExistentItemException, InvalidArgumentException {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Delete can not be executed, invalid parameters");
         }
@@ -94,7 +97,7 @@ public class UserService {
         userRepository.deleteByUsername(username);
     }
 
-    public void deleteByEmail(String email, String password) {
+    public void deleteByEmail(String email, String password) throws NonExistentItemException, InvalidArgumentException {
         if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Delete can not be executed, invalid parameters");
         }
@@ -109,14 +112,14 @@ public class UserService {
         userRepository.deleteAll();
     }
 
-    private void validateUser(User user) {
+    private void validateUser(User user) throws InvalidArgumentException {
         if (user == null) {
             throw new InvalidArgumentException("Invalid user");
         }
         validateUserFields(user);
     }
 
-    private void validateUserFields(User user) {
+    private void validateUserFields(User user) throws InvalidArgumentException {
         String username = user.getUsername();
 
         if (StringUtils.isEmpty(username)) {
@@ -135,13 +138,13 @@ public class UserService {
         }
     }
 
-    private void validatePasswordMatch(String expectedPassword, String actualPassword) {
+    private void validatePasswordMatch(String expectedPassword, String actualPassword) throws InvalidArgumentException {
         if (!passwordEncoder.matches(expectedPassword, actualPassword)) {
             throw new InvalidArgumentException("Passwords do not match");
         }
     }
 
-    private User getUserByUsername(String username) {
+    private User getUserByUsername(String username) throws NonExistentItemException {
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
@@ -150,7 +153,7 @@ public class UserService {
         return user;
     }
 
-    private User getUserByEmail(String email) {
+    private User getUserByEmail(String email) throws NonExistentItemException {
         User user = userRepository.findByUsername(email);
 
         if (user == null) {

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -21,18 +22,19 @@ public class BookingDataService {
     private TravelingPointRepository travelingPointRepository;
 
     @Autowired
-    public BookingDataService(BookingDataRepository bookingDataRepository, TransportRepository transportRepository, TravelingPointRepository travelingPointRepository) {
+    public BookingDataService(BookingDataRepository bookingDataRepository,
+                              TransportRepository transportRepository, TravelingPointRepository travelingPointRepository) {
         this.bookingDataRepository = bookingDataRepository;
         this.transportRepository = transportRepository;
         this.travelingPointRepository = travelingPointRepository;
     }
 
-    public BookingData save(BookingData bookingData) {
+    public BookingData save(BookingData bookingData) throws InvalidArgumentException, NonExistentItemException {
         validateBookingData(bookingData);
         return bookingDataRepository.save(bookingData);
     }
 
-    public BookingData findById(long id) {
+    public BookingData findById(long id) throws InvalidArgumentException, NonExistentItemException {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
@@ -45,7 +47,7 @@ public class BookingDataService {
         return bookingData.get();
     }
 
-    public List<BookingData> findByDates(LocalDate from, LocalDate to) {
+    public List<BookingData> findByDates(LocalDate from, LocalDate to) throws NonExistentItemException, InvalidArgumentException {
         validateDates(from, to);
 
         List<BookingData> bookingData = bookingDataRepository.findByDates(from, to);
@@ -56,7 +58,7 @@ public class BookingDataService {
         return bookingData;
     }
 
-    public List<BookingData> findAll() {
+    public List<BookingData> findAll() throws NonExistentItemException {
         List<BookingData> bookingData = bookingDataRepository.findAll();
 
         if (ObjectUtils.isEmpty(bookingData)) {
@@ -65,7 +67,7 @@ public class BookingDataService {
         return bookingData;
     }
 
-    public BookingData updateTransport(long bookingDataId, Transport transport) {
+    public BookingData updateTransport(long bookingDataId, Transport transport) throws InvalidArgumentException, NonExistentItemException {
         if (transport == null || bookingDataId <= NumberUtils.LONG_ZERO || transport.getId() <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
@@ -76,7 +78,7 @@ public class BookingDataService {
         return findById(bookingDataId);
     }
 
-    public void deleteById(long id) {
+    public void deleteById(long id) throws InvalidArgumentException {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
@@ -87,14 +89,15 @@ public class BookingDataService {
         bookingDataRepository.deleteAll();
     }
 
-    private void validateBookingData(BookingData bookingData) {
+    private void validateBookingData(BookingData bookingData) throws InvalidArgumentException, NonExistentItemException {
         if (bookingData == null) {
             throw new InvalidArgumentException("Invalid booking data");
         }
         validateBookingDataFields(bookingData);
     }
 
-    private void validateBookingDataFields(BookingData bookingData) {
+    private void validateBookingDataFields(BookingData bookingData)
+            throws InvalidArgumentException, NonExistentItemException {
         Date date = bookingData.getDate();
         LocalDate from = date.getFromDate();
         LocalDate to = date.getToDate();
@@ -119,7 +122,8 @@ public class BookingDataService {
         validateFieldsExist(startingPoint, targetPoint, transport);
     }
 
-    private void validateFieldsExist(TravelingPoint startingPoint, TravelingPoint targetPoint, Transport transport) {
+    private void validateFieldsExist(TravelingPoint startingPoint, TravelingPoint targetPoint,
+                                     Transport transport) throws NonExistentItemException {
         long transportId = transport.getId();
         long startingPointId = startingPoint.getId();
         long targetPointId = targetPoint.getId();
@@ -138,7 +142,7 @@ public class BookingDataService {
         }
     }
 
-    private void validateDates(LocalDate from, LocalDate to) {
+    private void validateDates(LocalDate from, LocalDate to) throws InvalidArgumentException {
         if (from == null || to == null || from.isEqual(to)
                 || from.isAfter(to) || from.isBefore(LocalDate.now())) {
             throw new InvalidArgumentException("Invalid dates");

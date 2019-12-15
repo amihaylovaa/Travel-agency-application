@@ -1,6 +1,6 @@
 package adelina.luxtravel.exception;
 
-public class NonExistentItemException extends RuntimeException {
+public class NonExistentItemException extends Exception {
 
     public NonExistentItemException(String message) {
         super(message);
