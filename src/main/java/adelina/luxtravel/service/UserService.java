@@ -22,34 +22,36 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User save(User user) throws InvalidArgumentException {
+    public User save(User user) throws InvalidArgumentException, NonExistentItemException {
         validateUser(user);
 
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        String userPassword = user.getPassword();
+        String hashedPassword = passwordEncoder.encode(userPassword);
 
         user.setPassword(hashedPassword);
         return userRepository.save(user);
     }
 
-    public User findByUsername(String username) throws NonExistentItemException, InvalidArgumentException {
+    public User findByUsername(String username) throws InvalidArgumentException {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
-        return getUserByUsername(username);
+        return userRepository.findByUsername(username);
     }
 
-    public User findByEmail(String email) throws NonExistentItemException, InvalidArgumentException {
+    public User findByEmail(String email) throws InvalidArgumentException {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException("Invalid email");
         }
-        return getUserByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
-    public List<User> findAll() throws NonExistentItemException {
+    public List<User> findAll() {
         List<User> users = userRepository.findAll();
 
         if (ObjectUtils.isEmpty(users)) {
-            throw new NonExistentItemException("There are no users found");
+            // TODO : maybe logger
+            //throw new NonExistentItemException("There are no users found");
         }
         return users;
     }
@@ -59,34 +61,30 @@ public class UserService {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
-        try {
-            User user = findByUsername(username);
+        User user = findByUsername(username);
 
-            validatePasswordMatch(oldPassword, user.getPassword());
-        } catch (NonExistentItemException nonExistentItemException) {
-            // logger should be added
-        }
-        String hashedPassword = passwordEncoder.encode(newPassword);
+        validatePasswordMatch(oldPassword, user.getPassword());
 
-        userRepository.updatePassword(hashedPassword, oldPassword, username);
+        String newHashedPassword = passwordEncoder.encode(newPassword);
+
+        userRepository.updatePassword(newHashedPassword, username);
     }
 
-    public void updateEmail(String newEmail, String oldEmail, String password) throws InvalidArgumentException {
+    public void updateEmail(String newEmail, String oldEmail, String password) throws NonExistentItemException, InvalidArgumentException {
         if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(oldEmail) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
-        try {
-            User user = findByEmail(password);
+        User user = findByEmail(oldEmail);
 
-            validatePasswordMatch(password, user.getPassword());
-        } catch (NonExistentItemException nonExistentItemException) {
-            // logger should be added
-        }
+        validatePasswordMatch(password, user.getPassword());
+
+        validateEmailDoesNotExist(newEmail);
+
         userRepository.updateEmail(newEmail, oldEmail);
     }
 
-    public void deleteByUsername(String username, String password) throws NonExistentItemException, InvalidArgumentException {
+    public void deleteByUsername(String username, String password) throws InvalidArgumentException {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Delete can not be executed, invalid parameters");
         }
@@ -97,7 +95,7 @@ public class UserService {
         userRepository.deleteByUsername(username);
     }
 
-    public void deleteByEmail(String email, String password) throws NonExistentItemException, InvalidArgumentException {
+    public void deleteByEmail(String email, String password) throws InvalidArgumentException {
         if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Delete can not be executed, invalid parameters");
         }
@@ -112,14 +110,16 @@ public class UserService {
         userRepository.deleteAll();
     }
 
-    private void validateUser(User user) throws InvalidArgumentException {
+    private void validateUser(User user) throws InvalidArgumentException, NonExistentItemException {
         if (user == null) {
             throw new InvalidArgumentException("Invalid user");
         }
-        validateUserFields(user);
+        validateFields(user);
+        validateUsernameDoesNotExist(user.getUsername());
+        validateEmailDoesNotExist(user.getEmail());
     }
 
-    private void validateUserFields(User user) throws InvalidArgumentException {
+    private void validateFields(User user) throws InvalidArgumentException {
         String username = user.getUsername();
 
         if (StringUtils.isEmpty(username)) {
@@ -138,27 +138,25 @@ public class UserService {
         }
     }
 
+    private void validateUsernameDoesNotExist(String username) throws InvalidArgumentException, NonExistentItemException {
+        User user = findByUsername(username);
+
+        if (username.equals(user.getUsername())) {
+            throw new AlreadyExistingItemException("User with this user name already exists");
+        }
+    }
+
+    private void validateEmailDoesNotExist(String email) throws InvalidArgumentException, NonExistentItemException {
+        User user = findByEmail(email);
+
+        if (email.equals(user.getEmail())) {
+            throw new AlreadyExistingItemException("User with this email name already exists");
+        }
+    }
+
     private void validatePasswordMatch(String expectedPassword, String actualPassword) throws InvalidArgumentException {
         if (!passwordEncoder.matches(expectedPassword, actualPassword)) {
             throw new InvalidArgumentException("Passwords do not match");
         }
-    }
-
-    private User getUserByUsername(String username) throws NonExistentItemException {
-        User user = userRepository.findByUsername(username);
-
-        if (user == null) {
-            throw new NonExistentItemException("User with this username not exist");
-        }
-        return user;
-    }
-
-    private User getUserByEmail(String email) throws NonExistentItemException {
-        User user = userRepository.findByUsername(email);
-
-        if (user == null) {
-            throw new NonExistentItemException("User with this email does not exist");
-        }
-        return user;
     }
 }

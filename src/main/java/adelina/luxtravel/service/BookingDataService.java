@@ -10,7 +10,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +66,7 @@ public class BookingDataService {
         return bookingData;
     }
 
-    public BookingData updateTransport(long bookingDataId, Transport transport) throws InvalidArgumentException, NonExistentItemException {
+    public void updateTransport(long bookingDataId, Transport transport) throws InvalidArgumentException, NonExistentItemException {
         if (transport == null || bookingDataId <= NumberUtils.LONG_ZERO || transport.getId() <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
@@ -75,7 +74,6 @@ public class BookingDataService {
         long transportId = transport.getId();
 
         bookingDataRepository.updateTransport(transportId, bookingDataId);
-        return findById(bookingDataId);
     }
 
     public void deleteById(long id) throws InvalidArgumentException {
@@ -93,11 +91,10 @@ public class BookingDataService {
         if (bookingData == null) {
             throw new InvalidArgumentException("Invalid booking data");
         }
-        validateBookingDataFields(bookingData);
+        validateFields(bookingData);
     }
 
-    private void validateBookingDataFields(BookingData bookingData)
-            throws InvalidArgumentException, NonExistentItemException {
+    private void validateFields(BookingData bookingData) throws InvalidArgumentException, NonExistentItemException {
         Date date = bookingData.getDate();
         LocalDate from = date.getFromDate();
         LocalDate to = date.getToDate();

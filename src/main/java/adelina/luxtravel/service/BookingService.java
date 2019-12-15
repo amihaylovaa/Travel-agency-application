@@ -73,16 +73,26 @@ public class BookingService {
         return bookings;
     }
 
-    public Booking updateTickets(long id, int ticketsCount) throws NonExistentItemException, InvalidArgumentException {
+    public void updateTickets(long id, int newTicketsCount) throws NonExistentItemException, InvalidArgumentException {
+        if (id <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException("Invalid id");
+        }
+        if (newTicketsCount <= NumberUtils.INTEGER_ZERO) {
+            throw new InvalidArgumentException("Tickets' count cannot be less than or equal to zero");
+        }
+
         Booking booking = findById(id);
         BookingData bookingData = booking.getBookingData();
         int availableTicketsCount = bookingData.getAvailableTicketsCount();
+        int currentTicketsCount = booking.getTicketsCount();
 
-        if (ticketsCount > availableTicketsCount) {
+        if (newTicketsCount > availableTicketsCount) {
             throw new NonExistentItemException("Unavailable count of tickets, update can not be executed");
         }
-        bookingRepository.updateByTickets(ticketsCount, id);
-        return findById(id);
+
+        bookingDataRepository.cancelTicketReservation(currentTicketsCount, id);
+        bookingRepository.updateByTickets(newTicketsCount, id);
+        bookingDataRepository.reserveTickets(newTicketsCount, id);
     }
 
     public void deleteById(long id) throws InvalidArgumentException, NonExistentItemException {
@@ -127,7 +137,7 @@ public class BookingService {
         validateFieldsExist(user, bookingData, ticketsCount);
     }
 
-    private void validateFieldsExist(User user, BookingData bookingData, int countTickets) throws NonExistentItemException {
+    private void validateFieldsExist(User user, BookingData bookingData, int ticketsCount) throws NonExistentItemException {
         long userId = user.getId();
         long bookingDataId = bookingData.getId();
         int availableTicketsCount = bookingData.getAvailableTicketsCount();
@@ -144,7 +154,7 @@ public class BookingService {
             throw new NonExistentItemException("Booking data does not exist");
         }
 
-        if (countTickets > availableTicketsCount) {
+        if (ticketsCount > availableTicketsCount) {
             throw new NonExistentItemException("Unavailable tickets");
         }
     }

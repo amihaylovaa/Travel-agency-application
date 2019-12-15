@@ -17,14 +17,14 @@ public interface TransportRepository extends JpaRepository<Transport, Long> {
                    "WHERE class = ?1 AND id IN" +
                    "(SELECT id FROM bus WHERE id=transport.id)",
             nativeQuery = true)
-    List<Transport> findAllBusesByClass(TransportClass vehicleClass);
+    List<Transport> findAllBusesByClass(TransportClass transportClass);
 
     @Query(value = "SELECT class" +
                    "FROM transport" +
                    "WHERE class = ?1 AND id IN" +
                    "(SELECT id FROM airplane WHERE id=transport.id)",
             nativeQuery = true)
-    List<Transport> findAllAirplanesByClass(TransportClass vehicleClass);
+    List<Transport> findAllAirplanesByClass(TransportClass transportClass);
 
     @Query(value = "SELECT class" +
                    "FROM transport" +

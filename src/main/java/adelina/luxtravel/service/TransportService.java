@@ -8,7 +8,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -72,14 +72,19 @@ public class TransportService {
         return validateTransportListExist(transports);
     }
 
-    public Transport updateClass(TransportClass transportClass, long id) throws InvalidArgumentException, NonExistentItemException {
+    public void updateClass(TransportClass transportClass, long id) throws InvalidArgumentException {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
 
         validateTransportClass(transportClass);
+
+        try {
+            Transport transport = findById(id);
+        } catch (NonExistentItemException nonExistentItemException) {
+            // TODO - logger
+        }
         transportRepository.updateClass(transportClass, id);
-        return findById(id);
     }
 
     public void deleteById(long id) throws InvalidArgumentException {
