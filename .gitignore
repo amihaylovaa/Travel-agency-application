@@ -1,11 +1,12 @@
 #IntelliJ generated
 
 out/
-
 .idea/
 
 #Maven generated
 
 target/
 
-luxtravel.iml
+*.iml
+*.iws
+*.ipr

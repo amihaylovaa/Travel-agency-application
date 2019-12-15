@@ -8,30 +8,43 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query(value = "SELECT *" +
+    @Query(value = "SELECT email, username" +
                    "FROM  user" +
                    "WHERE username = ?1",
             nativeQuery = true)
-    User getUser(String username);
+    User findByUsername(String username);
+
+    @Query(value = "SELECT email, username" +
+                   "FROM  user" +
+                   "WHERE email = ?1",
+            nativeQuery = true)
+    User findByEmail(String email);
 
     @Modifying
     @Query(value = "UPDATE user " +
                    "SET password = ?1" +
-                   "WHERE username = ?2",
+                   "WHERE username = ?2 ",
             nativeQuery = true)
-    void updatePassword(String newPassword, String userName);
+    void updatePassword(String newPassword, String username);
 
     @Modifying
     @Query(value = "UPDATE user " +
                    "SET email = ?1" +
-                   "WHERE username = ?3",
+                   "WHERE email = ?2",
             nativeQuery = true)
-    void updateEmail(String newEmail, String userName);
+    void updateEmail(String newEmail, String currentEmail);
 
     @Modifying
     @Query(value = "DELETE " +
                    "FROM user " +
-                   "WHERE username = ?1",
+                   "WHERE username = ?1 ",
             nativeQuery = true)
-    void deleteUser(String username);
+    void deleteByUsername(String username);
+
+    @Modifying
+    @Query(value = "DELETE " +
+                   "FROM user " +
+                   "WHERE email = ?1 ",
+            nativeQuery = true)
+    void deleteByEmail(String email);
 }

@@ -7,41 +7,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface BookingDataRepository extends JpaRepository<BookingData, Long> {
-    @Query(value = "SELECT *" +
-                   "FROM booking_data" +
-                   "WHERE id = ?1",
-            nativeQuery = true)
-    BookingData getBookingDataById(long id);
-
-    @Query(value = "SELECT *" +
-                   "FROM booking_data" +
+    @Query(value = "SELECT from_date, to_date, traveling_point.name" +
+                   "traveling_point.name, transport.class" +
+                   "FROM booking_data, traveling_point" +
                    "WHERE from_date = ?1 AND to_date = ?2",
             nativeQuery = true)
-    BookingData getBookingsDataByDates(LocalDate from, LocalDate to);
-
-    @Modifying
-    @Query(value = "UPDATE booking_data" +
-                   "SET source_id = ?1" +
-                   "WHERE id = ?2",
-            nativeQuery = true)
-    BookingData updateSource(long newSrcId, long id);
-
-    @Modifying
-    @Query(value = "UPDATE booking_data" +
-                   "SET destination_id = ?1" +
-                   "WHERE id = ?2",
-            nativeQuery = true)
-    BookingData updateDestination(long newDstId, long id);
+    List<BookingData> findByDates(LocalDate from, LocalDate to);
 
     @Modifying
     @Query(value = "UPDATE booking_data" +
                    "SET from_date = ?1 AND to_date = ?2 " +
                    "WHERE id = ?3",
             nativeQuery = true)
-    void updateBookingDataByDates(LocalDate newFromDate, LocalDate newToDate, long id);
+    void updateDates(LocalDate newFromDate, LocalDate newToDate, long id);
 
     @Modifying
     @Query(value = "UPDATE booking_data" +
@@ -51,9 +33,16 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
     void updateTransport(long transportId, long id);
 
     @Modifying
-    @Query(value = "DELETE *" +
-                   "FROM booking_data" +
-                   "WHERE id = ?1",
+    @Query(value = "UPDATE booking " +
+                   "SET count_available_tickets = count_available_tickets - ?1" +
+                   "WHERE id = ?2",
             nativeQuery = true)
-    void deleteBookingData(long id);
+    void reserveTickets(int countTickets, long id);
+
+    @Modifying
+    @Query(value = "UPDATE booking " +
+                   "SET count_available_tickets = count_available_tickets + ?1" +
+                   "WHERE id = ?2",
+            nativeQuery = true)
+    void cancelTicketReservation(int countTickets, long id);
 }

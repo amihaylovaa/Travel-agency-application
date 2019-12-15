@@ -1,11 +1,13 @@
 package adelina.luxtravel.domain.wrapper;
 
 import adelina.luxtravel.exception.FailedInitializationException;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.Embeddable;
 import java.time.LocalDate;
 
+@EqualsAndHashCode
 @Getter
 @Embeddable
 public class Date {

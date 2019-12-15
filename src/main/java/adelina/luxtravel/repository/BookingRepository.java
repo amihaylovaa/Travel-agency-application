@@ -6,25 +6,23 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    @Query(value = "SELECT * " +
-                   "FROM booking" +
-                   "WHERE id = ?1",
+    @Query(value = "SELECT count_tickets, user.username," +
+                    "booking_data.from_date, booking_data.to_date, booking_data.price " +
+                   "FROM booking, user, booking_data" +
+                   "WHERE user_id IN (" +
+                   "SELECT id FROM user WHERE username = ?1" +
+                   "AND booking_data_id = booking_data.id",
             nativeQuery = true)
-    Booking getBooking(long id);
-
-    @Query(value = "SELECT * " +
-            "FROM booking" +
-            "WHERE user_id IN (" +
-            "SELECT id FROM user WHERE username = ?1",
-            nativeQuery = true)
-    Booking getBookingsByUsername(String username);
+    List<Booking> findAllUserBookings(String username);
 
     @Modifying
-    @Query(value = "DELETE " +
-                   "FROM booking" +
-                   "WHERE id = ?1",
+    @Query(value = "UPDATE booking" +
+                   "SET count_tickets= ?1" +
+                   "WHERE id = ?2",
             nativeQuery = true)
-    void deleteBooking(long id);
+    void updateByTickets(int ticketsCount, long id);
 }

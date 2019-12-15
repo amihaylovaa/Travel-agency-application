@@ -2,6 +2,8 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,11 +20,13 @@ public class User {
     private String username;
     @Column(name = "email", unique = true, nullable = false)
     private String email;
+    @Setter
     @Column(name = "password", nullable = false)
     private String password;
     @OneToMany(mappedBy = "user",
-               cascade = CascadeType.ALL,
-               orphanRemoval = true)
+              cascade = CascadeType.ALL,
+              orphanRemoval = true
+              )
     List<Booking> bookings;
 
     public User(String email, String password, String username) {
@@ -39,11 +43,11 @@ public class User {
     }
 
     private void initializeFields(String username, String email, String password) {
-        if (username == null || username.isEmpty()) {
+        if (StringUtils.isEmpty(username)) {
             throw new FailedInitializationException("Invalid username");
-        } else if (email == null || email.isEmpty()) {
+        } else if (StringUtils.isEmpty(password)) {
             throw new FailedInitializationException("Invalid email");
-        } else if (password == null || password.isEmpty() || password.length() < 8) {
+        } else if (StringUtils.isEmpty(password) || password.length() < 8) {
             throw new FailedInitializationException("Invalid password");
         } else {
             this.username = username;

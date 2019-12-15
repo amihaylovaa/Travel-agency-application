@@ -2,14 +2,19 @@ package adelina.luxtravel.domain;
 
 import adelina.luxtravel.exception.FailedInitializationException;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
-import java.util.Objects;
+
+import static adelina.luxtravel.utility.Constants.NINETY_DEGREES;
+import static adelina.luxtravel.utility.Constants.NINETY_DEGREES_NEGATIVE;
 
 @Entity
 @Table(name = "traveling_point")
 @Getter
+@EqualsAndHashCode
 public class TravelingPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,30 +41,15 @@ public class TravelingPoint {
     }
 
     private void initializeFields(String name, double longitude, double latitude) {
-        if (name == null || name.isEmpty()) {
+        if (StringUtils.isEmpty(name)) {
             throw new FailedInitializationException("Invalid name");
         }
-        if (longitude <= 0.00 || latitude == 0.00 || longitude == latitude) {
+        if ((longitude > NINETY_DEGREES || longitude < NINETY_DEGREES_NEGATIVE) &&
+                (latitude > NINETY_DEGREES || latitude < NINETY_DEGREES_NEGATIVE)) {
             throw new FailedInitializationException("Invalid coordinates");
         }
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TravelingPoint that = (TravelingPoint) o;
-        return id == that.id &&
-                Double.compare(that.longitude, longitude) == 0 &&
-                Double.compare(that.latitude, latitude) == 0 &&
-                Objects.equals(name, that.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, longitude, latitude);
     }
 }

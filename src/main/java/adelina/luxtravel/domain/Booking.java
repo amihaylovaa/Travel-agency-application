@@ -1,6 +1,5 @@
 package adelina.luxtravel.domain;
 
-import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
@@ -19,31 +18,31 @@ public class Booking {
     @OneToOne
     @JoinColumn(name = "booking_data_id")
     private BookingData bookingData;
-    @Column(name = "price", nullable = false, precision = 6, scale = 2)
-    private double price;
+    @Column(name = "count_tickets", nullable = false)
+    private int ticketsCount;
 
-    public Booking(double price, BookingData bookingData, User user) {
-        initializeFields(price, bookingData, user);
+    public Booking(BookingData bookingData, User user, int ticketsCount) {
+        initializeFields(bookingData, user, ticketsCount);
     }
 
-    public Booking(long id, double price, BookingData bookingData, User user) {
-        this(price, bookingData, user);
+    public Booking(long id, BookingData bookingData, User user, int ticketsCount) {
+        this(bookingData, user, ticketsCount);
         this.id = id;
     }
 
     public Booking(Booking booking) {
-        this(booking.id, booking.price, booking.bookingData, booking.user);
+        this(booking.id, booking.bookingData, booking.user, booking.ticketsCount);
     }
 
-    private void initializeFields(double price, BookingData bookingData, User user) {
+    private void initializeFields(BookingData bookingData, User user, int countTickets) {
         if (bookingData == null) {
-            throw new FailedInitializationException("Null booking date");
+            throw new FailedInitializationException("Invalid booking date");
         } else if (user == null) {
             throw new FailedInitializationException("Invalid user");
         } else {
             this.user = user;
             this.bookingData = bookingData;
-            this.price = price;
+            this.ticketsCount = countTickets;
         }
     }
 }
