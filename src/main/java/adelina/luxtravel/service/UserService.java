@@ -70,7 +70,7 @@ public class UserService {
         userRepository.updatePassword(newHashedPassword, username);
     }
 
-    public void updateEmail(String newEmail, String oldEmail, String password) throws NonExistentItemException, InvalidArgumentException {
+    public void updateEmail(String newEmail, String oldEmail, String password) throws InvalidArgumentException, NonExistentItemException {
         if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(oldEmail) || StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }

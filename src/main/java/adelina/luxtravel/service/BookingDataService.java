@@ -46,7 +46,7 @@ public class BookingDataService {
         return bookingData.get();
     }
 
-    public List<BookingData> findByDates(LocalDate from, LocalDate to) throws NonExistentItemException, InvalidArgumentException {
+    public List<BookingData> findByDates(LocalDate from, LocalDate to) throws InvalidArgumentException, NonExistentItemException {
         validateDates(from, to);
 
         List<BookingData> bookingData = bookingDataRepository.findByDates(from, to);

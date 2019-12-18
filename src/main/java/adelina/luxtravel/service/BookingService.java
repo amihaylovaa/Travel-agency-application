@@ -73,7 +73,7 @@ public class BookingService {
         return bookings;
     }
 
-    public void updateTickets(long id, int newTicketsCount) throws NonExistentItemException, InvalidArgumentException {
+    public void updateTickets(long id, int newTicketsCount) throws InvalidArgumentException, NonExistentItemException {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }

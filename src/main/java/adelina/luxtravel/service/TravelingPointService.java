@@ -26,12 +26,12 @@ public class TravelingPointService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
-    public TravelingPoint save(TravelingPoint travelingPoint) throws NonExistentItemException, InvalidArgumentException {
+    public TravelingPoint save(TravelingPoint travelingPoint) throws InvalidArgumentException, NonExistentItemException {
         validateTravelingPoint(travelingPoint);
         return travelingPointRepository.save(travelingPoint);
     }
 
-    public List<TravelingPoint> saveAll(List<TravelingPoint> travelingPoints) throws NonExistentItemException, InvalidArgumentException {
+    public List<TravelingPoint> saveAll(List<TravelingPoint> travelingPoints) throws InvalidArgumentException, NonExistentItemException {
         validateTravelingPointsList(travelingPoints);
         return travelingPointRepository.saveAll(travelingPoints);
     }
@@ -49,7 +49,7 @@ public class TravelingPointService {
         return travelingPoint.get();
     }
 
-    public TravelingPoint findByName(String name) throws InvalidArgumentException, NonExistentItemException {
+    public TravelingPoint findByName(String name) throws InvalidArgumentException {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
         }
@@ -85,7 +85,7 @@ public class TravelingPointService {
         travelingPointRepository.deleteAll();
     }
 
-    private void validateTravelingPointsList(List<TravelingPoint> travelingPoints) throws NonExistentItemException, InvalidArgumentException {
+    private void validateTravelingPointsList(List<TravelingPoint> travelingPoints) throws InvalidArgumentException, NonExistentItemException {
         if (ObjectUtils.isEmpty(travelingPoints)) {
             throw new InvalidArgumentException("Invalid list of traveling points");
         }
