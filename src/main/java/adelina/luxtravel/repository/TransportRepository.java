@@ -1,5 +1,7 @@
 package adelina.luxtravel.repository;
 
+import adelina.luxtravel.domain.transport.Airplane;
+import adelina.luxtravel.domain.transport.Bus;
 import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,10 +10,37 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TransportRepository extends JpaRepository<Transport, Long> {
+    @Query(value = "BEGIN;" +
+
+                   "INSERT INTO transport(class)" +
+                   "VALUES (?1);" +
+
+                   "INSERT INTO bus" +
+                   "SELECT id" +
+                   "FROM transport" +
+                   "WHERE class = ?1;" +
+
+                    "COMMIT;",
+            nativeQuery = true)
+    Bus saveBus(TransportClass transportClass);
+
+    @Query(value = "BEGIN;" +
+
+                   "INSERT INTO transport(class)" +
+                   "VALUES (?1);" +
+
+                   "INSERT INTO airplane" +
+                   "SELECT id" +
+                   "FROM transport" +
+                   "WHERE class = ?1;" +
+
+                  "COMMIT;",
+            nativeQuery = true)
+    Airplane saveAirplane(TransportClass transportClass);
+
     @Query(value = "SELECT class" +
                    "FROM transport" +
                    "WHERE class = ?1 AND id IN" +

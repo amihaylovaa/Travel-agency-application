@@ -21,10 +21,16 @@ public class TransportController {
         this.transportService = transportService;
     }
 
-    @PostMapping
-    public Transport save(@RequestBody Transport transport)
+    @PostMapping(value = "/bus")
+    public Transport saveBus(@RequestBody Transport transport)
             throws InvalidArgumentException {
-        return transportService.save(transport);
+        return transportService.saveBus(transport);
+    }
+
+    @PostMapping(value = "/bus")
+    public Transport saveAirplane(@RequestBody Transport transport)
+            throws InvalidArgumentException {
+        return transportService.saveAirplane(transport);
     }
 
     @PostMapping(value = "/all")
