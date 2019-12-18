@@ -65,13 +65,12 @@ public class TravelingPointService {
         return travelingPoints;
     }
 
-    public TravelingPoint updateName(String newName, String oldName) throws InvalidArgumentException, NonExistentItemException {
-        if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(oldName)) {
+    public void updateName(String newName, String oldName) throws InvalidArgumentException, NonExistentItemException {
+        if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(oldName) || newName.equals(oldName)) {
             throw new InvalidArgumentException("Invalid arguments");
         }
         validateTravelingPointDoesNotExist(findByName(newName));
         travelingPointRepository.updateName(newName, oldName);
-        return findByName(newName);
     }
 
     public void deleteById(long id) throws InvalidArgumentException {
@@ -79,10 +78,6 @@ public class TravelingPointService {
             throw new InvalidArgumentException("Invalid id");
         }
         travelingPointRepository.deleteById(id);
-    }
-
-    public void deleteAll() {
-        travelingPointRepository.deleteAll();
     }
 
     private void validateTravelingPointsList(List<TravelingPoint> travelingPoints) throws InvalidArgumentException, NonExistentItemException {

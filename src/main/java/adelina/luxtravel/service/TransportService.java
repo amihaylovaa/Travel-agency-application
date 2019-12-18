@@ -21,6 +21,7 @@ public class TransportService {
         this.transportRepository = transportRepository;
     }
 
+    // TODO : add flag to be clear if you add bus or airplane
     public Transport save(Transport transport) throws InvalidArgumentException {
         validateTransport(transport);
         return transportRepository.save(transport);

@@ -57,7 +57,8 @@ public class UserService {
     }
 
     public void updatePassword(String username, String newPassword, String oldPassword) throws InvalidArgumentException {
-        if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(oldPassword) || StringUtils.isEmpty(username)) {
+        if (StringUtils.isEmpty(newPassword) || StringUtils.isEmpty(oldPassword)
+                || StringUtils.isEmpty(username) || newPassword.equals(oldPassword)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
@@ -71,7 +72,8 @@ public class UserService {
     }
 
     public void updateEmail(String newEmail, String oldEmail, String password) throws InvalidArgumentException, NonExistentItemException {
-        if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(oldEmail) || StringUtils.isEmpty(password)) {
+        if (StringUtils.isEmpty(newEmail) || StringUtils.isEmpty(oldEmail)
+                || StringUtils.isEmpty(password) || newEmail.equals(oldEmail)) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
@@ -104,10 +106,6 @@ public class UserService {
 
         validatePasswordMatch(password, user.getPassword());
         userRepository.deleteByEmail(email);
-    }
-
-    public void deleteAll() {
-        userRepository.deleteAll();
     }
 
     private void validateUser(User user) throws InvalidArgumentException, NonExistentItemException {

@@ -27,15 +27,15 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
-    public void save(Booking booking) throws InvalidArgumentException, NonExistentItemException {
+    public Booking save(Booking booking) throws InvalidArgumentException, NonExistentItemException {
         validateBooking(booking);
-        bookingRepository.save(booking);
 
         BookingData bookingData = booking.getBookingData();
         long bookingDataId = bookingData.getId();
         int ticketsCount = booking.getTicketsCount();
 
         bookingDataRepository.reserveTickets(ticketsCount, bookingDataId);
+        return bookingRepository.save(booking);
     }
 
     public Booking findById(long id) throws InvalidArgumentException, NonExistentItemException {
@@ -51,7 +51,8 @@ public class BookingService {
         return booking.get();
     }
 
-    public List<Booking> findAllUserBookings(String username) throws InvalidArgumentException, NonExistentItemException {
+    public List<Booking> findAllUserBookings(String username)
+            throws InvalidArgumentException, NonExistentItemException {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
@@ -73,12 +74,10 @@ public class BookingService {
         return bookings;
     }
 
-    public void updateTickets(long id, int newTicketsCount) throws InvalidArgumentException, NonExistentItemException {
-        if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
-        }
-        if (newTicketsCount <= NumberUtils.INTEGER_ZERO) {
-            throw new InvalidArgumentException("Tickets' count cannot be less than or equal to zero");
+    public void updateTickets(long id, int newTicketsCount)
+            throws InvalidArgumentException, NonExistentItemException {
+        if (id <= NumberUtils.LONG_ZERO || newTicketsCount <= NumberUtils.INTEGER_ZERO) {
+            throw new InvalidArgumentException("Invalid parameters, update can not be executed");
         }
 
         Booking booking = findById(id);
@@ -107,10 +106,6 @@ public class BookingService {
 
         bookingDataRepository.cancelTicketReservation(ticketsCount, bookingDataId);
         bookingRepository.deleteById(id);
-    }
-
-    public void deleteAll() {
-        bookingRepository.deleteAll();
     }
 
     private void validateBooking(Booking booking) throws InvalidArgumentException, NonExistentItemException {

@@ -66,13 +66,23 @@ public class BookingDataService {
         return bookingData;
     }
 
-    public void updateTransport(long bookingDataId, Transport transport) throws InvalidArgumentException, NonExistentItemException {
-        if (transport == null || bookingDataId <= NumberUtils.LONG_ZERO || transport.getId() <= NumberUtils.LONG_ZERO) {
+    public void updateTransport(long bookingDataId, Transport transport)
+            throws InvalidArgumentException, NonExistentItemException {
+        if (transport == null || bookingDataId <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Update can not be executed, invalid parameters");
         }
 
         long transportId = transport.getId();
 
+        if (transportId <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException("Invalid transport id");
+        }
+
+        Optional<Transport> foundTransport = transportRepository.findById(transportId);
+
+        if (!foundTransport.isPresent()) {
+            throw new NonExistentItemException("This transport does not exist");
+        }
         bookingDataRepository.updateTransport(transportId, bookingDataId);
     }
 
@@ -81,10 +91,6 @@ public class BookingDataService {
             throw new InvalidArgumentException("Invalid id");
         }
         bookingDataRepository.deleteById(id);
-    }
-
-    public void deleteAll() {
-        bookingDataRepository.deleteAll();
     }
 
     private void validateBookingData(BookingData bookingData) throws InvalidArgumentException, NonExistentItemException {
