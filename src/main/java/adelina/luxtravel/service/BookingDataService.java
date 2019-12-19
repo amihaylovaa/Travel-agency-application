@@ -22,13 +22,15 @@ public class BookingDataService {
 
     @Autowired
     public BookingDataService(BookingDataRepository bookingDataRepository,
-                              TransportRepository transportRepository, TravelingPointRepository travelingPointRepository) {
+                              TransportRepository transportRepository,
+                              TravelingPointRepository travelingPointRepository) {
         this.bookingDataRepository = bookingDataRepository;
         this.transportRepository = transportRepository;
         this.travelingPointRepository = travelingPointRepository;
     }
 
-    public BookingData save(BookingData bookingData) throws InvalidArgumentException, NonExistentItemException {
+    public BookingData save(BookingData bookingData)
+            throws InvalidArgumentException, NonExistentItemException {
         validateBookingData(bookingData);
         return bookingDataRepository.save(bookingData);
     }
@@ -46,7 +48,8 @@ public class BookingDataService {
         return bookingData.get();
     }
 
-    public List<BookingData> findByDates(LocalDate from, LocalDate to) throws InvalidArgumentException, NonExistentItemException {
+    public List<BookingData> findByDates(LocalDate from, LocalDate to)
+            throws InvalidArgumentException, NonExistentItemException {
         validateDates(from, to);
 
         List<BookingData> bookingData = bookingDataRepository.findByDates(from, to);
@@ -68,21 +71,14 @@ public class BookingDataService {
 
     public void updateTransport(long bookingDataId, Transport transport)
             throws InvalidArgumentException, NonExistentItemException {
-        if (transport == null || bookingDataId <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Update can not be executed, invalid parameters");
+        validateTransportData(transport);
+
+        if (bookingDataId <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException("Invalid booking data id");
         }
 
         long transportId = transport.getId();
 
-        if (transportId <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid transport id");
-        }
-
-        Optional<Transport> foundTransport = transportRepository.findById(transportId);
-
-        if (!foundTransport.isPresent()) {
-            throw new NonExistentItemException("This transport does not exist");
-        }
         bookingDataRepository.updateTransport(transportId, bookingDataId);
     }
 
@@ -93,14 +89,30 @@ public class BookingDataService {
         bookingDataRepository.deleteById(id);
     }
 
-    private void validateBookingData(BookingData bookingData) throws InvalidArgumentException, NonExistentItemException {
+    private void validateTransportData(Transport transport)
+            throws InvalidArgumentException, NonExistentItemException {
+        if (transport == null) {
+            throw new InvalidArgumentException("Invalid transport");
+        }
+
+        long transportId = transport.getId();
+        Optional<Transport> foundTransport = transportRepository.findById(transportId);
+
+        if (!foundTransport.isPresent()) {
+            throw new NonExistentItemException("This transport does not exist");
+        }
+    }
+
+    private void validateBookingData(BookingData bookingData)
+            throws InvalidArgumentException, NonExistentItemException {
         if (bookingData == null) {
             throw new InvalidArgumentException("Invalid booking data");
         }
         validateFields(bookingData);
     }
 
-    private void validateFields(BookingData bookingData) throws InvalidArgumentException, NonExistentItemException {
+    private void validateFields(BookingData bookingData)
+            throws InvalidArgumentException, NonExistentItemException {
         Date date = bookingData.getDate();
         LocalDate from = date.getFromDate();
         LocalDate to = date.getToDate();

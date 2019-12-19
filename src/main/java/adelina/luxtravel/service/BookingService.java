@@ -29,12 +29,7 @@ public class BookingService {
 
     public Booking save(Booking booking) throws InvalidArgumentException, NonExistentItemException {
         validateBooking(booking);
-
-        BookingData bookingData = booking.getBookingData();
-        long bookingDataId = bookingData.getId();
-        int ticketsCount = booking.getTicketsCount();
-
-        bookingDataRepository.reserveTickets(ticketsCount, bookingDataId);
+        reserveTickets(booking);
         return bookingRepository.save(booking);
     }
 
@@ -74,22 +69,16 @@ public class BookingService {
         return bookings;
     }
 
-    public void updateTickets(long id, int newTicketsCount)
-            throws InvalidArgumentException, NonExistentItemException {
-        if (id <= NumberUtils.LONG_ZERO || newTicketsCount <= NumberUtils.INTEGER_ZERO) {
-            throw new InvalidArgumentException("Invalid parameters, update can not be executed");
+    public void updateTickets(long id, int newTicketsCount) throws InvalidArgumentException, NonExistentItemException {
+        if (id <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException("Invalid id");
+        }
+        if (newTicketsCount <= NumberUtils.INTEGER_ZERO) {
+            throw new InvalidArgumentException("Invalid tickets count");
         }
 
-        Booking booking = findById(id);
-        BookingData bookingData = booking.getBookingData();
-        int availableTicketsCount = bookingData.getAvailableTicketsCount();
-        int currentTicketsCount = booking.getTicketsCount();
+        validateUpdateIsPossible(id, newTicketsCount);
 
-        if (newTicketsCount > availableTicketsCount) {
-            throw new NonExistentItemException("Unavailable count of tickets, update can not be executed");
-        }
-
-        bookingDataRepository.cancelTicketReservation(currentTicketsCount, id);
         bookingRepository.updateByTickets(newTicketsCount, id);
         bookingDataRepository.reserveTickets(newTicketsCount, id);
     }
@@ -98,13 +87,7 @@ public class BookingService {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
-
-        Booking booking = findById(id);
-        int ticketsCount = booking.getTicketsCount();
-        BookingData bookingData = booking.getBookingData();
-        long bookingDataId = bookingData.getId();
-
-        bookingDataRepository.cancelTicketReservation(ticketsCount, bookingDataId);
+        cancelTicketsReservation(id);
         bookingRepository.deleteById(id);
     }
 
@@ -115,7 +98,8 @@ public class BookingService {
         validateBookingFields(booking);
     }
 
-    private void validateBookingFields(Booking booking) throws InvalidArgumentException, NonExistentItemException {
+    private void validateBookingFields(Booking booking)
+            throws InvalidArgumentException, NonExistentItemException {
         User user = booking.getUser();
         BookingData bookingData = booking.getBookingData();
         int ticketsCount = booking.getTicketsCount();
@@ -152,5 +136,39 @@ public class BookingService {
         if (ticketsCount > availableTicketsCount) {
             throw new NonExistentItemException("Unavailable tickets");
         }
+    }
+
+    private void reserveTickets(Booking booking) {
+        long bookingDataId = getBookingDataId(booking);
+        int ticketsCount = booking.getTicketsCount();
+
+        bookingDataRepository.reserveTickets(ticketsCount, bookingDataId);
+    }
+
+    private void cancelTicketsReservation(long bookingId) throws InvalidArgumentException, NonExistentItemException {
+        Booking booking = findById(bookingId);
+        int ticketsCount = booking.getTicketsCount();
+        long bookingDataId = getBookingDataId(booking);
+
+        bookingDataRepository.cancelTicketReservation(ticketsCount, bookingDataId);
+    }
+
+    private long getBookingDataId(Booking booking) {
+        BookingData bookingData = booking.getBookingData();
+
+        return bookingData.getId();
+    }
+
+    private void validateUpdateIsPossible(long id, int newTicketsCount)
+            throws InvalidArgumentException, NonExistentItemException {
+        Booking booking = findById(id);
+        BookingData bookingData = booking.getBookingData();
+        int availableTicketsCount = bookingData.getAvailableTicketsCount();
+        int currentTicketsCount = booking.getTicketsCount();
+
+        if (newTicketsCount > availableTicketsCount) {
+            throw new NonExistentItemException("Unavailable count of tickets, update can not be executed");
+        }
+        bookingDataRepository.cancelTicketReservation(currentTicketsCount, id);
     }
 }
