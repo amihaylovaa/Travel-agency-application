@@ -25,8 +25,11 @@ public class TravelingPointService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
-    public TravelingPoint save(TravelingPoint travelingPoint) throws InvalidArgumentException, NonExistentItemException {
+    public TravelingPoint save(TravelingPoint travelingPoint) throws InvalidArgumentException {
         validateTravelingPoint(travelingPoint);
+        validateTravelingPointFields(travelingPoint);
+        validateTravelingPointDoesNotExist(travelingPoint);
+
         return travelingPointRepository.save(travelingPoint);
     }
 
@@ -64,7 +67,7 @@ public class TravelingPointService {
         return travelingPoints;
     }
 
-    public void updateName(String newName, String oldName) throws InvalidArgumentException, NonExistentItemException {
+    public void updateName(String newName, String oldName) throws InvalidArgumentException {
         if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(oldName) || newName.equals(oldName)) {
             throw new InvalidArgumentException("Invalid arguments");
         }
@@ -79,7 +82,7 @@ public class TravelingPointService {
         travelingPointRepository.deleteById(id);
     }
 
-    private void validateTravelingPointsList(List<TravelingPoint> travelingPoints) throws InvalidArgumentException, NonExistentItemException {
+    private void validateTravelingPointsList(List<TravelingPoint> travelingPoints) throws InvalidArgumentException {
         if (ObjectUtils.isEmpty(travelingPoints)) {
             throw new InvalidArgumentException("Invalid list of traveling points");
         }
@@ -88,15 +91,13 @@ public class TravelingPointService {
         }
     }
 
-    private void validateTravelingPoint(TravelingPoint travelingPoint) throws InvalidArgumentException, NonExistentItemException {
+    private void validateTravelingPoint(TravelingPoint travelingPoint) throws InvalidArgumentException {
         if (travelingPoint == null) {
             throw new InvalidArgumentException("Invalid traveling point");
         }
-        validateFields(travelingPoint);
-        validateTravelingPointDoesNotExist(travelingPoint);
     }
 
-    private void validateFields(TravelingPoint travelingPoint) throws InvalidArgumentException {
+    private void validateTravelingPointFields(TravelingPoint travelingPoint) throws InvalidArgumentException {
         String name = travelingPoint.getName();
         double latitude = travelingPoint.getLatitude();
         double longitude = travelingPoint.getLongitude();

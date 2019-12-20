@@ -28,6 +28,8 @@ public class TransportService {
 
         TransportClass transportClass = transport.getTransportClass();
 
+        validateTransportClass(transportClass);
+
         return transportRepository.saveBus(transportClass);
     }
 
@@ -35,6 +37,8 @@ public class TransportService {
         validateTransport(transport);
 
         TransportClass transportClass = transport.getTransportClass();
+
+        validateTransportClass(transportClass);
 
         return transportRepository.saveAirplane(transportClass);
     }
@@ -113,6 +117,7 @@ public class TransportService {
         }
         for (Transport transport : transports) {
             validateTransport(transport);
+            validateTransportClass(transport.getTransportClass());
         }
     }
 
@@ -120,7 +125,6 @@ public class TransportService {
         if (transport == null) {
             throw new InvalidArgumentException("Invalid transport");
         }
-        validateTransportClass(transport.getTransportClass());
     }
 
     private void validateTransportClass(TransportClass transportClass) throws InvalidArgumentException {
