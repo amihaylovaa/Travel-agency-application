@@ -1,6 +1,6 @@
 package adelina.luxtravel.repository;
 
-import adelina.luxtravel.domain.BookingData;
+import adelina.luxtravel.domain.TravelData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,13 +10,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface BookingDataRepository extends JpaRepository<BookingData, Long> {
+public interface BookingDataRepository extends JpaRepository<TravelData, Long> {
     @Query(value = "SELECT from_date, to_date, traveling_point.name" +
                    "traveling_point.name, transport.class" +
                    "FROM booking_data, traveling_point" +
                    "WHERE from_date = ?1 AND to_date = ?2",
             nativeQuery = true)
-    List<BookingData> findByDates(LocalDate from, LocalDate to);
+    List<TravelData> findByDates(LocalDate from, LocalDate to);
 
     @Modifying
     @Query(value = "UPDATE booking_data" +
@@ -37,12 +37,19 @@ public interface BookingDataRepository extends JpaRepository<BookingData, Long> 
                    "SET count_available_tickets = count_available_tickets - ?1" +
                    "WHERE id = ?2",
             nativeQuery = true)
-    void reserveTickets(int countTickets, long id);
+    void reserveTickets(int reservedTicketsCount, long id);
 
     @Modifying
     @Query(value = "UPDATE booking " +
                    "SET count_available_tickets = count_available_tickets + ?1" +
                    "WHERE id = ?2",
             nativeQuery = true)
-    void cancelTicketReservation(int countTickets, long id);
+    void cancelTicketReservation(int reservedTicketsCount, long id);
+
+    @Modifying
+    @Query(value = "UPDATE booking " +
+            "SET count_available_tickets = count_available_tickets + ?1" +
+            "WHERE id = ?2",
+            nativeQuery = true)
+    void updateTicketsReservation(int reservedTicketsCount, long id);
 }

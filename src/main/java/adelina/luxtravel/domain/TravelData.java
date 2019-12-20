@@ -12,11 +12,13 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "booking_data")
 @Getter
-public class BookingData {
+public class TravelData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -31,21 +33,27 @@ public class BookingData {
     private int availableTicketsCount;
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
+    @OneToMany(mappedBy = "booking_data",
+               cascade = CascadeType.ALL,
+               orphanRemoval = true
+              )
+    private List<Booking> bookings;
 
-    public BookingData(BookingData bookingData) {
-        this(bookingData.id, bookingData.departureDestination,
-                bookingData.transport, bookingData.date,
-                bookingData.availableTicketsCount);
+
+    public TravelData(TravelData travelData) {
+        this(travelData.id, travelData.departureDestination,
+                travelData.transport, travelData.date,
+                travelData.availableTicketsCount);
     }
 
-    public BookingData(long id, DepartureDestination departureDestination,
-                       Transport transport, Date date, int availableTicketsCount) {
+    public TravelData(long id, DepartureDestination departureDestination,
+                      Transport transport, Date date, int availableTicketsCount) {
         this(transport, departureDestination, date, availableTicketsCount);
         this.id = id;
     }
 
-    public BookingData(Transport transport, DepartureDestination departureDestination,
-                       Date date, int availableTicketsCount) {
+    public TravelData(Transport transport, DepartureDestination departureDestination,
+                      Date date, int availableTicketsCount) {
         initializeFields(transport, departureDestination, date, availableTicketsCount);
     }
 
@@ -62,6 +70,7 @@ public class BookingData {
             this.departureDestination = departureDestination;
             this.transport = transport;
             this.availableTicketsCount = availableTicketsCount;
+            this.bookings = new ArrayList<>();
             setPrice();
         }
     }

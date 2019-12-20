@@ -1,6 +1,6 @@
 package adelina.luxtravel.controller;
 
-import adelina.luxtravel.domain.BookingData;
+import adelina.luxtravel.domain.TravelData;
 import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.exception.NonExistentItemException;
@@ -22,25 +22,25 @@ public class BookingDataController {
     }
 
     @PostMapping
-    public BookingData save(@RequestBody BookingData bookingData)
+    public TravelData save(@RequestBody TravelData travelData)
             throws InvalidArgumentException, NonExistentItemException {
-        return bookingDataService.save(bookingData);
+        return bookingDataService.save(travelData);
     }
 
     @GetMapping(value = "id")
-    public BookingData findById(@PathVariable("id") long id)
+    public TravelData findById(@PathVariable("id") long id)
             throws InvalidArgumentException, NonExistentItemException {
         return bookingDataService.findById(id);
     }
 
     @GetMapping
-    public List<BookingData> findByDates(@PathVariable("from") LocalDate from, @PathVariable("to") LocalDate to)
+    public List<TravelData> findByDates(@PathVariable("from") LocalDate from, @PathVariable("to") LocalDate to)
             throws InvalidArgumentException, NonExistentItemException {
         return bookingDataService.findByDates(from, to);
     }
 
     @GetMapping
-    public List<BookingData> findAll() throws NonExistentItemException {
+    public List<TravelData> findAll() throws NonExistentItemException {
         return bookingDataService.findAll();
     }
 

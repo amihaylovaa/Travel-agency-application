@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,8 +25,8 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
     @OneToMany(mappedBy = "user",
-              cascade = CascadeType.ALL,
-              orphanRemoval = true
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
               )
     List<Booking> bookings;
 
@@ -53,6 +54,7 @@ public class User {
             this.username = username;
             this.email = email;
             this.password = password;
+            this.bookings = new ArrayList<>();
         }
     }
 }

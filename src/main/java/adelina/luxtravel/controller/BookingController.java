@@ -45,9 +45,9 @@ public class BookingController {
 
     @PutMapping
     public void updateTickets(@PathVariable("id") long id,
-                              @PathVariable("newTicketsCount") int newTicketsCount)
+                              @PathVariable("newTicketsCount") int reservedTicketsCount)
             throws InvalidArgumentException, NonExistentItemException {
-        bookingService.updateTickets(id, newTicketsCount);
+        bookingService.updateTickets(id, reservedTicketsCount);
     }
 
     @DeleteMapping(value = "id")

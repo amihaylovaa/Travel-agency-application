@@ -4,6 +4,8 @@ import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "booking")
@@ -15,34 +17,35 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToOne
-    @JoinColumn(name = "booking_data_id")
-    private BookingData bookingData;
-    @Column(name = "count_tickets", nullable = false)
-    private int ticketsCount;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "travel_data_id")
+    private List<TravelData> travelData;
+    @Column(name = "reserved_tickets_count", nullable = false)
+    private int reservedTicketsCount;
 
-    public Booking(BookingData bookingData, User user, int ticketsCount) {
-        initializeFields(bookingData, user, ticketsCount);
+
+    public Booking(List<TravelData> travelData, User user, int reservedTicketsCount) {
+        initializeFields(travelData, user, reservedTicketsCount);
     }
 
-    public Booking(long id, BookingData bookingData, User user, int ticketsCount) {
-        this(bookingData, user, ticketsCount);
+    public Booking(long id, List<TravelData> travelData, User user, int reservedTicketsCount) {
+        this(travelData, user, reservedTicketsCount);
         this.id = id;
     }
 
     public Booking(Booking booking) {
-        this(booking.id, booking.bookingData, booking.user, booking.ticketsCount);
+        this(booking.id, booking.travelData, booking.user, booking.reservedTicketsCount);
     }
 
-    private void initializeFields(BookingData bookingData, User user, int countTickets) {
-        if (bookingData == null) {
+    private void initializeFields(List<TravelData> travelData, User user, int reservedTicketsCount) {
+        if (travelData == null) {
             throw new FailedInitializationException("Invalid booking date");
         } else if (user == null) {
             throw new FailedInitializationException("Invalid user");
         } else {
             this.user = user;
-            this.bookingData = bookingData;
-            this.ticketsCount = countTickets;
+            this.travelData = new ArrayList<>(travelData);
+            this.reservedTicketsCount = reservedTicketsCount;
         }
     }
 }

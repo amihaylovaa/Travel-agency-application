@@ -29,18 +29,18 @@ public class BookingDataService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
-    public BookingData save(BookingData bookingData)
+    public TravelData save(TravelData travelData)
             throws InvalidArgumentException, NonExistentItemException {
-        validateBookingData(bookingData);
-        return bookingDataRepository.save(bookingData);
+        validateBookingData(travelData);
+        return bookingDataRepository.save(travelData);
     }
 
-    public BookingData findById(long id) throws InvalidArgumentException, NonExistentItemException {
+    public TravelData findById(long id) throws InvalidArgumentException, NonExistentItemException {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
 
-        Optional<BookingData> bookingData = bookingDataRepository.findById(id);
+        Optional<TravelData> bookingData = bookingDataRepository.findById(id);
 
         if (!bookingData.isPresent()) {
             throw new NonExistentItemException("This booking data does not exist");
@@ -48,25 +48,25 @@ public class BookingDataService {
         return bookingData.get();
     }
 
-    public List<BookingData> findByDates(LocalDate from, LocalDate to)
+    public List<TravelData> findByDates(LocalDate from, LocalDate to)
             throws InvalidArgumentException, NonExistentItemException {
         validateDates(from, to);
 
-        List<BookingData> bookingData = bookingDataRepository.findByDates(from, to);
+        List<TravelData> travelData = bookingDataRepository.findByDates(from, to);
 
-        if (ObjectUtils.isEmpty(bookingData)) {
+        if (ObjectUtils.isEmpty(travelData)) {
             throw new NonExistentItemException("There are no booking data for these days");
         }
-        return bookingData;
+        return travelData;
     }
 
-    public List<BookingData> findAll() throws NonExistentItemException {
-        List<BookingData> bookingData = bookingDataRepository.findAll();
+    public List<TravelData> findAll() throws NonExistentItemException {
+        List<TravelData> travelData = bookingDataRepository.findAll();
 
-        if (ObjectUtils.isEmpty(bookingData)) {
+        if (ObjectUtils.isEmpty(travelData)) {
             throw new NonExistentItemException("No booking data found");
         }
-        return bookingData;
+        return travelData;
     }
 
     public void updateTransport(long bookingDataId, Transport transport)
@@ -103,29 +103,29 @@ public class BookingDataService {
         }
     }
 
-    private void validateBookingData(BookingData bookingData)
+    private void validateBookingData(TravelData travelData)
             throws InvalidArgumentException, NonExistentItemException {
-        if (bookingData == null) {
+        if (travelData == null) {
             throw new InvalidArgumentException("Invalid booking data");
         }
-        validateFields(bookingData);
+        validateFields(travelData);
     }
 
-    private void validateFields(BookingData bookingData)
+    private void validateFields(TravelData travelData)
             throws InvalidArgumentException, NonExistentItemException {
-        Date date = bookingData.getDate();
+        Date date = travelData.getDate();
         LocalDate from = date.getFromDate();
         LocalDate to = date.getToDate();
 
         validateDates(from, to);
 
-        DepartureDestination departureDestination = bookingData.getDepartureDestination();
+        DepartureDestination departureDestination = travelData.getDepartureDestination();
 
         if (departureDestination == null) {
             throw new InvalidArgumentException("Invalid traveling points");
         }
 
-        Transport transport = bookingData.getTransport();
+        Transport transport = travelData.getTransport();
 
         if (transport == null) {
             throw new InvalidArgumentException("Invalid transport");
