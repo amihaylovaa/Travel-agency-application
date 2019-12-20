@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 @Table(name = "transport")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
-abstract public class Transport {
+public abstract class Transport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

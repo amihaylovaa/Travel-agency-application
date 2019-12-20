@@ -1,7 +1,6 @@
 package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
-import adelina.luxtravel.utility.DistanceCalculator;
 
 import javax.persistence.*;
 

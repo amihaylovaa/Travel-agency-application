@@ -8,4 +8,5 @@ public class Constants {
     public static final double EARTH_RADIUS_IN_METERS = 6_378_000.00;
     public static final double NINETY_DEGREES = 90.00;
     public static final double NINETY_DEGREES_NEGATIVE = -90.00;
+    public static final String INVALID_ID = "Invalid id";
 }

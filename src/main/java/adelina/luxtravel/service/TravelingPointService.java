@@ -14,8 +14,7 @@ import adelina.luxtravel.exception.InvalidArgumentException;
 import java.util.List;
 import java.util.Optional;
 
-import static adelina.luxtravel.utility.Constants.NINETY_DEGREES;
-import static adelina.luxtravel.utility.Constants.NINETY_DEGREES_NEGATIVE;
+import static adelina.luxtravel.utility.Constants.*;
 
 @Service
 public class TravelingPointService {
@@ -38,7 +37,7 @@ public class TravelingPointService {
 
     public TravelingPoint findById(long id) throws InvalidArgumentException, NonExistentItemException {
         if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
+            throw new InvalidArgumentException(INVALID_ID);
         }
 
         Optional<TravelingPoint> travelingPoint = travelingPointRepository.findById(id);
@@ -75,7 +74,7 @@ public class TravelingPointService {
 
     public void deleteById(long id) throws InvalidArgumentException {
         if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
+            throw new InvalidArgumentException(INVALID_ID);
         }
         travelingPointRepository.deleteById(id);
     }
@@ -111,7 +110,7 @@ public class TravelingPointService {
         }
     }
 
-    private void validateTravelingPointDoesNotExist(TravelingPoint travelingPoint) throws InvalidArgumentException, NonExistentItemException {
+    private void validateTravelingPointDoesNotExist(TravelingPoint travelingPoint) throws InvalidArgumentException {
         String name = travelingPoint.getName();
         double latitude = travelingPoint.getLatitude();
         double longitude = travelingPoint.getLongitude();

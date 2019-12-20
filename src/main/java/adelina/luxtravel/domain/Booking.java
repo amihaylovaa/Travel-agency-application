@@ -19,32 +19,32 @@ public class Booking {
     private User user;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travel_data_id")
-    private List<TravelData> travelData;
+    private TravelingData travelingData;
     @Column(name = "reserved_tickets_count", nullable = false)
     private int reservedTicketsCount;
 
 
-    public Booking(List<TravelData> travelData, User user, int reservedTicketsCount) {
-        initializeFields(travelData, user, reservedTicketsCount);
+    public Booking(List<TravelingData> travelingData, User user, int reservedTicketsCount) {
+        initializeFields(travelingData, user, reservedTicketsCount);
     }
 
-    public Booking(long id, List<TravelData> travelData, User user, int reservedTicketsCount) {
-        this(travelData, user, reservedTicketsCount);
+    public Booking(long id, List<TravelingData> travelingData, User user, int reservedTicketsCount) {
+        this(travelingData, user, reservedTicketsCount);
         this.id = id;
     }
 
     public Booking(Booking booking) {
-        this(booking.id, booking.travelData, booking.user, booking.reservedTicketsCount);
+        this(booking.id, booking.travelingData, booking.user, booking.reservedTicketsCount);
     }
 
-    private void initializeFields(List<TravelData> travelData, User user, int reservedTicketsCount) {
-        if (travelData == null) {
+    private void initializeFields(List<TravelingData> travelingData, User user, int reservedTicketsCount) {
+        if (travelingData == null) {
             throw new FailedInitializationException("Invalid booking date");
         } else if (user == null) {
             throw new FailedInitializationException("Invalid user");
         } else {
             this.user = user;
-            this.travelData = new ArrayList<>(travelData);
+            this.travelingData = new ArrayList<>(travelingData);
             this.reservedTicketsCount = reservedTicketsCount;
         }
     }

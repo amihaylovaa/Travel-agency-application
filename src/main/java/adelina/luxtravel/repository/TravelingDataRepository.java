@@ -1,6 +1,6 @@
 package adelina.luxtravel.repository;
 
-import adelina.luxtravel.domain.TravelData;
+import adelina.luxtravel.domain.TravelingData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,13 +10,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface BookingDataRepository extends JpaRepository<TravelData, Long> {
+public interface TravelingDataRepository extends JpaRepository<TravelingData, Long> {
     @Query(value = "SELECT from_date, to_date, traveling_point.name" +
                    "traveling_point.name, transport.class" +
                    "FROM booking_data, traveling_point" +
                    "WHERE from_date = ?1 AND to_date = ?2",
             nativeQuery = true)
-    List<TravelData> findByDates(LocalDate from, LocalDate to);
+    List<TravelingData> findByDates(LocalDate from, LocalDate to);
 
     @Modifying
     @Query(value = "UPDATE booking_data" +

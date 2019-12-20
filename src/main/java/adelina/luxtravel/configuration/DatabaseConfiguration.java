@@ -21,7 +21,7 @@ public class DatabaseConfiguration {
     private Environment env;
 
     @Bean
-    synchronized public MysqlDataSource getMysqlDataSource() {
+    public synchronized MysqlDataSource getMysqlDataSource() {
         if (dataSource == null) {
             dataSource = new MysqlDataSource();
         }

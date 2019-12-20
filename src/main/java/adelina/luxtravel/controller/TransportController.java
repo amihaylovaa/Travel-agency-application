@@ -75,7 +75,7 @@ public class TransportController {
 
     @DeleteMapping
     public void deleteById(@PathVariable("id") long id)
-            throws InvalidArgumentException, NonExistentItemException {
+            throws InvalidArgumentException {
         transportService.deleteById(id);
     }
 }

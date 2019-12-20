@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static adelina.luxtravel.utility.Constants.INVALID_ID;
+
 @Service
 public class TransportService {
     private TransportRepository transportRepository;
@@ -85,7 +87,7 @@ public class TransportService {
 
     public void updateClass(TransportClass transportClass, long id) throws InvalidArgumentException {
         if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
+            throw new InvalidArgumentException(INVALID_ID);
         }
 
         validateTransportClass(transportClass);
@@ -100,7 +102,7 @@ public class TransportService {
 
     public void deleteById(long id) throws InvalidArgumentException {
         if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
+            throw new InvalidArgumentException(INVALID_ID);
         }
         transportRepository.deleteById(id);
     }

@@ -1,10 +1,10 @@
 package adelina.luxtravel.controller;
 
-import adelina.luxtravel.domain.TravelData;
+import adelina.luxtravel.domain.TravelingData;
 import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.exception.NonExistentItemException;
-import adelina.luxtravel.service.BookingDataService;
+import adelina.luxtravel.service.TravelingDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,46 +13,46 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/booking_data")
-public class BookingDataController {
-    private BookingDataService bookingDataService;
+public class TravelingDataController {
+    private TravelingDataService travelingDataService;
 
     @Autowired
-    public BookingDataController(BookingDataService bookingDataService) {
-        this.bookingDataService = bookingDataService;
+    public TravelingDataController(TravelingDataService travelingDataService) {
+        this.travelingDataService = travelingDataService;
     }
 
     @PostMapping
-    public TravelData save(@RequestBody TravelData travelData)
+    public TravelingData save(@RequestBody TravelingData travelingData)
             throws InvalidArgumentException, NonExistentItemException {
-        return bookingDataService.save(travelData);
+        return travelingDataService.save(travelingData);
     }
 
     @GetMapping(value = "id")
-    public TravelData findById(@PathVariable("id") long id)
+    public TravelingData findById(@PathVariable("id") long id)
             throws InvalidArgumentException, NonExistentItemException {
-        return bookingDataService.findById(id);
+        return travelingDataService.findById(id);
     }
 
     @GetMapping
-    public List<TravelData> findByDates(@PathVariable("from") LocalDate from, @PathVariable("to") LocalDate to)
+    public List<TravelingData> findByDates(@PathVariable("from") LocalDate from, @PathVariable("to") LocalDate to)
             throws InvalidArgumentException, NonExistentItemException {
-        return bookingDataService.findByDates(from, to);
+        return travelingDataService.findByDates(from, to);
     }
 
     @GetMapping
-    public List<TravelData> findAll() throws NonExistentItemException {
-        return bookingDataService.findAll();
+    public List<TravelingData> findAll() throws NonExistentItemException {
+        return travelingDataService.findAll();
     }
 
     @PutMapping
     public void updateTransport(@PathVariable("bookingDataId") long bookingDataId,
                                 @RequestBody Transport transport)
             throws InvalidArgumentException, NonExistentItemException {
-        bookingDataService.updateTransport(bookingDataId, transport);
+        travelingDataService.updateTransport(bookingDataId, transport);
     }
 
     @DeleteMapping
     public void deleteById(@PathVariable("id") long id) throws InvalidArgumentException {
-        bookingDataService.deleteById(id);
+        travelingDataService.deleteById(id);
     }
 }

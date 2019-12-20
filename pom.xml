@@ -21,6 +21,7 @@
         <spring-boot-starter-data.verson>2.1.4.RELEASE</spring-boot-starter-data.verson>
         <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
         <spring.security.core.version>5.2.0.RELEASE</spring.security.core.version>
+        <sonarqube.version>3.6.0.1398</sonarqube.version>
     </properties>
 
     <dependencies>
@@ -75,6 +76,11 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonarqube.version}</version>
             </plugin>
         </plugins>
     </build>

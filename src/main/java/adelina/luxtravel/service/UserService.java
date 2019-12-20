@@ -136,7 +136,7 @@ public class UserService {
         }
     }
 
-    private void validateUsernameDoesNotExist(String username) throws InvalidArgumentException, NonExistentItemException {
+    private void validateUsernameDoesNotExist(String username) throws InvalidArgumentException {
         User user = findByUsername(username);
 
         if (username.equals(user.getUsername())) {
@@ -144,7 +144,7 @@ public class UserService {
         }
     }
 
-    private void validateEmailDoesNotExist(String email) throws InvalidArgumentException, NonExistentItemException {
+    private void validateEmailDoesNotExist(String email) throws InvalidArgumentException {
         User user = findByEmail(email);
 
         if (email.equals(user.getEmail())) {

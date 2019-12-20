@@ -18,7 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "booking_data")
 @Getter
-public class TravelData {
+public class TravelingData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -39,21 +39,20 @@ public class TravelData {
               )
     private List<Booking> bookings;
 
-
-    public TravelData(TravelData travelData) {
-        this(travelData.id, travelData.departureDestination,
-                travelData.transport, travelData.date,
-                travelData.availableTicketsCount);
+    public TravelingData(TravelingData travelingData) {
+        this(travelingData.id, travelingData.departureDestination,
+                travelingData.transport, travelingData.date,
+                travelingData.availableTicketsCount);
     }
 
-    public TravelData(long id, DepartureDestination departureDestination,
-                      Transport transport, Date date, int availableTicketsCount) {
+    public TravelingData(long id, DepartureDestination departureDestination,
+                         Transport transport, Date date, int availableTicketsCount) {
         this(transport, departureDestination, date, availableTicketsCount);
         this.id = id;
     }
 
-    public TravelData(Transport transport, DepartureDestination departureDestination,
-                      Date date, int availableTicketsCount) {
+    public TravelingData(Transport transport, DepartureDestination departureDestination,
+                         Date date, int availableTicketsCount) {
         initializeFields(transport, departureDestination, date, availableTicketsCount);
     }
 
