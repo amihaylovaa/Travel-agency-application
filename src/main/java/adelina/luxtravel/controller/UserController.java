@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/all")
-    public List<User> findAll() {
+    public List<User> findAll() throws NonExistentItemException {
         return userService.findAll();
     }
 

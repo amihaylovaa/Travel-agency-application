@@ -136,6 +136,10 @@ public class BookingService {
             throw new NonExistentItemException("Booking data does not exist");
         }
 
+        validateTicketsAreSufficient(reservedTicketsCount, availableTicketsCount);
+    }
+
+    private void validateTicketsAreSufficient(int reservedTicketsCount, int availableTicketsCount) throws NonExistentItemException {
         if (reservedTicketsCount > availableTicketsCount) {
             throw new NonExistentItemException("Unavailable tickets");
         }
@@ -169,9 +173,7 @@ public class BookingService {
         int availableTicketsCount = travelingData.getAvailableTicketsCount();
         int reservedTicketsCount = booking.getReservedTicketsCount();
 
-        if (newTicketsCount > availableTicketsCount) {
-            throw new NonExistentItemException("Unavailable count of tickets, update can not be executed");
-        }
+        validateTicketsAreSufficient(newTicketsCount, availableTicketsCount);
         travelingDataRepository.updateTicketsReservation(reservedTicketsCount, id);
     }
 }

@@ -9,4 +9,6 @@ public class Constants {
     public static final double NINETY_DEGREES = 90.00;
     public static final double NINETY_DEGREES_NEGATIVE = -90.00;
     public static final String INVALID_ID = "Invalid id";
+    public static final String INVALID_USERNAME = "Invalid username";
+    public static final String INVALID_EMAIL = "Invalid email";
 }

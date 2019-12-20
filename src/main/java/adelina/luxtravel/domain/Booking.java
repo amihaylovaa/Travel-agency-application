@@ -24,11 +24,11 @@ public class Booking {
     private int reservedTicketsCount;
 
 
-    public Booking(List<TravelingData> travelingData, User user, int reservedTicketsCount) {
+    public Booking(TravelingData travelingData, User user, int reservedTicketsCount) {
         initializeFields(travelingData, user, reservedTicketsCount);
     }
 
-    public Booking(long id, List<TravelingData> travelingData, User user, int reservedTicketsCount) {
+    public Booking(long id, TravelingData travelingData, User user, int reservedTicketsCount) {
         this(travelingData, user, reservedTicketsCount);
         this.id = id;
     }
@@ -37,14 +37,14 @@ public class Booking {
         this(booking.id, booking.travelingData, booking.user, booking.reservedTicketsCount);
     }
 
-    private void initializeFields(List<TravelingData> travelingData, User user, int reservedTicketsCount) {
+    private void initializeFields(TravelingData travelingData, User user, int reservedTicketsCount) {
         if (travelingData == null) {
             throw new FailedInitializationException("Invalid booking date");
         } else if (user == null) {
             throw new FailedInitializationException("Invalid user");
         } else {
             this.user = user;
-            this.travelingData = new ArrayList<>(travelingData);
+            this.travelingData = travelingData;
             this.reservedTicketsCount = reservedTicketsCount;
         }
     }
