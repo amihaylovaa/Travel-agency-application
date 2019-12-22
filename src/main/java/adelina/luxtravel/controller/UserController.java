@@ -25,12 +25,14 @@ public class UserController {
     }
 
     @GetMapping(value = "/by-username")
-    public User findByUsername(@PathVariable("username") String username) throws InvalidArgumentException {
+    public User findByUsername(@PathVariable("username") String username)
+            throws InvalidArgumentException, NonExistentItemException {
         return userService.findByUsername(username);
     }
 
     @GetMapping(value = "/by-email")
-    public User findByEmail(@PathVariable("email") String email) throws InvalidArgumentException {
+    public User findByEmail(@PathVariable("email") String email)
+            throws InvalidArgumentException, NonExistentItemException {
         return userService.findByEmail(email);
     }
 
@@ -43,7 +45,7 @@ public class UserController {
     public void updatePassword(@PathVariable("username") String username,
                                @PathVariable("newPassword") String newPassword,
                                @PathVariable("oldPassword") String oldPassword)
-            throws InvalidArgumentException {
+            throws InvalidArgumentException, NonExistentItemException {
         userService.updatePassword(username, newPassword, oldPassword);
     }
 
@@ -58,7 +60,7 @@ public class UserController {
     @DeleteMapping(value = "/by-username")
     public void deleteByUsername(@PathVariable("username") String username,
                                  @PathVariable("password") String password)
-            throws InvalidArgumentException {
+            throws InvalidArgumentException, NonExistentItemException {
 
         userService.deleteByUsername(username, password);
     }
@@ -66,7 +68,7 @@ public class UserController {
     @DeleteMapping(value = "/by_email")
     public void deleteByEmail(@PathVariable("email") String email,
                               @PathVariable("password") String password)
-            throws InvalidArgumentException {
+            throws InvalidArgumentException, NonExistentItemException {
 
         userService.deleteByEmail(email, password);
     }

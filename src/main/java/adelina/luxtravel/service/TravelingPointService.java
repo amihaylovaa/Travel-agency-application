@@ -27,7 +27,6 @@ public class TravelingPointService {
 
     public TravelingPoint save(TravelingPoint travelingPoint) throws InvalidArgumentException {
         validateTravelingPoint(travelingPoint);
-        validateTravelingPointFields(travelingPoint);
         validateTravelingPointDoesNotExist(travelingPoint);
 
         return travelingPointRepository.save(travelingPoint);
@@ -68,9 +67,16 @@ public class TravelingPointService {
     }
 
     public void updateName(String newName, String oldName) throws InvalidArgumentException {
-        if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(oldName) || newName.equals(oldName)) {
-            throw new InvalidArgumentException("Invalid arguments");
+        if (StringUtils.isEmpty(newName)) {
+            throw new InvalidArgumentException("Invalid new name");
         }
+        if (StringUtils.isEmpty(oldName)) {
+            throw new InvalidArgumentException("Invalid old name");
+        }
+        if (newName.equals(oldName)) {
+            throw new InvalidArgumentException("New name can not be the same as the old one");
+        }
+
         validateTravelingPointDoesNotExist(findByName(newName));
         travelingPointRepository.updateName(newName, oldName);
     }
@@ -94,20 +100,6 @@ public class TravelingPointService {
     private void validateTravelingPoint(TravelingPoint travelingPoint) throws InvalidArgumentException {
         if (travelingPoint == null) {
             throw new InvalidArgumentException("Invalid traveling point");
-        }
-    }
-
-    private void validateTravelingPointFields(TravelingPoint travelingPoint) throws InvalidArgumentException {
-        String name = travelingPoint.getName();
-        double latitude = travelingPoint.getLatitude();
-        double longitude = travelingPoint.getLongitude();
-
-        if ((longitude > NINETY_DEGREES || longitude < NINETY_DEGREES_NEGATIVE) &&
-                (latitude > NINETY_DEGREES || latitude < NINETY_DEGREES_NEGATIVE)) {
-            throw new InvalidArgumentException("Invalid coordinates");
-        }
-        if (StringUtils.isEmpty(name)) {
-            throw new InvalidArgumentException("Invalid name");
         }
     }
 

@@ -22,6 +22,10 @@
         <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
         <spring.security.core.version>5.2.0.RELEASE</spring.security.core.version>
         <sonarqube.version>3.6.0.1398</sonarqube.version>
+        <bean.validation.api.version>2.0.1.Final</bean.validation.api.version>
+        <hibernate.validator.version>6.0.16.Final</hibernate.validator.version>
+        <hibernate.validator.processor.annotation.version>6.0.17.Final
+        </hibernate.validator.processor.annotation.version>
     </properties>
 
     <dependencies>
@@ -60,6 +64,21 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
             <version>${spring.security.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${bean.validation.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>${hibernate.validator.processor.annotation.version}</version>
         </dependency>
     </dependencies>
 

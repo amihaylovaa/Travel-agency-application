@@ -30,7 +30,10 @@ public class BookingService {
     }
 
     public Booking save(Booking booking) throws InvalidArgumentException, NonExistentItemException {
-        validateBooking(booking);
+        if (booking == null) {
+            throw new InvalidArgumentException("Invalid booking");
+        }
+        validateFieldsExist(booking);
         reserveTickets(booking);
         return bookingRepository.save(booking);
     }
@@ -79,7 +82,7 @@ public class BookingService {
             throw new InvalidArgumentException("Invalid tickets count");
         }
 
-        validateUpdateIsPossible(id, reservedTicketsCount);
+        validateTicketsUpdate(id, reservedTicketsCount);
 
         bookingRepository.updateByTickets(reservedTicketsCount, id);
         travelingDataRepository.reserveTickets(reservedTicketsCount, id);
@@ -93,33 +96,10 @@ public class BookingService {
         bookingRepository.deleteById(id);
     }
 
-    private void validateBooking(Booking booking) throws InvalidArgumentException, NonExistentItemException {
-        if (booking == null) {
-            throw new InvalidArgumentException("Invalid booking");
-        }
-        validateBookingFields(booking);
-    }
-
-    private void validateBookingFields(Booking booking)
-            throws InvalidArgumentException, NonExistentItemException {
+    private void validateFieldsExist(Booking booking) throws NonExistentItemException {
         User user = booking.getUser();
         TravelingData travelingData = booking.getTravelingData();
         int reservedTicketsCount = booking.getReservedTicketsCount();
-
-        if (user == null) {
-            throw new InvalidArgumentException("Invalid user");
-        }
-        if (travelingData == null) {
-            throw new InvalidArgumentException("Invalid booking data");
-        }
-        if (reservedTicketsCount <= NumberUtils.INTEGER_ZERO) {
-            throw new InvalidArgumentException("Tickets' count can not be less than or equal to zero");
-        }
-        validateFieldsExist(user, travelingData, reservedTicketsCount);
-    }
-
-    private void validateFieldsExist(User user, TravelingData travelingData, int reservedTicketsCount)
-            throws NonExistentItemException {
         long userId = user.getId();
         long bookingDataId = travelingData.getId();
         int availableTicketsCount = travelingData.getAvailableTicketsCount();
@@ -141,7 +121,7 @@ public class BookingService {
 
     private void validateTicketsAreSufficient(int reservedTicketsCount, int availableTicketsCount) throws NonExistentItemException {
         if (reservedTicketsCount > availableTicketsCount) {
-            throw new NonExistentItemException("Unavailable tickets");
+            throw new NonExistentItemException("Unavailable tickets count");
         }
     }
 
@@ -166,14 +146,14 @@ public class BookingService {
         return travelingData.getId();
     }
 
-    private void validateUpdateIsPossible(long id, int newTicketsCount)
+    private void validateTicketsUpdate(long bookingId, int newTicketsCount)
             throws InvalidArgumentException, NonExistentItemException {
-        Booking booking = findById(id);
+        Booking booking = findById(bookingId);
         TravelingData travelingData = booking.getTravelingData();
         int availableTicketsCount = travelingData.getAvailableTicketsCount();
         int reservedTicketsCount = booking.getReservedTicketsCount();
 
         validateTicketsAreSufficient(newTicketsCount, availableTicketsCount);
-        travelingDataRepository.updateTicketsReservation(reservedTicketsCount, id);
+        travelingDataRepository.updateTicketsReservation(reservedTicketsCount, bookingId);
     }
 }

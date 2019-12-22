@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static adelina.luxtravel.utility.Constants.INVALID_EMAIL;
 import static adelina.luxtravel.utility.Constants.INVALID_USERNAME;
@@ -25,9 +26,11 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User save(User user) throws InvalidArgumentException {
-        validateUser(user);
-        validateUserFields(user);
+    public User save(User user) throws InvalidArgumentException, NonExistentItemException {
+        if (user == null) {
+            throw new InvalidArgumentException("Invalid user");
+        }
+
         validateUsernameDoesNotExist(user.getUsername());
         validateEmailDoesNotExist(user.getEmail());
 
@@ -38,18 +41,29 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User findByUsername(String username) throws InvalidArgumentException {
+    public User findByUsername(String username) throws InvalidArgumentException, NonExistentItemException {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException(INVALID_USERNAME);
         }
-        return userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
+
+        if (!user.isPresent()) {
+            throw new NonExistentItemException("User with this username does not exist");
+        }
+        return user.get();
     }
 
-    public User findByEmail(String email) throws InvalidArgumentException {
+    public User findByEmail(String email) throws InvalidArgumentException, NonExistentItemException {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException(INVALID_EMAIL);
         }
-        return userRepository.findByEmail(email);
+
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (!user.isPresent()) {
+            throw new NonExistentItemException("User with this email does not exist");
+        }
+        return user.get();
     }
 
     public List<User> findAll() throws NonExistentItemException {
@@ -61,8 +75,9 @@ public class UserService {
         return users;
     }
 
-    public void updatePassword(String username, String newPassword, String oldPassword) throws InvalidArgumentException {
-        validateUpdatePassword(username, newPassword, oldPassword);
+    public void updatePassword(String username, String newPassword, String oldPassword)
+            throws InvalidArgumentException, NonExistentItemException {
+        validatePasswordUpdate(username, newPassword, oldPassword);
 
         User user = findByUsername(username);
 
@@ -73,8 +88,9 @@ public class UserService {
         userRepository.updatePassword(newHashedPassword, username);
     }
 
-    public void updateEmail(String newEmail, String oldEmail, String password) throws InvalidArgumentException {
-        validateUpdateEmail(newEmail, oldEmail, password);
+    public void updateEmail(String newEmail, String oldEmail, String password)
+            throws InvalidArgumentException, NonExistentItemException {
+        validateEmailUpdate(newEmail, oldEmail, password);
 
         User user = findByEmail(oldEmail);
 
@@ -85,7 +101,8 @@ public class UserService {
         userRepository.updateEmail(newEmail, oldEmail);
     }
 
-    public void deleteByUsername(String username, String password) throws InvalidArgumentException {
+    public void deleteByUsername(String username, String password)
+            throws InvalidArgumentException, NonExistentItemException {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
@@ -98,7 +115,8 @@ public class UserService {
         userRepository.deleteByUsername(username);
     }
 
-    public void deleteByEmail(String email, String password) throws InvalidArgumentException {
+    public void deleteByEmail(String email, String password)
+            throws InvalidArgumentException, NonExistentItemException {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException(INVALID_EMAIL);
         }
@@ -111,47 +129,27 @@ public class UserService {
         userRepository.deleteByEmail(email);
     }
 
-    private void validateUser(User user) throws InvalidArgumentException {
-        if (user == null) {
-            throw new InvalidArgumentException("Invalid user");
-        }
-    }
-
-    private void validateUserFields(User user) throws InvalidArgumentException {
-        String username = user.getUsername();
-
-        if (StringUtils.isEmpty(username)) {
-            throw new InvalidArgumentException(INVALID_USERNAME);
-        }
-
-        String email = user.getEmail();
-
-        if (StringUtils.isEmpty(email)) {
-            throw new InvalidArgumentException(INVALID_EMAIL);
-        }
-
-        validatePassword(user.getPassword());
-    }
-
     private void validatePassword(String password) throws InvalidArgumentException {
         if (StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Invalid password");
         }
     }
 
-    private void validateUsernameDoesNotExist(String username) throws InvalidArgumentException {
+    private void validateUsernameDoesNotExist(String username)
+            throws InvalidArgumentException, NonExistentItemException {
         User user = findByUsername(username);
 
         if (username.equals(user.getUsername())) {
-            throw new AlreadyExistingItemException("User with this user name already exists");
+            throw new AlreadyExistingItemException("User with this username already exists");
         }
     }
 
-    private void validateEmailDoesNotExist(String email) throws InvalidArgumentException {
+    private void validateEmailDoesNotExist(String email)
+            throws InvalidArgumentException, NonExistentItemException {
         User user = findByEmail(email);
 
         if (email.equals(user.getEmail())) {
-            throw new AlreadyExistingItemException("User with this email name already exists");
+            throw new AlreadyExistingItemException("User with this email already exists");
         }
     }
 
@@ -162,7 +160,7 @@ public class UserService {
         }
     }
 
-    private void validateUpdateEmail(String newEmail, String oldEmail, String password) throws InvalidArgumentException {
+    private void validateEmailUpdate(String newEmail, String oldEmail, String password) throws InvalidArgumentException {
         if (StringUtils.isEmpty(newEmail)) {
             throw new InvalidArgumentException("Invalid new email");
         }
@@ -176,7 +174,7 @@ public class UserService {
         validatePassword(password);
     }
 
-    private void validateUpdatePassword(String username, String newPassword, String oldPassword) throws InvalidArgumentException {
+    private void validatePasswordUpdate(String username, String newPassword, String oldPassword) throws InvalidArgumentException {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException(INVALID_USERNAME);
         }

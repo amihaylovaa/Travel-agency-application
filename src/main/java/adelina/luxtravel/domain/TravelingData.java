@@ -11,6 +11,8 @@ import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,27 +24,32 @@ public class TravelingData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotNull(message = "Departure point and destination point can not be null")
     @Embedded
     DepartureDestination departureDestination;
+    @NotNull(message = "Dates can not be null")
     @Embedded
     Date date;
+    @NotNull(message = "Transport can not be null")
     @OneToOne
     @JoinColumn(name = "transport_id")
     private Transport transport;
+    @Size(min = 1, message = "Count available tickets must have at least one ticket")
     @Column(name = "count_available_tickets", nullable = false)
     private int availableTicketsCount;
+    // TODO : validation for double
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
+    @NotNull(message = "List of bookings can not be null")
     @OneToMany(mappedBy = "booking_data",
-               cascade = CascadeType.ALL,
-               orphanRemoval = true
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
               )
     private List<Booking> bookings;
 
     public TravelingData(TravelingData travelingData) {
         this(travelingData.id, travelingData.departureDestination,
-                travelingData.transport, travelingData.date,
-                travelingData.availableTicketsCount);
+                travelingData.transport, travelingData.date, travelingData.availableTicketsCount);
     }
 
     public TravelingData(long id, DepartureDestination departureDestination,
@@ -53,25 +60,12 @@ public class TravelingData {
 
     public TravelingData(Transport transport, DepartureDestination departureDestination,
                          Date date, int availableTicketsCount) {
-        initializeFields(transport, departureDestination, date, availableTicketsCount);
-    }
-
-    private void initializeFields(Transport transport, DepartureDestination departureDestination,
-                                  Date date, int availableTicketsCount) {
-        if (transport == null) {
-            throw new FailedInitializationException("Invalid transport");
-        } else if (date == null) {
-            throw new FailedInitializationException("Invalid dates");
-        } else if (departureDestination == null) {
-            throw new FailedInitializationException("Invalid source or destination");
-        } else {
-            this.date = date;
-            this.departureDestination = departureDestination;
-            this.transport = transport;
-            this.availableTicketsCount = availableTicketsCount;
-            this.bookings = new ArrayList<>();
-            setPrice();
-        }
+        this.transport = transport;
+        this.departureDestination = departureDestination;
+        this.date = date;
+        this.availableTicketsCount = availableTicketsCount;
+        this.bookings = new ArrayList<>();
+        setPrice();
     }
 
     private void setPrice() {

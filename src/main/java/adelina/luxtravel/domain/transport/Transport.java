@@ -1,10 +1,10 @@
 package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
-import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -17,12 +17,13 @@ public abstract class Transport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     protected long id;
+    @NotNull(message = "Transport class can not be null")
     @Enumerated(EnumType.STRING)
     @Column(name = "class", nullable = false, unique = true, length = 12)
     TransportClass transportClass;
 
     public Transport(TransportClass transportClass) {
-        initializeFields(transportClass);
+        this.transportClass = transportClass;
     }
 
     public Transport(Transport transport) {
@@ -34,18 +35,11 @@ public abstract class Transport {
         this.id = id;
     }
 
-    public abstract LocalTime calculateDuration(TravelingPoint departurePoint, TravelingPoint destinationPoint);
-
     public LocalTime parseToLocalTime(Double duration) {
         String durationString = duration.toString().replace('.', ':');
 
         return LocalTime.parse(durationString, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    private void initializeFields(TransportClass transportClass) {
-        if (transportClass == null) {
-            throw new FailedInitializationException("Invalid vehicle class");
-        }
-        this.transportClass = transportClass;
-    }
+    public abstract LocalTime calculateDuration(TravelingPoint departurePoint, TravelingPoint destinationPoint);
 }

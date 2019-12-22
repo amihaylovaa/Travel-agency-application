@@ -31,9 +31,9 @@ public class TravelingDataService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
-    public TravelingData save(TravelingData travelingData)
-            throws InvalidArgumentException, NonExistentItemException {
+    public TravelingData save(TravelingData travelingData) throws InvalidArgumentException, NonExistentItemException {
         validateBookingData(travelingData);
+        validateFieldsExist(travelingData.getDepartureDestination(), travelingData.getTransport());
         return travelingDataRepository.save(travelingData);
     }
 
@@ -71,17 +71,18 @@ public class TravelingDataService {
         return travelingData;
     }
 
-    public void updateTransport(long bookingDataId, Transport transport)
+    public void updateTransport(long travelingDataId, Transport transport)
             throws InvalidArgumentException, NonExistentItemException {
-        validateTransportData(transport);
-
-        if (bookingDataId <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid booking data id");
+        if (travelingDataId <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException("Invalid traveling data id");
         }
+        // TODO : THINK
+        TravelingData travelingData = findById(travelingDataId);
+        validateTransportData(transport);
 
         long transportId = transport.getId();
 
-        travelingDataRepository.updateTransport(transportId, bookingDataId);
+        travelingDataRepository.updateTransport(transportId, travelingDataId);
     }
 
     public void deleteById(long id) throws InvalidArgumentException {
@@ -89,6 +90,31 @@ public class TravelingDataService {
             throw new InvalidArgumentException(INVALID_ID);
         }
         travelingDataRepository.deleteById(id);
+    }
+
+    private void validateBookingData(TravelingData travelingData) throws InvalidArgumentException {
+        if (travelingData == null) {
+            throw new InvalidArgumentException("Invalid booking data");
+        }
+    }
+
+    private void validateFieldsExist(DepartureDestination departureDestination, Transport transport)
+            throws InvalidArgumentException, NonExistentItemException {
+        TravelingPoint departurePoint = departureDestination.getDeparturePoint();
+        TravelingPoint destinationPoint = departureDestination.getDestinationPoint();
+        long departurePointId = departurePoint.getId();
+        long destinationPointId = destinationPoint.getId();
+        Optional<TravelingPoint> startingPoint = travelingPointRepository.findById(departurePointId);
+        Optional<TravelingPoint> endingPoint = travelingPointRepository.findById(destinationPointId);
+
+        if (!startingPoint.isPresent()) {
+            throw new NonExistentItemException("Departure traveling point does not exist");
+        }
+        if (!endingPoint.isPresent()) {
+            throw new NonExistentItemException("Destination traveling point does not exist");
+        }
+
+        validateTransportData(transport);
     }
 
     private void validateTransportData(Transport transport)
@@ -102,60 +128,6 @@ public class TravelingDataService {
 
         if (!foundTransport.isPresent()) {
             throw new NonExistentItemException("This transport does not exist");
-        }
-    }
-
-    private void validateBookingData(TravelingData travelingData)
-            throws InvalidArgumentException, NonExistentItemException {
-        if (travelingData == null) {
-            throw new InvalidArgumentException("Invalid booking data");
-        }
-        validateFields(travelingData);
-    }
-
-    private void validateFields(TravelingData travelingData)
-            throws InvalidArgumentException, NonExistentItemException {
-        Date date = travelingData.getDate();
-        LocalDate from = date.getFromDate();
-        LocalDate to = date.getToDate();
-
-        validateDates(from, to);
-
-        DepartureDestination departureDestination = travelingData.getDepartureDestination();
-
-        if (departureDestination == null) {
-            throw new InvalidArgumentException("Invalid traveling points");
-        }
-
-        Transport transport = travelingData.getTransport();
-
-        if (transport == null) {
-            throw new InvalidArgumentException("Invalid transport");
-        }
-
-        TravelingPoint startingPoint = departureDestination.getDeparturePoint();
-        TravelingPoint targetPoint = departureDestination.getDestinationPoint();
-
-        validateFieldsExist(startingPoint, targetPoint, transport);
-    }
-
-    private void validateFieldsExist(TravelingPoint startingPoint, TravelingPoint targetPoint,
-                                     Transport transport) throws NonExistentItemException {
-        long transportId = transport.getId();
-        long startingPointId = startingPoint.getId();
-        long targetPointId = targetPoint.getId();
-        Optional<TravelingPoint> fromPoint = travelingPointRepository.findById(startingPointId);
-        Optional<TravelingPoint> toPoint = travelingPointRepository.findById(targetPointId);
-        Optional<Transport> transports = transportRepository.findById(transportId);
-
-        if (!fromPoint.isPresent()) {
-            throw new NonExistentItemException("Source traveling point does not exist");
-        }
-        if (!toPoint.isPresent()) {
-            throw new NonExistentItemException("Destination traveling point does not exist");
-        }
-        if (!transports.isPresent()) {
-            throw new NonExistentItemException("Transport does not exist");
         }
     }
 
