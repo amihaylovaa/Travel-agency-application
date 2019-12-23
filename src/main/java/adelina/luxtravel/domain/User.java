@@ -32,10 +32,10 @@ public class User {
     private String password;
     @NotNull(message = "List of bookings can not be null")
     @OneToMany(mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+               cascade = CascadeType.ALL,
+               orphanRemoval = true
              )
-    List<Booking> bookings;
+   private List<Booking> bookings;
 
     public User(User user) {
         this(user.id, user.email, user.password, user.username);

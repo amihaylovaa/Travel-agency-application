@@ -97,9 +97,9 @@ public class TransportService {
         validateTransportClass(transportClass);
 
         try {
-            Transport transport = findById(id);
+            findById(id);
         } catch (NonExistentItemException nonExistentItemException) {
-            // TODO - logger
+            // TODO : logger
         }
         transportRepository.updateClass(transportClass, id);
     }

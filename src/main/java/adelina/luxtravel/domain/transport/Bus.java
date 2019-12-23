@@ -12,10 +12,6 @@ import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 @Entity
 @Table(name = "bus")
 public class Bus extends Transport {
-    @OneToOne
-    @JoinColumn(name = "id")
-    private long id;
-
     public Bus(TransportClass vehicleClass) {
         super(vehicleClass);
     }

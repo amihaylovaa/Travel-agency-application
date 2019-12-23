@@ -71,14 +71,22 @@ public class TravelingDataService {
         return travelingData;
     }
 
-    public void updateTransport(long travelingDataId, Transport transport)
-            throws InvalidArgumentException, NonExistentItemException {
+    public void updateTransport(long travelingDataId, Transport transport) throws InvalidArgumentException {
         if (travelingDataId <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid traveling data id");
         }
-        // TODO : THINK
-        TravelingData travelingData = findById(travelingDataId);
-        validateTransportData(transport);
+
+        try {
+            findById(travelingDataId);
+            try {
+                validateTransportData(transport);
+            }
+            catch (NonExistentItemException nonExistentItemException) {
+                // TODO : logger
+            }
+        } catch (NonExistentItemException nonExistentItemException) {
+            // TODO : logger
+        }
 
         long transportId = transport.getId();
 

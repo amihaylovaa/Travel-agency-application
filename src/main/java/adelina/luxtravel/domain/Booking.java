@@ -1,13 +1,11 @@
 package adelina.luxtravel.domain;
 
-import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 @Table(name = "booking")
@@ -20,11 +18,11 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "Traveling data can not be null")
-    @JoinColumn(name = "travel_data_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "traveling_data_id")
     private TravelingData travelingData;
-    @Size(min = 1, message = "Reserved tickets count can not be less than one")
+    @Min(value = 1, message = "Reserved tickets count can not be less than one")
     @Column(name = "reserved_tickets_count", nullable = false)
     private int reservedTicketsCount;
 

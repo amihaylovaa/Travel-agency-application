@@ -7,18 +7,18 @@ import static adelina.luxtravel.utility.Constants.MINUTE;
 import static adelina.luxtravel.utility.Constants.TEN_PERCENT;
 
 import adelina.luxtravel.domain.wrapper.*;
-import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "booking_data")
+@Table(name = "traveling_data")
 @Getter
 public class TravelingData {
     @Id
@@ -34,16 +34,16 @@ public class TravelingData {
     @OneToOne
     @JoinColumn(name = "transport_id")
     private Transport transport;
-    @Size(min = 1, message = "Count available tickets must have at least one ticket")
+    @Min(value = 1, message = "Count available tickets must have at least one ticket")
     @Column(name = "count_available_tickets", nullable = false)
     private int availableTicketsCount;
-    // TODO : validation for double
+    @DecimalMin(value ="10.0", message = "Price can not be less than 10.0 ")
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
     @NotNull(message = "List of bookings can not be null")
-    @OneToMany(mappedBy = "booking_data",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+    @OneToMany(mappedBy = "travelingData",
+               cascade = CascadeType.ALL,
+               orphanRemoval = true
               )
     private List<Booking> bookings;
 

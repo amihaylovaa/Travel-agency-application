@@ -26,13 +26,13 @@ public class BookingController {
         return bookingService.save(booking);
     }
 
-    @GetMapping(value = "/id")
+    @GetMapping(value = "/{id}")
     public Booking findById(@PathVariable("id") long id)
             throws InvalidArgumentException, NonExistentItemException {
         return bookingService.findById(id);
     }
 
-    @GetMapping(value = "/bookings-user")
+    @GetMapping(value = "/user/{username}")
     public List<Booking> findAllUserBookings(@PathVariable("username") String username)
             throws InvalidArgumentException, NonExistentItemException {
         return bookingService.findAllUserBookings(username);
@@ -43,14 +43,14 @@ public class BookingController {
         return bookingService.findAll();
     }
 
-    @PutMapping
+    @PutMapping(value = "/{id}/{reservedTicketsCount}")
     public void updateTickets(@PathVariable("id") long id,
-                              @PathVariable("newTicketsCount") int reservedTicketsCount)
+                              @PathVariable("reservedTicketsCount") int reservedTicketsCount)
             throws InvalidArgumentException, NonExistentItemException {
         bookingService.updateTickets(id, reservedTicketsCount);
     }
 
-    @DeleteMapping(value = "id")
+    @DeleteMapping(value = "{id}")
     public void deleteById(long id) throws InvalidArgumentException, NonExistentItemException {
         bookingService.deleteById(id);
     }

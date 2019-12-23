@@ -7,6 +7,7 @@ import adelina.luxtravel.service.TravelingPointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class TravelingPointController {
 
     @PostMapping
     public TravelingPoint save(@RequestBody TravelingPoint travelingPoint)
-            throws InvalidArgumentException, NonExistentItemException {
+            throws InvalidArgumentException {
         return travelingPointService.save(travelingPoint);
     }
 
@@ -31,14 +32,14 @@ public class TravelingPointController {
         return travelingPointService.saveAll(travelingPoints);
     }
 
-    @GetMapping(value = "/id")
-    public TravelingPoint findById(@PathVariable long id)
+    @GetMapping(value = "/{id}")
+    public TravelingPoint findById(@PathParam("id") long id)
             throws InvalidArgumentException, NonExistentItemException {
         return travelingPointService.findById(id);
     }
 
-    @GetMapping(value = "/name")
-    public TravelingPoint findByName(@PathVariable String name) throws InvalidArgumentException {
+    @GetMapping(value = "/{name}")
+    public TravelingPoint findByName(@PathParam("name") String name) throws InvalidArgumentException {
         return travelingPointService.findByName(name);
     }
 
@@ -47,13 +48,13 @@ public class TravelingPointController {
         return travelingPointService.findAll();
     }
 
-    @PostMapping
-    public void updateName(@PathVariable String newName, @PathVariable String oldName)
-            throws InvalidArgumentException, NonExistentItemException {
+    @PutMapping(value = "/{newName}/{oldName}")
+    public void updateName(@PathParam("newName") String newName, @PathParam("oldName") String oldName)
+            throws InvalidArgumentException {
         travelingPointService.updateName(newName, oldName);
     }
 
-    @DeleteMapping(value = "/id")
+    @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable long id) throws InvalidArgumentException {
         travelingPointService.deleteById(id);
     }

@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/transports")
 public class TransportController {
-
     private TransportService transportService;
 
     @Autowired
@@ -27,7 +26,7 @@ public class TransportController {
         return transportService.saveBus(transport);
     }
 
-    @PostMapping(value = "/bus")
+    @PostMapping(value = "/airplane")
     public Transport saveAirplane(@RequestBody Transport transport)
             throws InvalidArgumentException {
         return transportService.saveAirplane(transport);
@@ -39,41 +38,41 @@ public class TransportController {
         return transportService.saveAll(transports);
     }
 
-    @GetMapping(value = "/id")
+    @GetMapping(value = "/{id}")
     public Transport findById(@PathVariable("id") long id)
             throws InvalidArgumentException, NonExistentItemException {
         return transportService.findById(id);
     }
 
-    @GetMapping(value = "/all-buses-by-transport_class")
+    @GetMapping(value = "/buses/{transportClass}")
     public List<Transport> findAllBusesByClass(@PathVariable("transportClass") TransportClass transportClass)
             throws InvalidArgumentException, NonExistentItemException {
         return transportService.findAllBusesByClass(transportClass);
     }
 
-    @GetMapping(value = "/all-airplanes-by-transport_class")
+    @GetMapping(value = "/airplanes/{transportClass}")
     public List<Transport> findAllAirplanesByClass(@PathVariable("transportClass") TransportClass transportClass)
             throws InvalidArgumentException, NonExistentItemException {
         return transportService.findAllAirplanesByClass(transportClass);
     }
 
-    @GetMapping(value = "/all-buses")
+    @GetMapping(value = "/buses")
     public List<Transport> findAllBuses() throws NonExistentItemException {
         return transportService.findAllBuses();
     }
 
-    @GetMapping(value = "/all-airplanes")
+    @GetMapping(value = "/airplanes")
     public List<Transport> findAllAirplanes() throws NonExistentItemException {
         return transportService.findAllAirplanes();
     }
 
-    @PutMapping
+    @PutMapping(value = "{transportClass}/{id}")
     public void updateClass(@PathVariable("transportClass") TransportClass transportClass,
                             @PathVariable("id") long id) throws InvalidArgumentException {
         transportService.updateClass(transportClass, id);
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable("id") long id)
             throws InvalidArgumentException {
         transportService.deleteById(id);
