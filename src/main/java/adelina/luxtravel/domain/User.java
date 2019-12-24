@@ -34,7 +34,7 @@ public class User {
     @OneToMany(mappedBy = "user",
                cascade = CascadeType.ALL,
                orphanRemoval = true
-             )
+              )
    private List<Booking> bookings;
 
     public User(User user) {
@@ -52,5 +52,4 @@ public class User {
         this.password = password;
         this.bookings = new ArrayList<>();
     }
-
 }

@@ -31,13 +31,13 @@ public class TravelingDataService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
-    public TravelingData save(TravelingData travelingData) throws InvalidArgumentException, NonExistentItemException {
+    public TravelingData save(TravelingData travelingData) {
         validateBookingData(travelingData);
         validateFieldsExist(travelingData.getDepartureDestination(), travelingData.getTransport());
         return travelingDataRepository.save(travelingData);
     }
 
-    public TravelingData findById(long id) throws InvalidArgumentException, NonExistentItemException {
+    public TravelingData findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
@@ -50,8 +50,7 @@ public class TravelingDataService {
         return bookingData.get();
     }
 
-    public List<TravelingData> findByDates(LocalDate from, LocalDate to)
-            throws InvalidArgumentException, NonExistentItemException {
+    public List<TravelingData> findByDates(LocalDate from, LocalDate to) {
         validateDates(from, to);
 
         List<TravelingData> travelingData = travelingDataRepository.findByDates(from, to);
@@ -62,7 +61,7 @@ public class TravelingDataService {
         return travelingData;
     }
 
-    public List<TravelingData> findAll() throws NonExistentItemException {
+    public List<TravelingData> findAll() {
         List<TravelingData> travelingData = travelingDataRepository.findAll();
 
         if (ObjectUtils.isEmpty(travelingData)) {
@@ -71,22 +70,13 @@ public class TravelingDataService {
         return travelingData;
     }
 
-    public void updateTransport(long travelingDataId, Transport transport) throws InvalidArgumentException {
+    public void updateTransport(long travelingDataId, Transport transport) {
         if (travelingDataId <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid traveling data id");
         }
 
-        try {
-            findById(travelingDataId);
-            try {
-                validateTransportData(transport);
-            }
-            catch (NonExistentItemException nonExistentItemException) {
-                // TODO : logger
-            }
-        } catch (NonExistentItemException nonExistentItemException) {
-            // TODO : logger
-        }
+        findById(travelingDataId);
+        validateTransportData(transport);
 
         long transportId = transport.getId();
 
@@ -100,14 +90,13 @@ public class TravelingDataService {
         travelingDataRepository.deleteById(id);
     }
 
-    private void validateBookingData(TravelingData travelingData) throws InvalidArgumentException {
+    private void validateBookingData(TravelingData travelingData) {
         if (travelingData == null) {
             throw new InvalidArgumentException("Invalid booking data");
         }
     }
 
-    private void validateFieldsExist(DepartureDestination departureDestination, Transport transport)
-            throws InvalidArgumentException, NonExistentItemException {
+    private void validateFieldsExist(DepartureDestination departureDestination, Transport transport) {
         TravelingPoint departurePoint = departureDestination.getDeparturePoint();
         TravelingPoint destinationPoint = departureDestination.getDestinationPoint();
         long departurePointId = departurePoint.getId();
@@ -125,8 +114,7 @@ public class TravelingDataService {
         validateTransportData(transport);
     }
 
-    private void validateTransportData(Transport transport)
-            throws InvalidArgumentException, NonExistentItemException {
+    private void validateTransportData(Transport transport) {
         if (transport == null) {
             throw new InvalidArgumentException("Invalid transport");
         }
@@ -139,7 +127,7 @@ public class TravelingDataService {
         }
     }
 
-    private void validateDates(LocalDate from, LocalDate to) throws InvalidArgumentException {
+    private void validateDates(LocalDate from, LocalDate to) {
         if (from == null || to == null || from.isEqual(to)
                 || from.isAfter(to) || from.isBefore(LocalDate.now())) {
             throw new InvalidArgumentException("Invalid dates");

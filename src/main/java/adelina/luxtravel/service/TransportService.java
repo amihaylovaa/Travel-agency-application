@@ -23,7 +23,7 @@ public class TransportService {
         this.transportRepository = transportRepository;
     }
 
-    public Transport saveBus(Transport transport) throws InvalidArgumentException {
+    public Transport saveBus(Transport transport) {
         validateTransport(transport);
 
         TransportClass transportClass = transport.getTransportClass();
@@ -33,7 +33,7 @@ public class TransportService {
         return transportRepository.saveBus(transportClass);
     }
 
-    public Transport saveAirplane(Transport transport) throws InvalidArgumentException {
+    public Transport saveAirplane(Transport transport) {
         validateTransport(transport);
 
         TransportClass transportClass = transport.getTransportClass();
@@ -43,12 +43,12 @@ public class TransportService {
         return transportRepository.saveAirplane(transportClass);
     }
 
-    public List<Transport> saveAll(List<Transport> transports) throws InvalidArgumentException {
+    public List<Transport> saveAll(List<Transport> transports) {
         validateTransportList(transports);
         return transportRepository.saveAll(transports);
     }
 
-    public Transport findById(long id) throws InvalidArgumentException, NonExistentItemException {
+    public Transport findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
@@ -61,7 +61,7 @@ public class TransportService {
         return transport.get();
     }
 
-    public List<Transport> findAllBusesByClass(TransportClass transportClass) throws InvalidArgumentException, NonExistentItemException {
+    public List<Transport> findAllBusesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
 
         List<Transport> transports = transportRepository.findAllBusesByClass(transportClass);
@@ -69,7 +69,7 @@ public class TransportService {
         return validateTransportListExist(transports);
     }
 
-    public List<Transport> findAllAirplanesByClass(TransportClass transportClass) throws InvalidArgumentException, NonExistentItemException {
+    public List<Transport> findAllAirplanesByClass(TransportClass transportClass) {
         validateTransportClass(transportClass);
 
         List<Transport> transports = transportRepository.findAllAirplanesByClass(transportClass);
@@ -77,41 +77,41 @@ public class TransportService {
         return validateTransportListExist(transports);
     }
 
-    public List<Transport> findAllAirplanes() throws NonExistentItemException {
+    public List<Transport> findAllAirplanes() {
         List<Transport> transports = transportRepository.findAllAirplanes();
 
         return validateTransportListExist(transports);
     }
 
-    public List<Transport> findAllBuses() throws NonExistentItemException {
+    public List<Transport> findAllBuses() {
         List<Transport> transports = transportRepository.findAllBuses();
 
         return validateTransportListExist(transports);
     }
 
-    public void updateClass(TransportClass transportClass, long id) throws InvalidArgumentException {
+    public void updateClass(TransportClass transportClass, long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
 
         validateTransportClass(transportClass);
 
-        try {
-            findById(id);
-        } catch (NonExistentItemException nonExistentItemException) {
-            // TODO : logger
+        Optional<Transport> transport = transportRepository.findById(id);
+
+        if (!transport.isPresent()) {
+            throw new NonExistentItemException("Transport with that id does not exist");
         }
         transportRepository.updateClass(transportClass, id);
     }
 
-    public void deleteById(long id) throws InvalidArgumentException {
+    public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
         transportRepository.deleteById(id);
     }
 
-    private void validateTransportList(List<Transport> transports) throws InvalidArgumentException {
+    private void validateTransportList(List<Transport> transports) {
         if (ObjectUtils.isEmpty(transports)) {
             throw new InvalidArgumentException("Invalid list of transport");
         }
@@ -121,19 +121,19 @@ public class TransportService {
         }
     }
 
-    private void validateTransport(Transport transport) throws InvalidArgumentException {
+    private void validateTransport(Transport transport) {
         if (transport == null) {
             throw new InvalidArgumentException("Invalid transport");
         }
     }
 
-    private void validateTransportClass(TransportClass transportClass) throws InvalidArgumentException {
+    private void validateTransportClass(TransportClass transportClass) {
         if (transportClass == null) {
             throw new InvalidArgumentException("Invalid transport class");
         }
     }
 
-    private List<Transport> validateTransportListExist(List<Transport> transports) throws NonExistentItemException {
+    private List<Transport> validateTransportListExist(List<Transport> transports) {
         if (ObjectUtils.isEmpty(transports)) {
             throw new NonExistentItemException("List of transports is not found");
         }

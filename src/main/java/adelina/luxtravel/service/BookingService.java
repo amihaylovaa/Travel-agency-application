@@ -29,7 +29,7 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
-    public Booking save(Booking booking) throws InvalidArgumentException, NonExistentItemException {
+    public Booking save(Booking booking) {
         if (booking == null) {
             throw new InvalidArgumentException("Invalid booking");
         }
@@ -38,7 +38,7 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
-    public Booking findById(long id) throws InvalidArgumentException, NonExistentItemException {
+    public Booking findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
@@ -51,8 +51,7 @@ public class BookingService {
         return booking.get();
     }
 
-    public List<Booking> findAllUserBookings(String username)
-            throws InvalidArgumentException, NonExistentItemException {
+    public List<Booking> findAllUserBookings(String username) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
@@ -65,7 +64,7 @@ public class BookingService {
         return bookings;
     }
 
-    public List<Booking> findAll() throws NonExistentItemException {
+    public List<Booking> findAll() {
         List<Booking> bookings = bookingRepository.findAll();
 
         if (ObjectUtils.isEmpty(bookings)) {
@@ -74,7 +73,7 @@ public class BookingService {
         return bookings;
     }
 
-    public void updateTickets(long id, int reservedTicketsCount) throws InvalidArgumentException, NonExistentItemException {
+    public void updateTickets(long id, int reservedTicketsCount) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException("Invalid id");
         }
@@ -88,7 +87,7 @@ public class BookingService {
         travelingDataRepository.reserveTickets(reservedTicketsCount, id);
     }
 
-    public void deleteById(long id) throws InvalidArgumentException, NonExistentItemException {
+    public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
@@ -96,7 +95,7 @@ public class BookingService {
         bookingRepository.deleteById(id);
     }
 
-    private void validateFieldsExist(Booking booking) throws NonExistentItemException {
+    private void validateFieldsExist(Booking booking) {
         User user = booking.getUser();
         TravelingData travelingData = booking.getTravelingData();
         int reservedTicketsCount = booking.getReservedTicketsCount();
@@ -119,7 +118,7 @@ public class BookingService {
         validateTicketsAreSufficient(reservedTicketsCount, availableTicketsCount);
     }
 
-    private void validateTicketsAreSufficient(int reservedTicketsCount, int availableTicketsCount) throws NonExistentItemException {
+    private void validateTicketsAreSufficient(int reservedTicketsCount, int availableTicketsCount) {
         if (reservedTicketsCount > availableTicketsCount) {
             throw new NonExistentItemException("Unavailable tickets count");
         }
@@ -132,7 +131,7 @@ public class BookingService {
         travelingDataRepository.reserveTickets(ticketsCount, bookingDataId);
     }
 
-    private void cancelTicketsReservation(long bookingId) throws InvalidArgumentException, NonExistentItemException {
+    private void cancelTicketsReservation(long bookingId) {
         Booking booking = findById(bookingId);
         int reservedTicketsCount = booking.getReservedTicketsCount();
         long bookingDataId = getBookingDataId(booking);
@@ -146,8 +145,7 @@ public class BookingService {
         return travelingData.getId();
     }
 
-    private void validateTicketsUpdate(long bookingId, int newTicketsCount)
-            throws InvalidArgumentException, NonExistentItemException {
+    private void validateTicketsUpdate(long bookingId, int newTicketsCount) {
         Booking booking = findById(bookingId);
         TravelingData travelingData = booking.getTravelingData();
         int availableTicketsCount = travelingData.getAvailableTicketsCount();

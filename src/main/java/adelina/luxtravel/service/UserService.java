@@ -26,7 +26,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User save(User user) throws InvalidArgumentException, NonExistentItemException {
+    public User save(User user) {
         if (user == null) {
             throw new InvalidArgumentException("Invalid user");
         }
@@ -41,7 +41,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User findByUsername(String username) throws InvalidArgumentException, NonExistentItemException {
+    public User findByUsername(String username) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException(INVALID_USERNAME);
         }
@@ -53,7 +53,7 @@ public class UserService {
         return user.get();
     }
 
-    public User findByEmail(String email) throws InvalidArgumentException, NonExistentItemException {
+    public User findByEmail(String email) {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException(INVALID_EMAIL);
         }
@@ -66,7 +66,7 @@ public class UserService {
         return user.get();
     }
 
-    public List<User> findAll() throws NonExistentItemException {
+    public List<User> findAll() {
         List<User> users = userRepository.findAll();
 
         if (ObjectUtils.isEmpty(users)) {
@@ -75,8 +75,7 @@ public class UserService {
         return users;
     }
 
-    public void updatePassword(String username, String newPassword, String oldPassword)
-            throws InvalidArgumentException, NonExistentItemException {
+    public void updatePassword(String username, String newPassword, String oldPassword) {
         validatePasswordUpdate(username, newPassword, oldPassword);
 
         User user = findByUsername(username);
@@ -88,8 +87,7 @@ public class UserService {
         userRepository.updatePassword(newHashedPassword, username);
     }
 
-    public void updateEmail(String newEmail, String oldEmail, String password)
-            throws InvalidArgumentException, NonExistentItemException {
+    public void updateEmail(String newEmail, String oldEmail, String password) {
         validateEmailUpdate(newEmail, oldEmail, password);
 
         User user = findByEmail(oldEmail);
@@ -101,8 +99,7 @@ public class UserService {
         userRepository.updateEmail(newEmail, oldEmail);
     }
 
-    public void deleteByUsername(String username, String password)
-            throws InvalidArgumentException, NonExistentItemException {
+    public void deleteByUsername(String username, String password) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException("Invalid username");
         }
@@ -115,8 +112,7 @@ public class UserService {
         userRepository.deleteByUsername(username);
     }
 
-    public void deleteByEmail(String email, String password)
-            throws InvalidArgumentException, NonExistentItemException {
+    public void deleteByEmail(String email, String password) {
         if (StringUtils.isEmpty(email)) {
             throw new InvalidArgumentException(INVALID_EMAIL);
         }
@@ -129,14 +125,13 @@ public class UserService {
         userRepository.deleteByEmail(email);
     }
 
-    private void validatePassword(String password) throws InvalidArgumentException {
+    private void validatePassword(String password) {
         if (StringUtils.isEmpty(password)) {
             throw new InvalidArgumentException("Invalid password");
         }
     }
 
-    private void validateUsernameDoesNotExist(String username)
-            throws InvalidArgumentException, NonExistentItemException {
+    private void validateUsernameDoesNotExist(String username) {
         User user = findByUsername(username);
 
         if (username.equals(user.getUsername())) {
@@ -144,8 +139,7 @@ public class UserService {
         }
     }
 
-    private void validateEmailDoesNotExist(String email)
-            throws InvalidArgumentException, NonExistentItemException {
+    private void validateEmailDoesNotExist(String email) {
         User user = findByEmail(email);
 
         if (email.equals(user.getEmail())) {
@@ -153,14 +147,13 @@ public class UserService {
         }
     }
 
-    private void validatePasswordMatch(String expectedPassword, String actualPassword) throws
-            InvalidArgumentException {
+    private void validatePasswordMatch(String expectedPassword, String actualPassword) {
         if (!passwordEncoder.matches(expectedPassword, actualPassword)) {
             throw new InvalidArgumentException("Passwords do not match");
         }
     }
 
-    private void validateEmailUpdate(String newEmail, String oldEmail, String password) throws InvalidArgumentException {
+    private void validateEmailUpdate(String newEmail, String oldEmail, String password) {
         if (StringUtils.isEmpty(newEmail)) {
             throw new InvalidArgumentException("Invalid new email");
         }
@@ -174,7 +167,7 @@ public class UserService {
         validatePassword(password);
     }
 
-    private void validatePasswordUpdate(String username, String newPassword, String oldPassword) throws InvalidArgumentException {
+    private void validatePasswordUpdate(String username, String newPassword, String oldPassword) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException(INVALID_USERNAME);
         }
