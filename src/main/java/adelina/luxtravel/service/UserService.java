@@ -31,9 +31,6 @@ public class UserService {
             throw new InvalidArgumentException("Invalid user");
         }
 
-        validateUsernameDoesNotExist(user.getUsername());
-        validateEmailDoesNotExist(user.getEmail());
-
         String userPassword = user.getPassword();
         String hashedPassword = passwordEncoder.encode(userPassword);
 
@@ -45,6 +42,7 @@ public class UserService {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException(INVALID_USERNAME);
         }
+
         Optional<User> user = userRepository.findByUsername(username);
 
         if (!user.isPresent()) {

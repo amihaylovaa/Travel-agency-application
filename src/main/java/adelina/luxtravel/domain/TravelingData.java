@@ -42,7 +42,7 @@ public class TravelingData {
     private double price;
     @NotNull(message = "List of bookings can not be null")
     @OneToMany(mappedBy = "travelingData",
-               cascade = CascadeType.ALL,
+               cascade = CascadeType.REMOVE,
                orphanRemoval = true
               )
     private List<Booking> bookings;
