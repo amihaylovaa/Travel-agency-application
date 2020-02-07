@@ -6,6 +6,7 @@ import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -17,6 +18,7 @@ class UserServiceTest {
 
     @BeforeEach
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         userService = new UserService(userRepository, passwordEncoder);
     }

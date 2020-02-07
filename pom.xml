@@ -27,7 +27,7 @@
         <hibernate.validator.processor.annotation.version>6.0.17.Final
         </hibernate.validator.processor.annotation.version>
         <junit.version>5.5.2</junit.version>
-        <mockito.version>3.2.4</mockito.version>>
+        <mockito.version>3.2.4</mockito.version>
     </properties>
 
     <dependencies>
