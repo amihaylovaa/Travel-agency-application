@@ -21,6 +21,13 @@
         <spring-boot-starter-data.verson>2.1.4.RELEASE</spring-boot-starter-data.verson>
         <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
         <spring.security.core.version>5.2.0.RELEASE</spring.security.core.version>
+        <sonarqube.version>3.6.0.1398</sonarqube.version>
+        <bean.validation.api.version>2.0.1.Final</bean.validation.api.version>
+        <hibernate.validator.version>6.0.16.Final</hibernate.validator.version>
+        <hibernate.validator.processor.annotation.version>6.0.17.Final
+        </hibernate.validator.processor.annotation.version>
+        <junit.version>5.5.2</junit.version>
+        <mockito.version>3.2.4</mockito.version>>
     </properties>
 
     <dependencies>
@@ -60,6 +67,33 @@
             <artifactId>spring-security-core</artifactId>
             <version>${spring.security.core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${bean.validation.api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>${hibernate.validator.processor.annotation.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -75,6 +109,11 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonarqube.version}</version>
             </plugin>
         </plugins>
     </build>

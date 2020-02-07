@@ -1,7 +1,6 @@
 package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
-import adelina.luxtravel.utility.DistanceCalculator;
 
 import javax.persistence.*;
 
@@ -13,10 +12,6 @@ import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 @Entity
 @Table(name = "bus")
 public class Bus extends Transport {
-    @OneToOne
-    @JoinColumn(name = "id")
-    private long id;
-
     public Bus(TransportClass vehicleClass) {
         super(vehicleClass);
     }

@@ -6,19 +6,21 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT email, username" +
                    "FROM  user" +
                    "WHERE username = ?1",
             nativeQuery = true)
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     @Query(value = "SELECT email, username" +
                    "FROM  user" +
                    "WHERE email = ?1",
             nativeQuery = true)
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     @Modifying
     @Query(value = "UPDATE user " +

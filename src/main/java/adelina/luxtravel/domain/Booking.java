@@ -1,9 +1,11 @@
 package adelina.luxtravel.domain;
 
-import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 
 @Entity
 @Table(name = "booking")
@@ -12,37 +14,30 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotNull(message = "User can not be null")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToOne
-    @JoinColumn(name = "booking_data_id")
-    private BookingData bookingData;
-    @Column(name = "count_tickets", nullable = false)
-    private int ticketsCount;
+    @NotNull(message = "Traveling data can not be null")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "traveling_data_id")
+    private TravelingData travelingData;
+    @Min(value = 1, message = "Reserved tickets count can not be less than one")
+    @Column(name = "reserved_tickets_count", nullable = false)
+    private int reservedTicketsCount;
 
-    public Booking(BookingData bookingData, User user, int ticketsCount) {
-        initializeFields(bookingData, user, ticketsCount);
+    public Booking(Booking booking) {
+        this(booking.id, booking.travelingData, booking.user, booking.reservedTicketsCount);
     }
 
-    public Booking(long id, BookingData bookingData, User user, int ticketsCount) {
-        this(bookingData, user, ticketsCount);
+    public Booking(long id, TravelingData travelingData, User user, int reservedTicketsCount) {
+        this(travelingData, user, reservedTicketsCount);
         this.id = id;
     }
 
-    public Booking(Booking booking) {
-        this(booking.id, booking.bookingData, booking.user, booking.ticketsCount);
-    }
-
-    private void initializeFields(BookingData bookingData, User user, int countTickets) {
-        if (bookingData == null) {
-            throw new FailedInitializationException("Invalid booking date");
-        } else if (user == null) {
-            throw new FailedInitializationException("Invalid user");
-        } else {
-            this.user = user;
-            this.bookingData = bookingData;
-            this.ticketsCount = countTickets;
-        }
+    public Booking(TravelingData travelingData, User user, int reservedTicketsCount) {
+        this.user = user;
+        this.travelingData = travelingData;
+        this.reservedTicketsCount = reservedTicketsCount;
     }
 }

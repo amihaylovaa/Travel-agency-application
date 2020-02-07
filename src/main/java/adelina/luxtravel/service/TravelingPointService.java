@@ -14,8 +14,7 @@ import adelina.luxtravel.exception.InvalidArgumentException;
 import java.util.List;
 import java.util.Optional;
 
-import static adelina.luxtravel.utility.Constants.NINETY_DEGREES;
-import static adelina.luxtravel.utility.Constants.NINETY_DEGREES_NEGATIVE;
+import static adelina.luxtravel.utility.Constants.*;
 
 @Service
 public class TravelingPointService {
@@ -26,19 +25,21 @@ public class TravelingPointService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
-    public TravelingPoint save(TravelingPoint travelingPoint) throws NonExistentItemException, InvalidArgumentException {
+    public TravelingPoint save(TravelingPoint travelingPoint) {
         validateTravelingPoint(travelingPoint);
+        validateTravelingPointDoesNotExist(travelingPoint);
+
         return travelingPointRepository.save(travelingPoint);
     }
 
-    public List<TravelingPoint> saveAll(List<TravelingPoint> travelingPoints) throws NonExistentItemException, InvalidArgumentException {
+    public List<TravelingPoint> saveAll(List<TravelingPoint> travelingPoints) {
         validateTravelingPointsList(travelingPoints);
         return travelingPointRepository.saveAll(travelingPoints);
     }
 
-    public TravelingPoint findById(long id) throws InvalidArgumentException, NonExistentItemException {
+    public TravelingPoint findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
+            throw new InvalidArgumentException(INVALID_ID);
         }
 
         Optional<TravelingPoint> travelingPoint = travelingPointRepository.findById(id);
@@ -49,14 +50,14 @@ public class TravelingPointService {
         return travelingPoint.get();
     }
 
-    public TravelingPoint findByName(String name) throws InvalidArgumentException, NonExistentItemException {
+    public TravelingPoint findByName(String name) {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
         }
         return travelingPointRepository.findByName(name);
     }
 
-    public List<TravelingPoint> findAll() throws NonExistentItemException {
+    public List<TravelingPoint> findAll() {
         List<TravelingPoint> travelingPoints = travelingPointRepository.findAll();
 
         if (ObjectUtils.isEmpty(travelingPoints)) {
@@ -65,27 +66,29 @@ public class TravelingPointService {
         return travelingPoints;
     }
 
-    public TravelingPoint updateName(String newName, String oldName) throws InvalidArgumentException, NonExistentItemException {
-        if (StringUtils.isEmpty(newName) || StringUtils.isEmpty(oldName)) {
-            throw new InvalidArgumentException("Invalid arguments");
+    public void updateName(String newName, String oldName) {
+        if (StringUtils.isEmpty(newName)) {
+            throw new InvalidArgumentException("Invalid new name");
         }
+        if (StringUtils.isEmpty(oldName)) {
+            throw new InvalidArgumentException("Invalid old name");
+        }
+        if (newName.equals(oldName)) {
+            throw new InvalidArgumentException("New name can not be the same as the old one");
+        }
+
         validateTravelingPointDoesNotExist(findByName(newName));
         travelingPointRepository.updateName(newName, oldName);
-        return findByName(newName);
     }
 
-    public void deleteById(long id) throws InvalidArgumentException {
+    public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
+            throw new InvalidArgumentException(INVALID_ID);
         }
         travelingPointRepository.deleteById(id);
     }
 
-    public void deleteAll() {
-        travelingPointRepository.deleteAll();
-    }
-
-    private void validateTravelingPointsList(List<TravelingPoint> travelingPoints) throws NonExistentItemException, InvalidArgumentException {
+    private void validateTravelingPointsList(List<TravelingPoint> travelingPoints) {
         if (ObjectUtils.isEmpty(travelingPoints)) {
             throw new InvalidArgumentException("Invalid list of traveling points");
         }
@@ -94,29 +97,13 @@ public class TravelingPointService {
         }
     }
 
-    private void validateTravelingPoint(TravelingPoint travelingPoint) throws InvalidArgumentException, NonExistentItemException {
+    private void validateTravelingPoint(TravelingPoint travelingPoint) {
         if (travelingPoint == null) {
             throw new InvalidArgumentException("Invalid traveling point");
         }
-        validateFields(travelingPoint);
-        validateTravelingPointDoesNotExist(travelingPoint);
     }
 
-    private void validateFields(TravelingPoint travelingPoint) throws InvalidArgumentException {
-        String name = travelingPoint.getName();
-        double latitude = travelingPoint.getLatitude();
-        double longitude = travelingPoint.getLongitude();
-
-        if ((longitude > NINETY_DEGREES || longitude < NINETY_DEGREES_NEGATIVE) &&
-                (latitude > NINETY_DEGREES || latitude < NINETY_DEGREES_NEGATIVE)) {
-            throw new InvalidArgumentException("Invalid coordinates");
-        }
-        if (StringUtils.isEmpty(name)) {
-            throw new InvalidArgumentException("Invalid name");
-        }
-    }
-
-    private void validateTravelingPointDoesNotExist(TravelingPoint travelingPoint) throws InvalidArgumentException, NonExistentItemException {
+    private void validateTravelingPointDoesNotExist(TravelingPoint travelingPoint) {
         String name = travelingPoint.getName();
         double latitude = travelingPoint.getLatitude();
         double longitude = travelingPoint.getLongitude();
