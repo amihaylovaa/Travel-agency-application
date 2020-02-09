@@ -1,5 +1,6 @@
 package adelina.luxtravel.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -13,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @Getter
+@EqualsAndHashCode
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

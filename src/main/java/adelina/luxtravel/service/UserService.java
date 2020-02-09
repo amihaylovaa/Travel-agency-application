@@ -31,6 +31,10 @@ public class UserService {
             throw new InvalidArgumentException("Invalid user");
         }
 
+        validateUsernameDoesNotExist(user.getUsername());
+        validateEmailDoesNotExist(user.getEmail());
+
+
         String userPassword = user.getPassword();
         String hashedPassword = passwordEncoder.encode(userPassword);
 
@@ -130,17 +134,17 @@ public class UserService {
     }
 
     private void validateUsernameDoesNotExist(String username) {
-        User user = findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
 
-        if (username.equals(user.getUsername())) {
+        if (user.isPresent()) {
             throw new AlreadyExistingItemException("User with this username already exists");
         }
     }
 
     private void validateEmailDoesNotExist(String email) {
-        User user = findByEmail(email);
+        Optional<User> user = userRepository.findByEmail(email);
 
-        if (email.equals(user.getEmail())) {
+        if (user.isPresent()) {
             throw new AlreadyExistingItemException("User with this email already exists");
         }
     }
@@ -159,7 +163,7 @@ public class UserService {
             throw new InvalidArgumentException("Invalid old email");
         }
         if (newEmail.equals(oldEmail)) {
-            throw new InvalidArgumentException("New email can not be the same as the current");
+            throw new AlreadyExistingItemException("New email can not be the same as the current");
         }
 
         validatePassword(password);
