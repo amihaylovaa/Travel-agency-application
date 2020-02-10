@@ -149,8 +149,8 @@ public class UserService {
         }
     }
 
-    private void validatePasswordMatch(String expectedPassword, String actualPassword) {
-        if (!passwordEncoder.matches(expectedPassword, actualPassword)) {
+    private void validatePasswordMatch(String expectedPassword, String encryptedActualPassword) {
+        if (!(passwordEncoder.matches(expectedPassword, encryptedActualPassword))) {
             throw new InvalidArgumentException("Passwords do not match");
         }
     }

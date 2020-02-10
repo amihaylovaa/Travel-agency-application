@@ -12,6 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
+
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +30,8 @@ public class UserServiceTest {
     private BCryptPasswordEncoder passwordEncoder;
     @InjectMocks
     private UserService userService;
+    private final String nonExistingUsername = "miracleJoy12";
+    private final String nonExistingEmail = "miracleJoy12@gmail.com";
 
     @Test
     public void save_UserIsNull_ExceptionThrown() {
@@ -36,7 +41,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void save_UserWithThisUsernameAlreadyExists_ExceptionThrown() {
+    public void save_UserWithGivenUsernameAlreadyExists_ExceptionThrown() {
         User user = createUser();
         String username = user.getUsername();
         String email = "violet_sun12@gmail.com";
@@ -50,7 +55,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void save_UserWithThisEmailAlreadyExists_ExceptionThrown() {
+    public void save_UserWithGivenEmailAlreadyExists_ExceptionThrown() {
         User user = createUser();
         String username = "violetSky2";
         String email = user.getEmail();
@@ -80,21 +85,18 @@ public class UserServiceTest {
     }
 
     @Test
-    void findByEmail_UserWithThisEmailNotPresent_ExceptionThrown() {
+    void findByEmail_UserWithGivenEmailNotPresent_ExceptionThrown() {
         User user = createUser();
         String email = user.getEmail();
-        String invalidEmail = "miracle123@abv.bg";
         Optional<User> userOptional = Optional.of(user);
 
         lenient().when(userRepository.findByEmail(email)).thenReturn(userOptional);
 
-        assertThrows(NonExistentItemException.class, () -> userService.findByEmail(invalidEmail));
+        assertThrows(NonExistentItemException.class, () -> userService.findByEmail(nonExistingEmail));
     }
 
     @Test
-    void findByEmail_EmptyEmail_ExceptionThrown() {
-        User user = createUser();
-        String email = user.getEmail();
+    void findByEmail_EmailIsEmpty_ExceptionThrown() {
         String emptyEmail = "";
 
         assertThrows(InvalidArgumentException.class, () -> userService.findByEmail(emptyEmail));
@@ -102,7 +104,6 @@ public class UserServiceTest {
 
     @Test
     void findByEmail_EmailIsNull_ExceptionThrown() {
-        User user = createUser();
         String email = null;
 
         assertThrows(InvalidArgumentException.class, () -> userService.findByEmail(email));
@@ -123,21 +124,19 @@ public class UserServiceTest {
     }
 
     @Test
-    void findByUsername_UserWithThisUsernameIsNotPresent_ExceptionThrown() {
+    void findByUsername_UserWithGivenUsernameIsNotPresent_ExceptionThrown() {
         User user = createUser();
         String username = user.getUsername();
-        String invalidUsername = "miracle123";
         Optional<User> userOptional = Optional.of(user);
 
         lenient().when(userRepository.findByUsername(username)).thenReturn(userOptional);
 
-        assertThrows(NonExistentItemException.class, () -> userService.findByUsername(invalidUsername));
+        assertThrows(NonExistentItemException.class, () -> userService.findByUsername(nonExistingUsername));
     }
 
     @Test
     void findByUsername_UsernameIsEmpty_ExceptionThrown() {
         User user = createUser();
-        String username = user.getUsername();
         String emptyUsername = "";
 
         assertThrows(InvalidArgumentException.class, () -> userService.findByUsername(emptyUsername));
@@ -145,7 +144,6 @@ public class UserServiceTest {
 
     @Test
     void findByUsername_UsernameIsNull_ExceptionThrown() {
-        User user = createUser();
         String username = null;
 
         assertThrows(InvalidArgumentException.class, () -> userService.findByUsername(username));
@@ -163,6 +161,157 @@ public class UserServiceTest {
 
         assertEquals(username, foundUser.getUsername());
         assertEquals(user.getEmail(), foundUser.getEmail());
+    }
+
+    @Test
+    public void findAll_ListIsNull_ExceptionThrown() {
+
+        when(userRepository.findAll()).thenReturn(null);
+
+        assertThrows(NonExistentItemException.class, () -> userService.findAll());
+    }
+
+    @Test
+    public void findAll_ListIsEmpty_ExceptionThrown() {
+        List<User> users = new ArrayList<>();
+
+        when(userRepository.findAll()).thenReturn(users);
+
+        assertThrows(NonExistentItemException.class, () -> userService.findAll());
+    }
+
+    @Test
+    public void findAll_CreatedListOfTwoUsers_ReturnedResultListOfTwoUsers() {
+        String firstUsername = "john21";
+        String secondUsername = "david53";
+        String firstEmail = "john21@gmail.com";
+        String secondEmail = "david52@abv.bg";
+        String password = "k82d134";
+        User firstUser = new User(firstUsername, firstEmail, password);
+        User secondUser = new User(secondUsername, secondEmail, password);
+        List<User> createdUsers = new ArrayList<>();
+        createdUsers.add(firstUser);
+        createdUsers.add(secondUser);
+
+        when(userRepository.findAll()).thenReturn(createdUsers);
+        List<User> foundUsers = userService.findAll();
+
+        assertEquals(createdUsers.size(), foundUsers.size());
+        assertTrue(foundUsers.contains(firstUser));
+        assertTrue(foundUsers.contains(secondUser));
+    }
+
+    @Test
+    public void updatePassword_NewPasswordParamIsEmpty_ExceptionThrown() {
+        User user = createUser();
+        String username = user.getUsername();
+        String oldPassword = user.getPassword();
+        String invalidNewPassword = "";
+
+        assertThrows(InvalidArgumentException.class,
+                () -> userService.updatePassword(username, invalidNewPassword, oldPassword));
+    }
+
+    @Test
+    public void updatePassword_UserWithGivenUsernameIsNotPresent_ExceptionThrown() {
+        User user = createUser();
+        Optional<User> userOptional = Optional.of(user);
+        String username = user.getUsername();
+        String oldPassword = user.getPassword();
+        String newPassword = "4821446i32js2";
+        String nonExistentUsername = "joyMiracle12";
+
+        lenient().when(userRepository.findByUsername(username)).thenReturn(userOptional);
+
+        assertThrows(NonExistentItemException.class,
+                () -> userService.updatePassword(nonExistentUsername, newPassword, oldPassword));
+    }
+
+    @Test
+    public void updateEmail_NewAndOldEmailsAreTheSame_ExceptionThrown() {
+        User user = createUser();
+        String email = user.getEmail();
+        String password = user.getPassword();
+
+        assertThrows(AlreadyExistingItemException.class,
+                () -> userService.updateEmail(email, email, password));
+    }
+
+    @Test
+    public void updateEmail_UserWithGivenEmailIsNotPresent_ExceptionThrown() {
+        User user = createUser();
+        Optional<User> userOptional = Optional.of(user);
+        String email = user.getEmail();
+        String password = user.getPassword();
+        String newEmail = "sunFlow12@abv.bg";
+        String nonExistentOldEmail = "joyMiracle12@gmail.com";
+
+        lenient().when(userRepository.findByEmail(email)).thenReturn(userOptional);
+
+        assertThrows(NonExistentItemException.class,
+                () -> userService.updateEmail(newEmail, nonExistentOldEmail, password));
+    }
+
+    @Test
+    public void deleteByEmail_EmailIsEmpty_ExceptionThrown() {
+        User user = createUser();
+        String email = "";
+        String password = user.getPassword();
+
+        assertThrows(InvalidArgumentException.class, () -> userService.deleteByEmail(email, password));
+    }
+
+    @Test
+    public void deleteByEmail_PasswordIsEmpty_ExceptionThrown() {
+        User user = createUser();
+        String email = user.getEmail();
+        String password = "";
+
+        assertThrows(InvalidArgumentException.class, () -> userService.deleteByEmail(email, password));
+    }
+
+    @Test
+    public void deleteByEmail_UserWithGivenEmailIsNotPresent_ExceptionThrown() {
+        User user = createUser();
+        Optional<User> userOptional = Optional.of(user);
+        String email = user.getEmail();
+        String password = user.getPassword();
+
+        lenient().when(userRepository.findByEmail(email)).thenReturn(userOptional);
+
+        assertThrows(NonExistentItemException.class,
+                () -> userService.deleteByUsername(nonExistingEmail, password));
+    }
+
+    @Test
+    public void deleteByUsername_UsernameIsEmpty_ExceptionThrown() {
+        User user = createUser();
+        String username = "";
+        String password = user.getPassword();
+
+        assertThrows(InvalidArgumentException.class, () -> userService.deleteByUsername(username, password));
+    }
+
+    @Test
+    public void deleteByUsername_PasswordIsNull_ExceptionThrown() {
+        User user = createUser();
+        String username = user.getUsername();
+        String password = null;
+
+        assertThrows(InvalidArgumentException.class, () -> userService.deleteByUsername(username, password));
+    }
+
+    @Test
+    public void deleteByUsername_UserWithGivenUsernameIsNotPresent_ExceptionThrown() {
+        User user = createUser();
+        Optional<User> userOptional = Optional.of(user);
+        String username = user.getUsername();
+        String password = user.getPassword();
+
+        lenient().when(userRepository.findByUsername(username)).thenReturn(userOptional);
+
+        assertThrows(NonExistentItemException.class,
+                () -> userService.deleteByUsername(nonExistingUsername, password));
     }
 
     private User createUser() {
