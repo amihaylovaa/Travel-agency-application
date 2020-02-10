@@ -1,9 +1,7 @@
 package adelina.luxtravel.service;
 
 import adelina.luxtravel.domain.User;
-import adelina.luxtravel.exception.AlreadyExistingItemException;
-import adelina.luxtravel.exception.InvalidArgumentException;
-import adelina.luxtravel.exception.NonExistentItemException;
+import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

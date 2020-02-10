@@ -54,7 +54,13 @@ public class TravelingPointService {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
         }
-        return travelingPointRepository.findByName(name);
+
+        Optional<TravelingPoint> travelingPoint = travelingPointRepository.findByName(name);
+
+        if (!travelingPoint.isPresent()) {
+            throw new NonExistentItemException("Traveling point with this name does not exists");
+        }
+        return travelingPoint.get();
     }
 
     public List<TravelingPoint> findAll() {
