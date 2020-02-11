@@ -79,11 +79,13 @@ public class TravelingPointService {
         if (StringUtils.isEmpty(oldName)) {
             throw new InvalidArgumentException("Invalid old name");
         }
-        if (newName.equals(oldName)) {
-            throw new InvalidArgumentException("New name can not be the same as the old one");
+
+        TravelingPoint existingTravelingPoint = findByName(oldName);
+
+        if (newName.equals(existingTravelingPoint.getName())) {
+            throw new AlreadyExistingItemException("Traveling point with this name already exists");
         }
 
-        validateTravelingPointDoesNotExist(findByName(newName));
         travelingPointRepository.updateName(newName, oldName);
     }
 

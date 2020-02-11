@@ -18,6 +18,10 @@ public class Airplane extends Transport {
         super(vehicleClass);
     }
 
+    public Airplane(long id, TransportClass transportClass) {
+        super(id, transportClass);
+    }
+
     @Override
     public LocalTime calculateDuration(TravelingPoint departurePoint, TravelingPoint destinationPoint) {
         double departurePointLongitude = departurePoint.getLongitude();

@@ -67,7 +67,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void save_ValidData_SuccessfullyCreatedUser() {
+    public void save_ValidData_SuccessfullyCreatedUser() {
         User user = createUser();
         String username = user.getUsername();
         String email = user.getEmail();
@@ -83,7 +83,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void findByEmail_UserWithGivenEmailNotPresent_ExceptionThrown() {
+    public void findByEmail_UserWithGivenEmailNotPresent_ExceptionThrown() {
         User user = createUser();
         String email = user.getEmail();
         Optional<User> userOptional = Optional.of(user);
@@ -94,21 +94,21 @@ public class UserServiceTest {
     }
 
     @Test
-    void findByEmail_EmailIsEmpty_ExceptionThrown() {
+    public void findByEmail_EmailIsEmpty_ExceptionThrown() {
         String emptyEmail = "";
 
         assertThrows(InvalidArgumentException.class, () -> userService.findByEmail(emptyEmail));
     }
 
     @Test
-    void findByEmail_EmailIsNull_ExceptionThrown() {
+    public void findByEmail_EmailIsNull_ExceptionThrown() {
         String email = null;
 
         assertThrows(InvalidArgumentException.class, () -> userService.findByEmail(email));
     }
 
     @Test
-    void findByEmail_ValidData_SuccessfullyFoundUser() {
+    public void findByEmail_ValidData_SuccessfullyFoundUser() {
         User user = createUser();
         String email = user.getEmail();
         Optional<User> userOptional = Optional.of(user);
@@ -122,7 +122,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void findByUsername_UserWithGivenUsernameIsNotPresent_ExceptionThrown() {
+    public void findByUsername_UserWithGivenUsernameIsNotPresent_ExceptionThrown() {
         User user = createUser();
         String username = user.getUsername();
         Optional<User> userOptional = Optional.of(user);
@@ -133,7 +133,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void findByUsername_UsernameIsEmpty_ExceptionThrown() {
+    public void findByUsername_UsernameIsEmpty_ExceptionThrown() {
         User user = createUser();
         String emptyUsername = "";
 
@@ -141,14 +141,14 @@ public class UserServiceTest {
     }
 
     @Test
-    void findByUsername_UsernameIsNull_ExceptionThrown() {
+    public void findByUsername_UsernameIsNull_ExceptionThrown() {
         String username = null;
 
         assertThrows(InvalidArgumentException.class, () -> userService.findByUsername(username));
     }
 
     @Test
-    void findByUsername_SuccessfullyFoundUser() {
+    public void findByUsername_SuccessfullyFoundUser() {
         User user = createUser();
         String username = user.getUsername();
         Optional<User> userOptional = Optional.of(user);

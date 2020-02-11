@@ -20,7 +20,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class TravelingPointServiceTest {
+public class TravelingPointServiceTest {
 
     @Mock
     TravelingPointRepository travelingPointRepository;
@@ -197,15 +197,45 @@ class TravelingPointServiceTest {
         assertEquals(travelingPoints.size(), foundTravelingPoints.size());
     }
 
-
     @Test
-    void updateName() {
+    public void updateName_NewNameIsNull_ExceptionThrown() {
+        TravelingPoint travelingPoint = createTravelingPoint();
+        String oldName = travelingPoint.getName();
+        String invalidNewName = null;
+
+        assertThrows(InvalidArgumentException.class, () -> travelingPointService.updateName(invalidNewName, oldName));
     }
 
     @Test
-    void deleteById() {
+    public void updateName_NewNameIsTheSameAsTheCurrent_ExceptionThrown() {
+        TravelingPoint travelingPoint = createTravelingPoint();
+        Optional<TravelingPoint> travelingPointOptional = Optional.of(travelingPoint);
+        String oldName = travelingPoint.getName();
+        String newName = oldName;
+
+        when(travelingPointRepository.findByName(oldName)).thenReturn(travelingPointOptional);
+
+        assertThrows(AlreadyExistingItemException.class, () -> travelingPointService.updateName(newName, oldName));
     }
 
+    @Test
+    public void deleteById_IdIsLessThanZero_ExceptionThrown() {
+        long invalidId = -5;
+
+        assertThrows(InvalidArgumentException.class, () -> travelingPointService.deleteById(invalidId));
+    }
+
+    @Test
+    public void deleteById_TravelingPointWithGivenIdIsPresent_SuccessfullyDeletedTravelingPoint() {
+        TravelingPoint travelingPoint = createTravelingPoint();
+        String name = travelingPoint.getName();
+        long id = travelingPoint.getId();
+
+        when(travelingPointRepository.findByName(name)).thenThrow(NonExistentItemException.class);
+        travelingPointService.deleteById(id);
+
+        assertThrows(NonExistentItemException.class, () -> travelingPointService.findByName(name));
+    }
 
     private TravelingPoint createTravelingPoint() {
         String name = "Canada";

@@ -108,6 +108,13 @@ public class TransportService {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
+
+        Optional<Transport> transport = transportRepository.findById(id);
+
+        if (!transport.isPresent()) {
+            throw new NonExistentItemException("Transport with that id does not exist");
+        }
+
         transportRepository.deleteById(id);
     }
 
