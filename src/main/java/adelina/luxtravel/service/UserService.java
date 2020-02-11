@@ -34,7 +34,6 @@ public class UserService {
         validateUsernameDoesNotExist(user.getUsername());
         validateEmailDoesNotExist(user.getEmail());
 
-
         String userPassword = user.getPassword();
         String hashedPassword = passwordEncoder.encode(userPassword);
 

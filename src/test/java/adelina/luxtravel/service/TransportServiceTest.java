@@ -7,6 +7,7 @@ import adelina.luxtravel.domain.transport.TransportClass;
 import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.repository.TransportRepository;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,11 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
-// TODO - OPTIMIZATIONS
-// TODO - check for bad names after renaming
 @ExtendWith(MockitoExtension.class)
 public class TransportServiceTest {
-
     @Mock
     private TransportRepository transportRepository;
     @InjectMocks
@@ -91,8 +89,7 @@ public class TransportServiceTest {
     @Test
     public void saveAll_ListHasNullElement_ExceptionThrown() {
         List<Transport> transports = new ArrayList<>(createTransportList());
-        Transport transport = null;
-        transports.add(transport);
+        transports.add(null);
 
         assertThrows(InvalidArgumentException.class, () -> transportService.saveAll(transports));
     }
@@ -111,7 +108,7 @@ public class TransportServiceTest {
 
     @Test
     public void findById_IdIsEqualToZero_ExceptionThrown() {
-        long invalidId = 0;
+        long invalidId = NumberUtils.LONG_ZERO;
 
         assertThrows(InvalidArgumentException.class, () -> transportService.findById(invalidId));
     }
@@ -119,10 +116,10 @@ public class TransportServiceTest {
     @Test
     public void findById_TransportWithGivenIdDoesNotExist_ExceptionThrown() {
         TransportClass transportClass = TransportClass.BUSINESS;
-        Transport transport = new Airplane(1, transportClass);
+        Transport transport = new Airplane(NumberUtils.LONG_ONE, transportClass);
         Optional<Transport> transportOptional = Optional.of(transport);
         long transportId = transport.getId();
-        long invalidId = 12;
+        long invalidId = (NumberUtils.LONG_ONE + NumberUtils.LONG_ONE);
 
         lenient().when(transportRepository.findById(transportId)).thenReturn(transportOptional);
 
@@ -132,7 +129,7 @@ public class TransportServiceTest {
     @Test
     public void findById_TransportWithGivenIdExists_ReturnedSearchedTransport() {
         TransportClass transportClass = TransportClass.BUSINESS;
-        Transport transport = new Airplane(1, transportClass);
+        Transport transport = new Airplane(NumberUtils.LONG_ONE, transportClass);
         Optional<Transport> transportOptional = Optional.of(transport);
         long transportId = transport.getId();
 
@@ -153,7 +150,6 @@ public class TransportServiceTest {
 
     @Test
     public void findAllBusesByClass_BusesWithGivenTransportClassDoesNotExists_ExceptionThrown() {
-        List<Transport> transports = new ArrayList<>(createTransportList());
         TransportClass transportClass = TransportClass.FIRST;
 
         when(transportRepository.findAllBusesByClass(transportClass)).thenThrow(NonExistentItemException.class);
@@ -188,7 +184,6 @@ public class TransportServiceTest {
 
     @Test
     public void findAllAirplanesByClass_AirplanesWithGivenTransportClassDoesNotExists_ExceptionThrown() {
-        List<Transport> transports = new ArrayList<>(createTransportList());
         TransportClass transportClass = TransportClass.ECONOMY;
 
         when(transportRepository.findAllAirplanesByClass(transportClass)).thenThrow(NonExistentItemException.class);
@@ -234,7 +229,7 @@ public class TransportServiceTest {
     @Test
     public void updateClass_TransportClassIsNull_ExceptionThrown() {
         TransportClass transportClass = null;
-        long id = 1;
+        long id = NumberUtils.LONG_ONE;
 
         assertThrows(InvalidArgumentException.class, () -> transportService.updateClass(transportClass, id));
     }
@@ -242,15 +237,15 @@ public class TransportServiceTest {
     @Test
     public void updateClass_TransportIdIsNegative_ExceptionThrown() {
         TransportClass transportClass = null;
-        long id = -1;
+        long id = NumberUtils.LONG_MINUS_ONE;
 
         assertThrows(InvalidArgumentException.class, () -> transportService.updateClass(transportClass, id));
     }
 
     @Test
     public void updateClass_TransportWithGivenIdDoesNotExist_ExceptionThrown() {
-        long id = 1;
-        long invalidId = 32;
+        long id = NumberUtils.LONG_ONE;
+        long invalidId = 1024;
         TransportClass transportClass = TransportClass.ECONOMY;
         Transport transport = new Airplane(id, transportClass);
         Optional<Transport> transportOptional = Optional.of(transport);
@@ -263,14 +258,14 @@ public class TransportServiceTest {
 
     @Test
     public void deleteById_IdIsZero_ExceptionThrown() {
-        long id = 0;
+        long id = NumberUtils.LONG_ZERO;
 
         assertThrows(InvalidArgumentException.class, () -> transportService.deleteById(id));
     }
 
     @Test
     public void deleteById_TransportWithGivenIdDoesNotExist_ExceptionThrown() {
-        long id = 1;
+        long id = NumberUtils.LONG_ONE;
         long invalidId = 4;
         TransportClass transportClass = TransportClass.FIRST;
         Transport transport = new Bus(id, transportClass);

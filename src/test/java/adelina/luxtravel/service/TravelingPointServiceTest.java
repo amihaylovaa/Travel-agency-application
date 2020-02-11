@@ -5,6 +5,7 @@ import adelina.luxtravel.exception.AlreadyExistingItemException;
 import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.repository.TravelingPointRepository;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,12 +22,10 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TravelingPointServiceTest {
-
     @Mock
     TravelingPointRepository travelingPointRepository;
     @InjectMocks
     TravelingPointService travelingPointService;
-
 
     @Test
     public void save_TravelingPointIsNull_ExceptionThrown() {
@@ -79,8 +78,7 @@ public class TravelingPointServiceTest {
     @Test
     public void saveAll_OneOfTheElementsIsNull_ExceptionThrown() {
         List<TravelingPoint> travelingPoints = new ArrayList<>(createTravelingPointList());
-        TravelingPoint invalidTravelingPoint = null;
-        travelingPoints.add(invalidTravelingPoint);
+        travelingPoints.add(null);
 
         assertThrows(InvalidArgumentException.class, () -> travelingPointService.saveAll(travelingPoints));
     }
@@ -91,20 +89,21 @@ public class TravelingPointServiceTest {
         int size = travelingPoints.size();
 
         when(travelingPointRepository.saveAll(travelingPoints)).thenReturn(travelingPoints);
+        List<TravelingPoint> createdTravelingPoints = travelingPointService.saveAll(travelingPoints);
 
-        assertEquals(size, travelingPointService.saveAll(travelingPoints).size());
+        assertEquals(size, createdTravelingPoints.size());
     }
 
     @Test
     public void findById_IdIsZero_ExceptionThrown() {
-        long id = 0;
+        long id = NumberUtils.LONG_ZERO;
 
         assertThrows(InvalidArgumentException.class, () -> travelingPointService.findById(id));
     }
 
     @Test
     public void findById_IdIsNegative_ExceptionThrown() {
-        long id = -123;
+        long id = NumberUtils.LONG_MINUS_ONE;
 
         assertThrows(InvalidArgumentException.class, () -> travelingPointService.findById(id));
     }
@@ -203,7 +202,8 @@ public class TravelingPointServiceTest {
         String oldName = travelingPoint.getName();
         String invalidNewName = null;
 
-        assertThrows(InvalidArgumentException.class, () -> travelingPointService.updateName(invalidNewName, oldName));
+        assertThrows(InvalidArgumentException.class,
+                () -> travelingPointService.updateName(invalidNewName, oldName));
     }
 
     @Test
@@ -215,7 +215,8 @@ public class TravelingPointServiceTest {
 
         when(travelingPointRepository.findByName(oldName)).thenReturn(travelingPointOptional);
 
-        assertThrows(AlreadyExistingItemException.class, () -> travelingPointService.updateName(newName, oldName));
+        assertThrows(AlreadyExistingItemException.class,
+                () -> travelingPointService.updateName(newName, oldName));
     }
 
     @Test
@@ -226,7 +227,7 @@ public class TravelingPointServiceTest {
     }
 
     @Test
-    public void deleteById_TravelingPointWithGivenIdIsPresent_SuccessfullyDeletedTravelingPoint() {
+    public void deleteById_TravelingPointWithGivenIdExists_SuccessfullyDeletedTravelingPoint() {
         TravelingPoint travelingPoint = createTravelingPoint();
         String name = travelingPoint.getName();
         long id = travelingPoint.getId();
@@ -241,7 +242,7 @@ public class TravelingPointServiceTest {
         String name = "Canada";
         double longitude = -79.35;
         double latitude = 43.65;
-        long id = 1;
+        long id = NumberUtils.LONG_ONE;
 
         return new TravelingPoint(id, name, longitude, latitude);
     }
@@ -250,7 +251,7 @@ public class TravelingPointServiceTest {
         String name = "Germany";
         double latitude = 51.13;
         double longitude = 10.01;
-        long id = 2;
+        long id = (NumberUtils.LONG_ONE + NumberUtils.LONG_ONE);
         TravelingPoint firstTravelingPoint = createTravelingPoint();
         TravelingPoint secondTravelingPoint = new TravelingPoint(id, name, longitude, latitude);
         List<TravelingPoint> travelingPoints = new ArrayList<>();
