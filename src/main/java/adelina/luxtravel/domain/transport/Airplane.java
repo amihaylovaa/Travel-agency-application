@@ -30,7 +30,7 @@ public class Airplane extends Transport {
         double destinationPointLatitude = destinationPoint.getLatitude();
 
         double duration = findDistance(departurePointLongitude, departurePointLatitude,
-                destinationPointLongitude, destinationPointLatitude) * AIRPLANE_AVG_SPEED;
+                destinationPointLongitude, destinationPointLatitude) / AIRPLANE_AVG_SPEED;
 
         return parseToLocalTime(duration);
     }
