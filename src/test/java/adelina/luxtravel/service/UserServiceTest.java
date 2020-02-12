@@ -46,9 +46,8 @@ public class UserServiceTest {
         String username = user.getUsername();
         String password = user.getPassword();
         User anotherUser = new User(username, EMAIL, password);
-        Optional<User> userOptional = Optional.of(user);
 
-        when(userRepository.findByUsername(username)).thenReturn(userOptional);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
         assertThrows(AlreadyExistingItemException.class, () -> userService.save(anotherUser));
     }
@@ -59,9 +58,8 @@ public class UserServiceTest {
         String email = user.getEmail();
         String password = user.getPassword();
         User anotherUser = new User(USERNAME, email, password);
-        Optional<User> userOptional = Optional.of(user);
 
-        when(userRepository.findByEmail(email)).thenReturn(userOptional);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         assertThrows(AlreadyExistingItemException.class, () -> userService.save(anotherUser));
     }
@@ -71,10 +69,8 @@ public class UserServiceTest {
         User user = createUser();
         String username = user.getUsername();
         String email = user.getEmail();
-        Optional<User> userOptional = Optional.of(user);
 
-        when(userRepository.findByUsername(username)).thenReturn(userOptional);
-
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
         User createdUser = userService.findByUsername(username);
 
         assertEquals(username, createdUser.getUsername());
@@ -86,9 +82,8 @@ public class UserServiceTest {
         User user = createUser();
         String email = user.getEmail();
         String nonExistentEmail = EMAIL;
-        Optional<User> userOptional = Optional.of(user);
 
-        lenient().when(userRepository.findByEmail(email)).thenReturn(userOptional);
+        lenient().when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         assertThrows(NonExistentItemException.class, () -> userService.findByEmail(nonExistentEmail));
     }
@@ -111,9 +106,8 @@ public class UserServiceTest {
     public void findByEmail_ValidData_SuccessfullyFoundUser() {
         User user = createUser();
         String email = user.getEmail();
-        Optional<User> userOptional = Optional.of(user);
 
-        when(userRepository.findByEmail(email)).thenReturn(userOptional);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         User foundUser = userService.findByEmail(email);
 
@@ -125,9 +119,8 @@ public class UserServiceTest {
     public void findByUsername_UserWithGivenUsernameDoesNotExist_ExceptionThrown() {
         User user = createUser();
         String username = user.getUsername();
-        Optional<User> userOptional = Optional.of(user);
 
-        lenient().when(userRepository.findByUsername(username)).thenReturn(userOptional);
+        lenient().when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
         assertThrows(NonExistentItemException.class, () -> userService.findByUsername(USERNAME));
     }
@@ -150,9 +143,8 @@ public class UserServiceTest {
     public void findByUsername_ValidData_SuccessfullyFoundUser() {
         User user = createUser();
         String username = user.getUsername();
-        Optional<User> userOptional = Optional.of(user);
 
-        when(userRepository.findByUsername(username)).thenReturn(userOptional);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
         User foundUser = userService.findByUsername(username);
 
@@ -208,13 +200,12 @@ public class UserServiceTest {
     @Test
     public void updatePassword_UserWithGivenUsernameDoesNotExist_ExceptionThrown() {
         User user = createUser();
-        Optional<User> userOptional = Optional.of(user);
         String username = user.getUsername();
         String oldPassword = user.getPassword();
         String newPassword = PASSWORD;
         String nonExistentUsername = USERNAME;
 
-        lenient().when(userRepository.findByUsername(username)).thenReturn(userOptional);
+        lenient().when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
         assertThrows(NonExistentItemException.class,
                 () -> userService.updatePassword(nonExistentUsername, newPassword, oldPassword));
@@ -233,12 +224,11 @@ public class UserServiceTest {
     @Test
     public void updateEmail_UserWithGivenEmailDoesNotExist_ExceptionThrown() {
         User user = createUser();
-        Optional<User> userOptional = Optional.of(user);
         String email = user.getEmail();
         String password = user.getPassword();
         String nonExistentOldEmail = "butterfly2@gmail.com";
 
-        lenient().when(userRepository.findByEmail(email)).thenReturn(userOptional);
+        lenient().when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         assertThrows(NonExistentItemException.class,
                 () -> userService.updateEmail(EMAIL, nonExistentOldEmail, password));
@@ -265,13 +255,11 @@ public class UserServiceTest {
     @Test
     public void deleteByEmail_UserWithGivenEmailDoesNotExist_ExceptionThrown() {
         User user = createUser();
-        Optional<User> userOptional = Optional.of(user);
         String email = user.getEmail();
         String nonExistentEmail = EMAIL;
         String password = user.getPassword();
 
-
-        lenient().when(userRepository.findByEmail(email)).thenReturn(userOptional);
+        lenient().when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         assertThrows(NonExistentItemException.class,
                 () -> userService.deleteByUsername(nonExistentEmail, password));
@@ -298,11 +286,10 @@ public class UserServiceTest {
     @Test
     public void deleteByUsername_UserWithGivenUsernameDoesNotExist_ExceptionThrown() {
         User user = createUser();
-        Optional<User> userOptional = Optional.of(user);
         String username = user.getUsername();
         String password = user.getPassword();
 
-        lenient().when(userRepository.findByUsername(username)).thenReturn(userOptional);
+        lenient().when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
         assertThrows(NonExistentItemException.class,
                 () -> userService.deleteByUsername(USERNAME, password));

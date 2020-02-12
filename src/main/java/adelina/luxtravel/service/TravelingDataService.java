@@ -32,7 +32,7 @@ public class TravelingDataService {
     }
 
     public TravelingData save(TravelingData travelingData) {
-        validateBookingData(travelingData);
+        validateTravelingData(travelingData);
         validateFieldsExist(travelingData.getDepartureDestination(), travelingData.getTransport());
         return travelingDataRepository.save(travelingData);
     }
@@ -90,7 +90,7 @@ public class TravelingDataService {
         travelingDataRepository.deleteById(id);
     }
 
-    private void validateBookingData(TravelingData travelingData) {
+    private void validateTravelingData(TravelingData travelingData) {
         if (travelingData == null) {
             throw new InvalidArgumentException("Invalid booking data");
         }

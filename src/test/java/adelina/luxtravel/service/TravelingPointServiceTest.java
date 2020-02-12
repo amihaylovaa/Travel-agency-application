@@ -37,28 +37,22 @@ public class TravelingPointServiceTest {
     @Test
     public void save_TravelingPointAlreadyExists_ExceptionThrown() {
         TravelingPoint travelingPoint = createTravelingPoint();
-        Optional<TravelingPoint> travelingPointOptional = Optional.of(travelingPoint);
         String name = travelingPoint.getName();
 
-        when(travelingPointRepository.findByName(name)).thenReturn(travelingPointOptional);
+        when(travelingPointRepository.findByName(name)).thenReturn(Optional.of(travelingPoint));
 
         assertThrows(AlreadyExistingItemException.class, () -> travelingPointService.save(travelingPoint));
     }
 
+    // TODO - FIXING
     @Test
     public void save_ValidData_SuccessfullyCreatedTravelingPoint() {
-        TravelingPoint travelingPoint = createTravelingPoint();
-        Optional<TravelingPoint> travelingPointOptional = Optional.of(travelingPoint);
-        String name = travelingPoint.getName();
-        double latitude = travelingPoint.getLatitude();
-        double longitude = travelingPoint.getLongitude();
+        TravelingPoint expectedTravelingPoint = createTravelingPoint();
 
-        when(travelingPointRepository.findByName(name)).thenReturn(travelingPointOptional);
-        TravelingPoint createdTravelingPoint = travelingPointService.findByName(name);
+        when(travelingPointRepository.save(expectedTravelingPoint)).thenReturn(expectedTravelingPoint);
+        TravelingPoint actualTravelingPoint = travelingPointService.save(expectedTravelingPoint);
 
-        assertEquals(name, createdTravelingPoint.getName());
-        assertEquals(longitude, createdTravelingPoint.getLongitude());
-        assertEquals(latitude, createdTravelingPoint.getLatitude());
+        assertEquals(expectedTravelingPoint, actualTravelingPoint);
     }
 
     @Test
@@ -76,7 +70,7 @@ public class TravelingPointServiceTest {
     }
 
     @Test
-    public void saveAll_OneOfTheElementsIsNull_ExceptionThrown() {
+    public void saveAll_OneOfTheElementsInTheListIsNull_ExceptionThrown() {
         List<TravelingPoint> travelingPoints = new ArrayList<>(createTravelingPointList());
         travelingPoints.add(null);
 
@@ -85,13 +79,14 @@ public class TravelingPointServiceTest {
 
     @Test
     public void saveAll_CreateTravelingPointListOfTwo_SuccessfullyReturnedList() {
-        List<TravelingPoint> travelingPoints = new ArrayList<>(createTravelingPointList());
-        int size = travelingPoints.size();
+        List<TravelingPoint> expectedTravelingPoints = new ArrayList<>(createTravelingPointList());
+        int expectedSize = expectedTravelingPoints.size();
 
-        when(travelingPointRepository.saveAll(travelingPoints)).thenReturn(travelingPoints);
-        List<TravelingPoint> createdTravelingPoints = travelingPointService.saveAll(travelingPoints);
+        when(travelingPointRepository.saveAll(expectedTravelingPoints)).thenReturn(expectedTravelingPoints);
+        List<TravelingPoint> actualTravelingPoints = travelingPointService.saveAll(expectedTravelingPoints);
 
-        assertEquals(size, createdTravelingPoints.size());
+        assertEquals(expectedSize, actualTravelingPoints.size());
+        assertTrue(expectedTravelingPoints.containsAll(actualTravelingPoints));
     }
 
     @Test
@@ -111,69 +106,53 @@ public class TravelingPointServiceTest {
     @Test
     public void findById_TravelingPointWithGivenIdDoesNotExist_ExceptionThrown() {
         TravelingPoint travelingPoint = createTravelingPoint();
-        Optional<TravelingPoint> travelingPointOptional = Optional.of(travelingPoint);
-        long id = travelingPoint.getId();
-        long invalidId = 12;
+        long existingId = travelingPoint.getId();
+        long nonExistingId = 12;
 
-        lenient().when(travelingPointRepository.findById(id)).thenReturn(travelingPointOptional);
+        lenient().when(travelingPointRepository.findById(existingId)).thenReturn(Optional.of(travelingPoint));
 
-        assertThrows(NonExistentItemException.class, () -> travelingPointService.findById(invalidId));
+        assertThrows(NonExistentItemException.class, () -> travelingPointService.findById(nonExistingId));
     }
 
     @Test
     public void findById_TravelingPointWithGivenIdExists_ReturnedTravelingPoint() {
-        TravelingPoint travelingPoint = createTravelingPoint();
-        Optional<TravelingPoint> travelingPointOptional = Optional.of(travelingPoint);
-        String name = travelingPoint.getName();
-        double latitude = travelingPoint.getLatitude();
-        double longitude = travelingPoint.getLongitude();
-        long id = travelingPoint.getId();
+        TravelingPoint expectedTravelingPoint = createTravelingPoint();
+        long id = expectedTravelingPoint.getId();
 
-        when(travelingPointRepository.findById(id)).thenReturn(travelingPointOptional);
-        TravelingPoint foundTravelingPoint = travelingPointService.findById(id);
+        when(travelingPointRepository.findById(id)).thenReturn(Optional.of(expectedTravelingPoint));
+        TravelingPoint actualTravelingPoint = travelingPointService.findById(id);
 
-        assertEquals(id, foundTravelingPoint.getId());
-        assertEquals(name, foundTravelingPoint.getName());
-        assertEquals(latitude, travelingPoint.getLatitude());
-        assertEquals(longitude, travelingPoint.getLongitude());
+        assertEquals(expectedTravelingPoint, actualTravelingPoint);
     }
 
     @Test
-    public void findById_NameIsNull_ExceptionThrown() {
+    public void findByName_NameIsNull_ExceptionThrown() {
         String name = null;
 
         assertThrows(InvalidArgumentException.class, () -> travelingPointService.findByName(name));
     }
 
     @Test
-    public void findById_TravelingPointWithGivenNameDoesNotExist_ExceptionThrown() {
+    public void findByName_TravelingPointWithGivenNameDoesNotExist_ExceptionThrown() {
         TravelingPoint travelingPoint = createTravelingPoint();
-        Optional<TravelingPoint> travelingPointOptional = Optional.of(travelingPoint);
-        String name = travelingPoint.getName();
-        String nonExistentTravelingPointName = "Kenya";
+        String existingName = travelingPoint.getName();
+        String nonExistentName = "Kenya";
 
-        lenient().when(travelingPointRepository.findByName(name)).thenReturn(travelingPointOptional);
+        lenient().when(travelingPointRepository.findByName(existingName)).thenReturn(Optional.of(travelingPoint));
 
         assertThrows(NonExistentItemException.class,
-                () -> travelingPointService.findByName(nonExistentTravelingPointName));
+                () -> travelingPointService.findByName(nonExistentName));
     }
 
     @Test
-    public void findById_TravelingPointWithGivenNameExists_ReturnedTravelingPoint() {
-        TravelingPoint travelingPoint = createTravelingPoint();
-        Optional<TravelingPoint> travelingPointOptional = Optional.of(travelingPoint);
-        String name = travelingPoint.getName();
-        double latitude = travelingPoint.getLatitude();
-        double longitude = travelingPoint.getLongitude();
-        long id = travelingPoint.getId();
+    public void findByName_TravelingPointWithGivenNameExists_ReturnedTravelingPoint() {
+        TravelingPoint expectedTravelingPoint = createTravelingPoint();
+        String name = expectedTravelingPoint.getName();
 
-        when(travelingPointRepository.findByName(name)).thenReturn(travelingPointOptional);
-        TravelingPoint foundTravelingPoint = travelingPointService.findByName(name);
+        when(travelingPointRepository.findByName(name)).thenReturn(Optional.of(expectedTravelingPoint));
+        TravelingPoint actualTravelingPoint = travelingPointService.findByName(name);
 
-        assertEquals(id, foundTravelingPoint.getId());
-        assertEquals(name, foundTravelingPoint.getName());
-        assertEquals(latitude, travelingPoint.getLatitude());
-        assertEquals(longitude, travelingPoint.getLongitude());
+        assertEquals(expectedTravelingPoint, actualTravelingPoint);
     }
 
     @Test
@@ -187,13 +166,13 @@ public class TravelingPointServiceTest {
 
     @Test
     public void findAll_TravelingPointListHasTwoElements_ListReturned() {
-        List<TravelingPoint> travelingPoints = new ArrayList<>(createTravelingPointList());
+        List<TravelingPoint> expectedTravelingPoints = new ArrayList<>(createTravelingPointList());
 
-        when(travelingPointRepository.findAll()).thenReturn(travelingPoints);
-        List<TravelingPoint> foundTravelingPoints = travelingPointService.findAll();
+        when(travelingPointRepository.findAll()).thenReturn(expectedTravelingPoints);
+        List<TravelingPoint> actualTravelingPoints = travelingPointService.findAll();
 
-        assertEquals(travelingPoints, foundTravelingPoints);
-        assertEquals(travelingPoints.size(), foundTravelingPoints.size());
+        assertEquals(expectedTravelingPoints.size(), actualTravelingPoints.size());
+        assertEquals(expectedTravelingPoints, actualTravelingPoints);
     }
 
     @Test
@@ -209,11 +188,10 @@ public class TravelingPointServiceTest {
     @Test
     public void updateName_NewNameIsTheSameAsTheCurrent_ExceptionThrown() {
         TravelingPoint travelingPoint = createTravelingPoint();
-        Optional<TravelingPoint> travelingPointOptional = Optional.of(travelingPoint);
         String oldName = travelingPoint.getName();
         String newName = oldName;
 
-        when(travelingPointRepository.findByName(oldName)).thenReturn(travelingPointOptional);
+        when(travelingPointRepository.findByName(oldName)).thenReturn(Optional.of(travelingPoint));
 
         assertThrows(AlreadyExistingItemException.class,
                 () -> travelingPointService.updateName(newName, oldName));
@@ -221,7 +199,7 @@ public class TravelingPointServiceTest {
 
     @Test
     public void deleteById_IdIsLessThanZero_ExceptionThrown() {
-        long invalidId = -5;
+        long invalidId = NumberUtils.LONG_MINUS_ONE;
 
         assertThrows(InvalidArgumentException.class, () -> travelingPointService.deleteById(invalidId));
     }
