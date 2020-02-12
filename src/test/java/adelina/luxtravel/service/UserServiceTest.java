@@ -44,8 +44,9 @@ public class UserServiceTest {
     public void save_UserWithGivenUsernameAlreadyExists_ExceptionThrown() {
         User user = createUser();
         String username = user.getUsername();
+        String existingEmail = EMAIL;
         String password = user.getPassword();
-        User anotherUser = new User(username, EMAIL, password);
+        User anotherUser = new User(username, existingEmail, password);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
@@ -55,9 +56,10 @@ public class UserServiceTest {
     @Test
     public void save_UserWithGivenEmailAlreadyExists_ExceptionThrown() {
         User user = createUser();
+        String existingUsername = USERNAME;
         String email = user.getEmail();
         String password = user.getPassword();
-        User anotherUser = new User(USERNAME, email, password);
+        User anotherUser = new User(existingUsername, email, password);
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
@@ -66,15 +68,13 @@ public class UserServiceTest {
 
     @Test
     public void save_ValidData_SuccessfullyCreatedUser() {
-        User user = createUser();
-        String username = user.getUsername();
-        String email = user.getEmail();
+        User expectedUser = createUser();
+        String username = expectedUser.getUsername();
 
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
-        User createdUser = userService.findByUsername(username);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(expectedUser));
+        User actualUser = userService.findByUsername(username);
 
-        assertEquals(username, createdUser.getUsername());
-        assertEquals(email, createdUser.getEmail());
+        assertEquals(expectedUser, actualUser);
     }
 
     @Test
@@ -104,15 +104,13 @@ public class UserServiceTest {
 
     @Test
     public void findByEmail_ValidData_SuccessfullyFoundUser() {
-        User user = createUser();
-        String email = user.getEmail();
+        User expectedUser = createUser();
+        String email = expectedUser.getEmail();
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(expectedUser));
+        User actualUser = userService.findByEmail(email);
 
-        User foundUser = userService.findByEmail(email);
-
-        assertEquals(user.getUsername(), foundUser.getUsername());
-        assertEquals(email, foundUser.getEmail());
+        assertEquals(expectedUser, actualUser);
     }
 
     @Test
@@ -141,15 +139,13 @@ public class UserServiceTest {
 
     @Test
     public void findByUsername_ValidData_SuccessfullyFoundUser() {
-        User user = createUser();
-        String username = user.getUsername();
+        User expectedUser = createUser();
+        String username = expectedUser.getUsername();
 
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(expectedUser));
+        User actualUser = userService.findByUsername(username);
 
-        User foundUser = userService.findByUsername(username);
-
-        assertEquals(username, foundUser.getUsername());
-        assertEquals(user.getEmail(), foundUser.getEmail());
+        assertEquals(expectedUser, actualUser);
     }
 
     @Test
@@ -174,16 +170,15 @@ public class UserServiceTest {
     public void findAll_CreatedListOfTwoUsers_ReturnedListOfTwoUsers() {
         User firstUser = createUser();
         User secondUser = new User(USERNAME, EMAIL, PASSWORD);
-        List<User> createdUsers = new ArrayList<>();
-        createdUsers.add(firstUser);
-        createdUsers.add(secondUser);
+        List<User> expectedUsers = new ArrayList<>();
+        expectedUsers.add(firstUser);
+        expectedUsers.add(secondUser);
 
-        when(userRepository.findAll()).thenReturn(createdUsers);
-        List<User> foundUsers = userService.findAll();
+        when(userRepository.findAll()).thenReturn(expectedUsers);
+        List<User> actualUsers = userService.findAll();
 
-        assertEquals(createdUsers.size(), foundUsers.size());
-        assertTrue(foundUsers.contains(firstUser));
-        assertTrue(foundUsers.contains(secondUser));
+        assertEquals(expectedUsers.size(), actualUsers.size());
+        assertTrue(expectedUsers.containsAll(actualUsers));
     }
 
     @Test
@@ -200,12 +195,12 @@ public class UserServiceTest {
     @Test
     public void updatePassword_UserWithGivenUsernameDoesNotExist_ExceptionThrown() {
         User user = createUser();
-        String username = user.getUsername();
+        String existingUsername = user.getUsername();
         String oldPassword = user.getPassword();
         String newPassword = PASSWORD;
         String nonExistentUsername = USERNAME;
 
-        lenient().when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        lenient().when(userRepository.findByUsername(existingUsername)).thenReturn(Optional.of(user));
 
         assertThrows(NonExistentItemException.class,
                 () -> userService.updatePassword(nonExistentUsername, newPassword, oldPassword));
@@ -224,11 +219,11 @@ public class UserServiceTest {
     @Test
     public void updateEmail_UserWithGivenEmailDoesNotExist_ExceptionThrown() {
         User user = createUser();
-        String email = user.getEmail();
+        String existingEmail = user.getEmail();
         String password = user.getPassword();
         String nonExistentOldEmail = "butterfly2@gmail.com";
 
-        lenient().when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        lenient().when(userRepository.findByEmail(existingEmail)).thenReturn(Optional.of(user));
 
         assertThrows(NonExistentItemException.class,
                 () -> userService.updateEmail(EMAIL, nonExistentOldEmail, password));
@@ -255,14 +250,14 @@ public class UserServiceTest {
     @Test
     public void deleteByEmail_UserWithGivenEmailDoesNotExist_ExceptionThrown() {
         User user = createUser();
-        String email = user.getEmail();
+        String existingEmail = user.getEmail();
         String nonExistentEmail = EMAIL;
         String password = user.getPassword();
 
-        lenient().when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        lenient().when(userRepository.findByEmail(existingEmail)).thenReturn(Optional.of(user));
 
         assertThrows(NonExistentItemException.class,
-                () -> userService.deleteByUsername(nonExistentEmail, password));
+                () -> userService.deleteByEmail(nonExistentEmail, password));
     }
 
     @Test

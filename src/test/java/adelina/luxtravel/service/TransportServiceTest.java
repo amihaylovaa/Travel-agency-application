@@ -40,7 +40,6 @@ public class TransportServiceTest {
         assertThrows(InvalidArgumentException.class, () -> transportService.saveBus(transport));
     }
 
-    // TODO FIXING (also service)
     @Test
     public void saveBus_ValidData_SuccessfullyCreatedBus() {
         TransportClass transportClass = TransportClass.ECONOMY;
@@ -67,7 +66,6 @@ public class TransportServiceTest {
         assertThrows(InvalidArgumentException.class, () -> transportService.saveAirplane(transport));
     }
 
-    // TODO FIXING (also service)
     @Test
     public void saveAirplane_ValidData_SuccessfullyCreatedAirplane() {
         TransportClass transportClass = TransportClass.BUSINESS;
@@ -126,7 +124,7 @@ public class TransportServiceTest {
     }
 
     @Test
-    public void findById_TransportWithGivenIdExists_ReturnedSearchedTransport() {
+    public void findById_TransportWithGivenIdExists_ReturnedFoundTransport() {
         TransportClass transportClass = TransportClass.BUSINESS;
         Transport expectedTransport = new Airplane(NumberUtils.LONG_ONE, transportClass);
         long expectedId = expectedTransport.getId();
@@ -158,11 +156,11 @@ public class TransportServiceTest {
     @Test
     public void findAllBusesByClass_BusesWithGivenTransportClassExists_ReturnedBusesList() {
         TransportClass transportClass = TransportClass.ECONOMY;
-        Transport transportEconomyA = new Bus(transportClass);
-        Transport transportEconomyB = new Bus(transportClass);
+        Transport transportA = new Bus(transportClass);
+        Transport transportB = new Bus(transportClass);
         List<Transport> expectedTransports = new ArrayList<>();
-        expectedTransports.add(transportEconomyA);
-        expectedTransports.add(transportEconomyB);
+        expectedTransports.add(transportA);
+        expectedTransports.add(transportB);
 
         when(transportRepository.findAllBusesByClass(transportClass)).thenReturn(expectedTransports);
         List<Transport> actualTransports = transportService.findAllBusesByClass(transportClass);
@@ -242,14 +240,14 @@ public class TransportServiceTest {
     @Test
     public void updateClass_TransportWithGivenIdDoesNotExist_ExceptionThrown() {
         long id = 1;
-        long invalidId = 1024;
+        long nonExistentId = 1024;
         TransportClass transportClass = TransportClass.ECONOMY;
         Transport transport = new Airplane(id, transportClass);
 
         lenient().when(transportRepository.findById(id)).thenReturn(Optional.of(transport));
 
         assertThrows(NonExistentItemException.class,
-                () -> transportService.updateClass(transportClass, invalidId));
+                () -> transportService.updateClass(transportClass, nonExistentId));
     }
 
     @Test
@@ -262,13 +260,13 @@ public class TransportServiceTest {
     @Test
     public void deleteById_TransportWithGivenIdDoesNotExist_ExceptionThrown() {
         long id = 1;
-        long invalidId = 4;
+        long nonExistentId = 4;
         TransportClass transportClass = TransportClass.FIRST;
         Transport transport = new Bus(id, transportClass);
 
         lenient().when(transportRepository.findById(id)).thenReturn(Optional.of(transport));
 
-        assertThrows(NonExistentItemException.class, () -> transportService.deleteById(invalidId));
+        assertThrows(NonExistentItemException.class, () -> transportService.deleteById(nonExistentId));
     }
 
     private List<Transport> createTransportList() {

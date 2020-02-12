@@ -113,15 +113,11 @@ public class TravelingPointService {
 
     private void validateTravelingPointDoesNotExist(TravelingPoint travelingPoint) {
         String name = travelingPoint.getName();
-        double latitude = travelingPoint.getLatitude();
-        double longitude = travelingPoint.getLongitude();
 
-        TravelingPoint existingTravelingPoint = findByName(name);
+        Optional<TravelingPoint> existingTravelingPoint = travelingPointRepository.findByName(name);
 
-        if (name.equals(existingTravelingPoint.getName())
-                && latitude == existingTravelingPoint.getLatitude()
-                && longitude == existingTravelingPoint.getLongitude()) {
-            throw new AlreadyExistingItemException("This traveling point already exists");
+        if (existingTravelingPoint.isPresent()) {
+            throw new AlreadyExistingItemException("Traveling point already exists");
         }
     }
 }

@@ -17,8 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TravelingPointServiceTest {
@@ -44,11 +43,15 @@ public class TravelingPointServiceTest {
         assertThrows(AlreadyExistingItemException.class, () -> travelingPointService.save(travelingPoint));
     }
 
-    // TODO - FIXING
     @Test
     public void save_ValidData_SuccessfullyCreatedTravelingPoint() {
         TravelingPoint expectedTravelingPoint = createTravelingPoint();
+        String name = "Paris, France";
+        double longitude = 2.34;
+        double latitude = 48.86;
+        TravelingPoint someExistingTravelingPoint = new TravelingPoint(name, longitude, latitude);
 
+        lenient().when(travelingPointRepository.findByName(name)).thenReturn(Optional.of(someExistingTravelingPoint));
         when(travelingPointRepository.save(expectedTravelingPoint)).thenReturn(expectedTravelingPoint);
         TravelingPoint actualTravelingPoint = travelingPointService.save(expectedTravelingPoint);
 
@@ -70,7 +73,7 @@ public class TravelingPointServiceTest {
     }
 
     @Test
-    public void saveAll_OneOfTheElementsInTheListIsNull_ExceptionThrown() {
+    public void saveAll_ListHasNullElement_ExceptionThrown() {
         List<TravelingPoint> travelingPoints = new ArrayList<>(createTravelingPointList());
         travelingPoints.add(null);
 
@@ -172,7 +175,7 @@ public class TravelingPointServiceTest {
         List<TravelingPoint> actualTravelingPoints = travelingPointService.findAll();
 
         assertEquals(expectedTravelingPoints.size(), actualTravelingPoints.size());
-        assertEquals(expectedTravelingPoints, actualTravelingPoints);
+        assertTrue(expectedTravelingPoints.containsAll(actualTravelingPoints));
     }
 
     @Test
@@ -217,9 +220,9 @@ public class TravelingPointServiceTest {
     }
 
     private TravelingPoint createTravelingPoint() {
-        String name = "Canada";
-        double longitude = -79.35;
-        double latitude = 43.65;
+        String name = "Quebec,Canada";
+        double longitude = -71.25;
+        double latitude = 46.82;
         long id = NumberUtils.LONG_ONE;
 
         return new TravelingPoint(id, name, longitude, latitude);
