@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static adelina.luxtravel.utility.Constants.INVALID_ID;
+import static adelina.luxtravel.utility.Constants.NON_EXISTING_TRANSPORT_WITH_GIVEN_ID;
 
 @Service
 public class TransportService {
@@ -50,13 +51,13 @@ public class TransportService {
 
     public Transport findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
+            throw new InvalidArgumentException(INVALID_ID);
         }
 
         Optional<Transport> transport = transportRepository.findById(id);
 
         if (!transport.isPresent()) {
-            throw new NonExistentItemException("Transport with that id does not exist");
+            throw new NonExistentItemException(NON_EXISTING_TRANSPORT_WITH_GIVEN_ID);
         }
         return transport.get();
     }
@@ -99,7 +100,7 @@ public class TransportService {
         Optional<Transport> transport = transportRepository.findById(id);
 
         if (!transport.isPresent()) {
-            throw new NonExistentItemException("Transport with that id does not exist");
+            throw new NonExistentItemException(NON_EXISTING_TRANSPORT_WITH_GIVEN_ID);
         }
         transportRepository.updateClass(transportClass, id);
     }
@@ -112,7 +113,7 @@ public class TransportService {
         Optional<Transport> transport = transportRepository.findById(id);
 
         if (!transport.isPresent()) {
-            throw new NonExistentItemException("Transport with that id does not exist");
+            throw new NonExistentItemException(NON_EXISTING_TRANSPORT_WITH_GIVEN_ID);
         }
 
         transportRepository.deleteById(id);

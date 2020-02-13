@@ -1,6 +1,7 @@
 package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 
 @Entity
 @Table(name = "bus")
+@EqualsAndHashCode
 public class Bus extends Transport {
     public Bus(TransportClass vehicleClass) {
         super(vehicleClass);
@@ -28,7 +30,7 @@ public class Bus extends Transport {
         double destinationPointLatitude = destinationPoint.getLatitude();
 
         double duration = findDistance(departurePointLongitude, departurePointLatitude,
-                destinationPointLongitude, destinationPointLatitude) * BUS_AVG_SPEED;
+                destinationPointLongitude, destinationPointLatitude) / BUS_AVG_SPEED;
 
         return parseToLocalTime(duration);
     }

@@ -1,6 +1,7 @@
 package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 @Entity
 @Table(name = "airplane")
 @Getter
+@EqualsAndHashCode
 public class Airplane extends Transport {
     public Airplane(TransportClass vehicleClass) {
         super(vehicleClass);

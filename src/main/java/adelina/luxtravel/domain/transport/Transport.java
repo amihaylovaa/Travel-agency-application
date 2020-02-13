@@ -1,12 +1,16 @@
 package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
+import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.Getter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+
+import static adelina.luxtravel.utility.Constants.HOUR;
+import static adelina.luxtravel.utility.Constants.MINUTE;
 
 @Entity
 @Table(name = "transport")
@@ -36,10 +40,27 @@ public abstract class Transport {
     }
 
     public LocalTime parseToLocalTime(Double duration) {
-         String durationRound = String.format("%.2f", duration);
-         String durationString = durationRound.replace(',', ':');
+        String durationRound = String.format("%.2f", duration);
 
-       return LocalTime.parse(durationString, DateTimeFormatter.ofPattern("H:mm"));
+        return generateProperTime(durationRound);
+    }
+
+    private LocalTime generateProperTime(String durationString) {
+        String minutesString = durationString.substring(durationString.indexOf(',') + 1, durationString.length());
+        String hoursString = durationString.substring(0, durationString.indexOf(','));
+        int hours = Integer.parseInt(hoursString);
+        int minutes = Integer.parseInt(minutesString);
+
+        if (hours >= 24) {
+            throw new FailedInitializationException("Improper transport");
+        }
+
+        while (minutes >= HOUR) {
+            hours += 1;
+            minutes -= 60;
+        }
+
+        return LocalTime.of(hours, minutes);
     }
 
     public abstract LocalTime calculateDuration(TravelingPoint departurePoint, TravelingPoint destinationPoint);

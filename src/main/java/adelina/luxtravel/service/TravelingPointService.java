@@ -73,18 +73,7 @@ public class TravelingPointService {
     }
 
     public void updateName(String newName, String oldName) {
-        if (StringUtils.isEmpty(newName)) {
-            throw new InvalidArgumentException("Invalid new name");
-        }
-        if (StringUtils.isEmpty(oldName)) {
-            throw new InvalidArgumentException("Invalid old name");
-        }
-
-        TravelingPoint existingTravelingPoint = findByName(oldName);
-
-        if (newName.equals(existingTravelingPoint.getName())) {
-            throw new AlreadyExistingItemException("Traveling point with this name already exists");
-        }
+        validateUpdateNameParameters(newName, oldName);
 
         travelingPointRepository.updateName(newName, oldName);
     }
@@ -92,6 +81,12 @@ public class TravelingPointService {
     public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
+        }
+
+        Optional<TravelingPoint> travelingPoint = travelingPointRepository.findById(id);
+
+        if (!travelingPoint.isPresent()) {
+            throw new NonExistentItemException("Traveling point with this id does not exist");
         }
         travelingPointRepository.deleteById(id);
     }
@@ -102,6 +97,7 @@ public class TravelingPointService {
         }
         for (TravelingPoint travelingPoint : travelingPoints) {
             validateTravelingPoint(travelingPoint);
+            validateTravelingPointDoesNotExist(travelingPoint);
         }
     }
 
@@ -118,6 +114,21 @@ public class TravelingPointService {
 
         if (existingTravelingPoint.isPresent()) {
             throw new AlreadyExistingItemException("Traveling point already exists");
+        }
+    }
+
+    private void validateUpdateNameParameters(String newName, String oldName) {
+        if (StringUtils.isEmpty(newName)) {
+            throw new InvalidArgumentException("Invalid new name");
+        }
+        if (StringUtils.isEmpty(oldName)) {
+            throw new InvalidArgumentException("Invalid old name");
+        }
+
+        TravelingPoint existingTravelingPoint = findByName(oldName);
+
+        if (newName.equals(existingTravelingPoint.getName())) {
+            throw new AlreadyExistingItemException("Traveling point with this name already exists");
         }
     }
 }

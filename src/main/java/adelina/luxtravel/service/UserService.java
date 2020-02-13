@@ -35,9 +35,9 @@ public class UserService {
         validateEmailDoesNotExist(user.getEmail());
 
         String userPassword = user.getPassword();
-        String hashedPassword = passwordEncoder.encode(userPassword);
 
-        user.setPassword(hashedPassword);
+        user.setPassword(passwordEncoder.encode(userPassword));
+
         return userRepository.save(user);
     }
 
@@ -77,7 +77,7 @@ public class UserService {
     }
 
     public void updatePassword(String username, String newPassword, String oldPassword) {
-        validatePasswordUpdate(username, newPassword, oldPassword);
+        validatePasswordUpdateParameters(username, newPassword, oldPassword);
 
         User user = findByUsername(username);
 
@@ -89,7 +89,7 @@ public class UserService {
     }
 
     public void updateEmail(String newEmail, String oldEmail, String password) {
-        validateEmailUpdate(newEmail, oldEmail, password);
+        validateEmailUpdateParameters(newEmail, oldEmail, password);
 
         User user = findByEmail(oldEmail);
 
@@ -102,7 +102,7 @@ public class UserService {
 
     public void deleteByUsername(String username, String password) {
         if (StringUtils.isEmpty(username)) {
-            throw new InvalidArgumentException("Invalid username");
+            throw new InvalidArgumentException(INVALID_USERNAME);
         }
 
         validatePassword(password);
@@ -154,7 +154,7 @@ public class UserService {
         }
     }
 
-    private void validateEmailUpdate(String newEmail, String oldEmail, String password) {
+    private void validateEmailUpdateParameters(String newEmail, String oldEmail, String password) {
         if (StringUtils.isEmpty(newEmail)) {
             throw new InvalidArgumentException("Invalid new email");
         }
@@ -168,7 +168,7 @@ public class UserService {
         validatePassword(password);
     }
 
-    private void validatePasswordUpdate(String username, String newPassword, String oldPassword) {
+    private void validatePasswordUpdateParameters(String username, String newPassword, String oldPassword) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException(INVALID_USERNAME);
         }

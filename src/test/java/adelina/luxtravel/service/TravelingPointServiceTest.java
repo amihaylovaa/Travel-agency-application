@@ -208,15 +208,14 @@ public class TravelingPointServiceTest {
     }
 
     @Test
-    public void deleteById_TravelingPointWithGivenIdExists_SuccessfullyDeletedTravelingPoint() {
+    public void deleteById_TravelingPointWithGivenIdDoesNotExist_ExceptionThrown() {
         TravelingPoint travelingPoint = createTravelingPoint();
-        String name = travelingPoint.getName();
         long id = travelingPoint.getId();
+        long nonExistingId = 12;
 
-        when(travelingPointRepository.findByName(name)).thenThrow(NonExistentItemException.class);
-        travelingPointService.deleteById(id);
+        lenient().when(travelingPointRepository.findById(id)).thenReturn(Optional.of(travelingPoint));
 
-        assertThrows(NonExistentItemException.class, () -> travelingPointService.findByName(name));
+        assertThrows(NonExistentItemException.class, () -> travelingPointService.deleteById(nonExistingId));
     }
 
     private TravelingPoint createTravelingPoint() {
