@@ -232,14 +232,14 @@ public class TravelingDataServiceTest {
     }
 
     @Test
-    void deleteById_IdIsZero_ExceptionThrown() {
+    public void deleteById_IdIsZero_ExceptionThrown() {
         long id = NumberUtils.LONG_ZERO;
 
         assertThrows(InvalidArgumentException.class, () -> travelingDataService.deleteById(id));
     }
 
     @Test
-    void deleteById_TravelingDataWithGivenIdDoesNotExist_ExceptionThrown() {
+   public void deleteById_TravelingDataWithGivenIdDoesNotExist_ExceptionThrown() {
         TravelingData travelingData = createTravelingData();
         long id = travelingData.getId();
         long nonExistentId = 145;

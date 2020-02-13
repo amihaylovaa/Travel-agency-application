@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static adelina.luxtravel.utility.Constants.INVALID_ID;
+import static adelina.luxtravel.utility.Constants.INVALID_USERNAME;
 
 @Service
 public class BookingService {
@@ -33,7 +34,7 @@ public class BookingService {
         if (booking == null) {
             throw new InvalidArgumentException("Invalid booking");
         }
-        validateFieldsExist(booking);
+        validateFields(booking);
         reserveTickets(booking);
         return bookingRepository.save(booking);
     }
@@ -53,7 +54,7 @@ public class BookingService {
 
     public List<Booking> findAllUserBookings(String username) {
         if (StringUtils.isEmpty(username)) {
-            throw new InvalidArgumentException("Invalid username");
+            throw new InvalidArgumentException(INVALID_USERNAME);
         }
 
         List<Booking> bookings = bookingRepository.findAllUserBookings(username);
@@ -75,7 +76,7 @@ public class BookingService {
 
     public void updateTickets(long id, int reservedTicketsCount) {
         if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
+            throw new InvalidArgumentException(INVALID_ID);
         }
         if (reservedTicketsCount <= NumberUtils.INTEGER_ZERO) {
             throw new InvalidArgumentException("Invalid tickets count");
@@ -91,31 +92,49 @@ public class BookingService {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
+
+        Optional<Booking> booking = bookingRepository.findById(id);
+
+        if (!booking.isPresent()) {
+            throw new NonExistentItemException("This booking does not exist");
+        }
         cancelTicketsReservation(id);
         bookingRepository.deleteById(id);
     }
 
-    private void validateFieldsExist(Booking booking) {
+    private void validateFields(Booking booking) {
         User user = booking.getUser();
         TravelingData travelingData = booking.getTravelingData();
-        int reservedTicketsCount = booking.getReservedTicketsCount();
-        long userId = user.getId();
-        long bookingDataId = travelingData.getId();
-        int availableTicketsCount = travelingData.getAvailableTicketsCount();
 
-        Optional<User> searchedUser = userRepository.findById(userId);
-
-        if (!searchedUser.isPresent()) {
-            throw new NonExistentItemException("User does not exist");
+        if (user == null) {
+            throw new InvalidArgumentException("Invalid user");
         }
 
-        Optional<TravelingData> searchedBookingData = travelingDataRepository.findById(bookingDataId);
+        if (travelingData == null) {
+            throw new InvalidArgumentException("Invalid traveling data");
+        }
+
+        validateUserExists(user);
+        validateTravelingDataExists(travelingData);
+        validateTicketsAreSufficient(booking.getReservedTicketsCount(), travelingData.getAvailableTicketsCount());
+    }
+
+    private void validateTravelingDataExists(TravelingData travelingData) {
+        long id = travelingData.getId();
+        Optional<TravelingData> searchedBookingData = travelingDataRepository.findById(id);
 
         if (!searchedBookingData.isPresent()) {
             throw new NonExistentItemException("Booking data does not exist");
         }
+    }
 
-        validateTicketsAreSufficient(reservedTicketsCount, availableTicketsCount);
+    private void validateUserExists(User user) {
+        long id = user.getId();
+        Optional<User> searchedUser = userRepository.findById(id);
+
+        if (!searchedUser.isPresent()) {
+            throw new NonExistentItemException("User does not exist");
+        }
     }
 
     private void validateTicketsAreSufficient(int reservedTicketsCount, int availableTicketsCount) {

@@ -39,7 +39,7 @@ public class TravelingDataService {
         DepartureDestination departureDestination = travelingData.getDepartureDestination();
         Transport transport = travelingData.getTransport();
 
-        validateFieldsExist(departureDestination, transport);
+        validateFields(departureDestination, transport);
 
         return travelingDataRepository.save(travelingData);
     }
@@ -99,7 +99,7 @@ public class TravelingDataService {
         travelingDataRepository.deleteById(id);
     }
 
-    private void validateFieldsExist(DepartureDestination departureDestination, Transport transport) {
+    private void validateFields(DepartureDestination departureDestination, Transport transport) {
         if (departureDestination == null) {
             throw new InvalidArgumentException("Invalid departure destination");
         }
