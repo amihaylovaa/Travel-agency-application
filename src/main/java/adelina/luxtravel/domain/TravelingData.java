@@ -4,7 +4,7 @@ import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
 
 import static adelina.luxtravel.utility.Constants.MINUTE;
-import static adelina.luxtravel.utility.Constants.TEN_PERCENT;
+import static adelina.luxtravel.utility.Constants.PERCENT;
 
 import adelina.luxtravel.domain.wrapper.*;
 import lombok.Getter;
@@ -76,6 +76,6 @@ public class TravelingData {
 
         LocalTime localTime = transport.calculateDuration(departurePoint, destinationPoint);
 
-        price = ((localTime.getHour() * MINUTE + localTime.getMinute()) / priceCoefficient) * TEN_PERCENT;
+        price = ((localTime.getHour() * MINUTE + localTime.getMinute()) / priceCoefficient) * PERCENT;
     }
 }

@@ -35,11 +35,11 @@ public abstract class Transport {
         this.id = id;
     }
 
-    // TODO  BUG in parsing
     public LocalTime parseToLocalTime(Double duration) {
-         String durationString = duration.toString().replace('.', ':');
+         String durationRound = String.format("%.2f", duration);
+         String durationString = durationRound.replace(',', ':');
 
-       return LocalTime.parse(durationString, DateTimeFormatter.ofPattern("HH:mm"));
+       return LocalTime.parse(durationString, DateTimeFormatter.ofPattern("H:mm"));
     }
 
     public abstract LocalTime calculateDuration(TravelingPoint departurePoint, TravelingPoint destinationPoint);

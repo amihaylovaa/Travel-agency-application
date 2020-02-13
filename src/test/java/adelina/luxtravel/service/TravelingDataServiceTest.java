@@ -34,6 +34,7 @@ public class TravelingDataServiceTest {
 
     @Test
     void save() {
+
     }
 
     @Test

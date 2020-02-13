@@ -1,5 +1,6 @@
 package adelina.luxtravel.utility;
 
+import static adelina.luxtravel.utility.Constants.KM;
 import static java.lang.Math.*;
 import static adelina.luxtravel.utility.Constants.EARTH_RADIUS_IN_METERS;
 
@@ -14,7 +15,7 @@ public final class DistanceCalculator {
                         sin(longitudeDifference / 2.0) * sin(longitudeDifference / 2.0);
         double dist = 2 * atan2(sqrt(x), sqrt(1 - x));
 
-        return (EARTH_RADIUS_IN_METERS * dist)/1000;
+        return (EARTH_RADIUS_IN_METERS * dist) / KM;
     }
 
     private DistanceCalculator() {
