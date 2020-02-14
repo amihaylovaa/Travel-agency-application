@@ -110,6 +110,7 @@ public class UserService {
         User user = findByUsername(username);
 
         validatePasswordMatch(password, user.getPassword());
+
         userRepository.deleteByUsername(username);
     }
 
@@ -123,6 +124,7 @@ public class UserService {
         User user = findByEmail(email);
 
         validatePasswordMatch(password, user.getPassword());
+
         userRepository.deleteByEmail(email);
     }
 

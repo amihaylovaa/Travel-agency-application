@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static adelina.luxtravel.utility.Utility.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
@@ -51,17 +52,9 @@ public class BookingServiceTest {
     @Test
     public void save_UserWithGivenIdDoesNotExist_ExceptionThrown() {
         Booking booking = createBooking();
-        TravelingData travelingData = booking.getTravelingData();
+        Booking newBooking = createBookingForUserThatDoesNotExist();
         User user = booking.getUser();
-        String username = user.getUsername();
-        String email = user.getEmail();
-        String password = user.getPassword();
         long existingUserId = user.getId();
-        long nonExistingUserId = 2;
-        long bookingId = booking.getId();
-        int reservedTicketsCount = booking.getReservedTicketsCount();
-        User nonExistingUser = new User(nonExistingUserId, username, email, password);
-        Booking newBooking = new Booking(bookingId, travelingData, nonExistingUser, reservedTicketsCount);
 
         lenient().when(userRepository.findById(existingUserId)).thenReturn(Optional.of(user));
 
@@ -90,9 +83,8 @@ public class BookingServiceTest {
         assertThrows(NonExistentItemException.class, () -> bookingService.save(newBooking));
     }
 
-
     @Test
-    public void save_ValidData_SuccessfullyCreatedBooking() {
+    public void save_ValidData_CreatedBooking() {
         Booking expectedBooking = createBooking();
         TravelingData travelingData = expectedBooking.getTravelingData();
         User user = expectedBooking.getUser();
@@ -110,20 +102,18 @@ public class BookingServiceTest {
 
     @Test
     public void findById_IdIsNegative_ExceptionThrown() {
-        long id = NumberUtils.LONG_MINUS_ONE;
 
-        assertThrows(InvalidArgumentException.class, () -> bookingService.findById(id));
+        assertThrows(InvalidArgumentException.class, () -> bookingService.findById(NEGATIVE_ID));
     }
 
     @Test
     public void findById_BookingWithGivenIdDoesNotExist_ExceptionThrown() {
         Booking booking = createBooking();
         long existingBookingId = booking.getId();
-        long nonExistentBookingId = 129;
 
         lenient().when(bookingRepository.findById(existingBookingId)).thenReturn(Optional.of(booking));
 
-        assertThrows(NonExistentItemException.class, () -> bookingService.findById(nonExistentBookingId));
+        assertThrows(NonExistentItemException.class, () -> bookingService.findById(NON_EXISTENT_ID));
     }
 
     @Test
@@ -146,7 +136,7 @@ public class BookingServiceTest {
     }
 
     @Test
-    public void findAllUserBookings_UserDoesNotExist_ExceptionThrown() {
+    public void findAllUserBookings_UserWithGivenUsernameDoesNotExist_ExceptionThrown() {
         Booking booking = createBooking();
         User user = booking.getUser();
         String existingUsername = user.getUsername();
@@ -160,6 +150,8 @@ public class BookingServiceTest {
     @Test
     public void findAll_ListIsEmpty_ExceptionThrown() {
         List<Booking> bookings = new ArrayList<>();
+
+        when(bookingRepository.findAll()).thenReturn(bookings);
 
         assertThrows(NonExistentItemException.class, () -> bookingService.findAll());
     }
@@ -176,13 +168,12 @@ public class BookingServiceTest {
     @Test
     void updateTickets_BookingWithGivenIdDoesNotExist_ExceptionThrown() {
         Booking booking = createBooking();
-        long bookingId = booking.getId();
-        long nonExistentBookingId = 24;
+        long existingBookingId = booking.getId();
         int ticketsCount = 5;
 
-        lenient().when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
+        lenient().when(bookingRepository.findById(existingBookingId)).thenReturn(Optional.of(booking));
 
-        assertThrows(NonExistentItemException.class, () -> bookingService.updateTickets(nonExistentBookingId, ticketsCount));
+        assertThrows(NonExistentItemException.class, () -> bookingService.updateTickets(NON_EXISTENT_ID, ticketsCount));
     }
 
     @Test
@@ -198,58 +189,17 @@ public class BookingServiceTest {
 
     @Test
     public void deleteById_IdIsNegative_ExceptionThrown() {
-        long id = NumberUtils.LONG_MINUS_ONE;
 
-        assertThrows(InvalidArgumentException.class, () -> bookingService.deleteById(id));
+        assertThrows(InvalidArgumentException.class, () -> bookingService.deleteById(NEGATIVE_ID));
     }
 
     @Test
     public void deleteById_BookingWithGivenIdDoesNotExist_ExceptionThrown() {
         Booking booking = createBooking();
         long existingId = booking.getId();
-        long nonExistingId = 12;
 
         lenient().when(bookingRepository.findById(existingId)).thenReturn(Optional.of(booking));
 
-        assertThrows(NonExistentItemException.class, () -> bookingService.deleteById(nonExistingId));
-    }
-
-    private Booking createBooking() {
-        long id = 1;
-        int reservedTicketsCount = 4;
-        User user = createUser();
-        TravelingData travelingData = createTravelingData();
-
-        return new Booking(id, travelingData, user, reservedTicketsCount);
-    }
-
-    private TravelingData createTravelingData() {
-        long id = NumberUtils.LONG_ONE;
-        int availableTicketsCount = 36;
-        double departureLatitude = 42.13;
-        double departureLongitude = 24.74;
-        double destinationLatitude = 8.73;
-        double destinationLongitude = 76.71;
-        String departureName = "Plovdiv, Bulgaria";
-        String destinationName = "Varkala, Kerala, India";
-        TravelingPoint departurePoint = new TravelingPoint(departureName, departureLongitude, departureLatitude);
-        TravelingPoint destinationPoint = new TravelingPoint(destinationName, destinationLongitude, destinationLatitude);
-        DepartureDestination departureDestination = new DepartureDestination(departurePoint, destinationPoint);
-        TransportClass transportClass = TransportClass.FIRST;
-        Transport transport = new Airplane(id, transportClass);
-        LocalDate from = LocalDate.of(2020, 4, 21);
-        LocalDate to = LocalDate.of(2020, 4, 30);
-        Date date = new Date(from, to);
-
-        return new TravelingData(id, departureDestination, transport, date, availableTicketsCount);
-    }
-
-    private User createUser() {
-        long id = NumberUtils.LONG_ONE;
-        String username = "violet_sun12";
-        String email = "violet_sun12@gmail.com";
-        String password = "12345678910";
-
-        return new User(id, username, email, password);
+        assertThrows(NonExistentItemException.class, () -> bookingService.deleteById(NON_EXISTENT_ID));
     }
 }

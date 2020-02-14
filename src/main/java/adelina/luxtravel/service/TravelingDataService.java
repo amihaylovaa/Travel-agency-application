@@ -36,10 +36,7 @@ public class TravelingDataService {
             throw new InvalidArgumentException("Invalid traveling data");
         }
 
-        DepartureDestination departureDestination = travelingData.getDepartureDestination();
-        Transport transport = travelingData.getTransport();
-
-        validateFields(departureDestination, transport);
+        validateFields(travelingData.getDepartureDestination(), travelingData.getTransport());
 
         return travelingDataRepository.save(travelingData);
     }

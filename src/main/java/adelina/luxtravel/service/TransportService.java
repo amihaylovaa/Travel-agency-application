@@ -46,6 +46,7 @@ public class TransportService {
 
     public List<Transport> saveAll(List<Transport> transports) {
         validateTransportList(transports);
+
         return transportRepository.saveAll(transports);
     }
 
@@ -59,6 +60,7 @@ public class TransportService {
         if (!transport.isPresent()) {
             throw new NonExistentItemException(NON_EXISTING_TRANSPORT_WITH_GIVEN_ID);
         }
+
         return transport.get();
     }
 
@@ -96,12 +98,7 @@ public class TransportService {
         }
 
         validateTransportClass(transportClass);
-
-        Optional<Transport> transport = transportRepository.findById(id);
-
-        if (!transport.isPresent()) {
-            throw new NonExistentItemException(NON_EXISTING_TRANSPORT_WITH_GIVEN_ID);
-        }
+        validateTransportExistById(id);
         transportRepository.updateClass(transportClass, id);
     }
 
@@ -110,12 +107,7 @@ public class TransportService {
             throw new InvalidArgumentException(INVALID_ID);
         }
 
-        Optional<Transport> transport = transportRepository.findById(id);
-
-        if (!transport.isPresent()) {
-            throw new NonExistentItemException(NON_EXISTING_TRANSPORT_WITH_GIVEN_ID);
-        }
-
+        validateTransportExistById(id);
         transportRepository.deleteById(id);
     }
 
@@ -123,6 +115,7 @@ public class TransportService {
         if (ObjectUtils.isEmpty(transports)) {
             throw new InvalidArgumentException("Invalid list of transport");
         }
+
         for (Transport transport : transports) {
             validateTransport(transport);
             validateTransportClass(transport.getTransportClass());
@@ -145,6 +138,15 @@ public class TransportService {
         if (ObjectUtils.isEmpty(transports)) {
             throw new NonExistentItemException("List of transports is not found");
         }
+
         return transports;
+    }
+
+    private void validateTransportExistById(long id) {
+        Optional<Transport> transport = transportRepository.findById(id);
+
+        if (!transport.isPresent()) {
+            throw new NonExistentItemException(NON_EXISTING_TRANSPORT_WITH_GIVEN_ID);
+        }
     }
 }

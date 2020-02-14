@@ -1,8 +1,7 @@
 package adelina.luxtravel.service;
 
 import adelina.luxtravel.domain.TravelingPoint;
-import adelina.luxtravel.exception.AlreadyExistingItemException;
-import adelina.luxtravel.exception.NonExistentItemException;
+import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.TravelingPointRepository;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,13 +26,14 @@ public class TravelingPointService {
 
     public TravelingPoint save(TravelingPoint travelingPoint) {
         validateTravelingPoint(travelingPoint);
-        validateTravelingPointDoesNotExist(travelingPoint);
+        validateTravelingPointDoesNotExist(travelingPoint.getName());
 
         return travelingPointRepository.save(travelingPoint);
     }
 
     public List<TravelingPoint> saveAll(List<TravelingPoint> travelingPoints) {
         validateTravelingPointsList(travelingPoints);
+
         return travelingPointRepository.saveAll(travelingPoints);
     }
 
@@ -47,6 +47,7 @@ public class TravelingPointService {
         if (!travelingPoint.isPresent()) {
             throw new NonExistentItemException("Traveling point with this id does not exist");
         }
+
         return travelingPoint.get();
     }
 
@@ -60,6 +61,7 @@ public class TravelingPointService {
         if (!travelingPoint.isPresent()) {
             throw new NonExistentItemException("Traveling point with this name does not exists");
         }
+
         return travelingPoint.get();
     }
 
@@ -69,6 +71,7 @@ public class TravelingPointService {
         if (ObjectUtils.isEmpty(travelingPoints)) {
             throw new NonExistentItemException("There are no traveling points found");
         }
+
         return travelingPoints;
     }
 
@@ -88,6 +91,7 @@ public class TravelingPointService {
         if (!travelingPoint.isPresent()) {
             throw new NonExistentItemException("Traveling point with this id does not exist");
         }
+
         travelingPointRepository.deleteById(id);
     }
 
@@ -95,9 +99,10 @@ public class TravelingPointService {
         if (ObjectUtils.isEmpty(travelingPoints)) {
             throw new InvalidArgumentException("Invalid list of traveling points");
         }
+
         for (TravelingPoint travelingPoint : travelingPoints) {
             validateTravelingPoint(travelingPoint);
-            validateTravelingPointDoesNotExist(travelingPoint);
+            validateTravelingPointDoesNotExist(travelingPoint.getName());
         }
     }
 
@@ -107,12 +112,10 @@ public class TravelingPointService {
         }
     }
 
-    private void validateTravelingPointDoesNotExist(TravelingPoint travelingPoint) {
-        String name = travelingPoint.getName();
+    private void validateTravelingPointDoesNotExist(String travelingPointName) {
+        Optional<TravelingPoint> travelingPoint = travelingPointRepository.findByName(travelingPointName);
 
-        Optional<TravelingPoint> existingTravelingPoint = travelingPointRepository.findByName(name);
-
-        if (existingTravelingPoint.isPresent()) {
+        if (travelingPoint.isPresent()) {
             throw new AlreadyExistingItemException("Traveling point already exists");
         }
     }
@@ -124,11 +127,10 @@ public class TravelingPointService {
         if (StringUtils.isEmpty(oldName)) {
             throw new InvalidArgumentException("Invalid old name");
         }
-
-        TravelingPoint existingTravelingPoint = findByName(oldName);
-
-        if (newName.equals(existingTravelingPoint.getName())) {
-            throw new AlreadyExistingItemException("Traveling point with this name already exists");
+        if (newName.equals(oldName)) {
+            throw new AlreadyExistingItemException("Traveling point with given new name already exists");
         }
+
+        validateTravelingPointDoesNotExist(newName);
     }
 }
