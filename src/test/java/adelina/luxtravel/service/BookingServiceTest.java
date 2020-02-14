@@ -22,6 +22,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,19 +69,131 @@ public class BookingServiceTest {
     }
 
     @Test
-    void findById() {
+    public void save_NotEnoughTickets_ExceptionThrown() {
+        Booking booking = createBooking();
+        TravelingData travelingData = booking.getTravelingData();
+        Transport transport = travelingData.getTransport();
+        DepartureDestination departureDestination = travelingData.getDepartureDestination();
+        Date dates = travelingData.getDate();
+        User user = booking.getUser();
+        String username = user.getUsername();
+        long travelingDataId = travelingData.getId();
+        long bookingId = booking.getId();
+        int availableTicketsCount = 5;
+        int reservedTicketsCount = 7;
+        TravelingData newTravelingData = new TravelingData(travelingDataId, departureDestination, transport, dates, availableTicketsCount);
+        Booking newBooking = new Booking(bookingId, newTravelingData, user, reservedTicketsCount);
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(travelingDataRepository.findById(travelingDataId)).thenReturn(Optional.of(travelingData));
+
+        assertThrows(NonExistentItemException.class, () -> bookingService.save(newBooking));
+    }
+
+
+    @Test
+    public void save_ValidData_SuccessfullyCreatedBooking() {
+        Booking expectedBooking = createBooking();
+        TravelingData travelingData = expectedBooking.getTravelingData();
+        User user = expectedBooking.getUser();
+        String username = user.getUsername();
+        long travelingDataId = travelingData.getId();
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+        when(travelingDataRepository.findById(travelingDataId)).thenReturn(Optional.of(travelingData));
+        when(bookingRepository.save(expectedBooking)).thenReturn(expectedBooking);
+
+        Booking actualBooking = bookingService.save(expectedBooking);
+
+        assertEquals(expectedBooking, actualBooking);
     }
 
     @Test
-    void findAllUserBookings() {
+    public void findById_IdIsNegative_ExceptionThrown() {
+        long id = NumberUtils.LONG_MINUS_ONE;
+
+        assertThrows(InvalidArgumentException.class, () -> bookingService.findById(id));
     }
 
     @Test
-    void findAll() {
+    public void findById_BookingWithGivenIdDoesNotExist_ExceptionThrown() {
+        Booking booking = createBooking();
+        long existingBookingId = booking.getId();
+        long nonExistentBookingId = 129;
+
+        lenient().when(bookingRepository.findById(existingBookingId)).thenReturn(Optional.of(booking));
+
+        assertThrows(NonExistentItemException.class, () -> bookingService.findById(nonExistentBookingId));
     }
 
     @Test
-    void updateTickets() {
+    public void findById_ValidData_FoundBooking() {
+        Booking expectedBooking = createBooking();
+        long id = expectedBooking.getId();
+
+        when(bookingRepository.findById(id)).thenReturn(Optional.of(expectedBooking));
+
+        Booking actualBooking = bookingService.findById(id);
+
+        assertEquals(expectedBooking, actualBooking);
+    }
+
+    @Test
+    public void findAllUserBookings_UsernameIsEmpty_ExceptionThrown() {
+        String username = "";
+
+        assertThrows(InvalidArgumentException.class, () -> bookingService.findAllUserBookings(username));
+    }
+
+    @Test
+    public void findAllUserBookings_UserDoesNotExist_ExceptionThrown() {
+        Booking booking = createBooking();
+        User user = booking.getUser();
+        String existingUsername = user.getUsername();
+        String nonExistentUsername = "Joy83";
+
+        lenient().when(userRepository.findByUsername(existingUsername)).thenReturn(Optional.of(user));
+
+        assertThrows(NonExistentItemException.class, () -> bookingService.findAllUserBookings(nonExistentUsername));
+    }
+
+    @Test
+    public void findAll_ListIsEmpty_ExceptionThrown() {
+        List<Booking> bookings = new ArrayList<>();
+
+        assertThrows(NonExistentItemException.class, () -> bookingService.findAll());
+    }
+
+    @Test
+    void updateTickets_TicketsCountIsZero_ExceptionThrown() {
+        Booking booking = createBooking();
+        long bookingId = booking.getId();
+        int ticketsCount = NumberUtils.INTEGER_ZERO;
+
+        assertThrows(InvalidArgumentException.class, () -> bookingService.updateTickets(bookingId, ticketsCount));
+    }
+
+    @Test
+    void updateTickets_BookingWithGivenIdDoesNotExist_ExceptionThrown() {
+        Booking booking = createBooking();
+        long bookingId = booking.getId();
+        long nonExistentBookingId = 24;
+        int ticketsCount = 5;
+
+        lenient().when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
+
+        assertThrows(NonExistentItemException.class, () -> bookingService.updateTickets(nonExistentBookingId, ticketsCount));
+    }
+
+    @Test
+    void updateTickets_RequestedTicketsAreMoreThanTheAvailable_ExceptionThrown() {
+        Booking booking = createBooking();
+        long bookingId = booking.getId();
+        int ticketsCount = 50;
+
+        lenient().when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
+
+        assertThrows(NonExistentItemException.class, () -> bookingService.updateTickets(bookingId, ticketsCount));
     }
 
     @Test

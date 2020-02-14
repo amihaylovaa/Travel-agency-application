@@ -57,6 +57,8 @@ public class BookingService {
             throw new InvalidArgumentException(INVALID_USERNAME);
         }
 
+        validateUserExists(username);
+
         List<Booking> bookings = bookingRepository.findAllUserBookings(username);
 
         if (ObjectUtils.isEmpty(bookings)) {
@@ -74,18 +76,18 @@ public class BookingService {
         return bookings;
     }
 
-    public void updateTickets(long id, int reservedTicketsCount) {
-        if (id <= NumberUtils.LONG_ZERO) {
+    public void updateTickets(long bookingId, int reservedTicketsCount) {
+        if (bookingId <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
         if (reservedTicketsCount <= NumberUtils.INTEGER_ZERO) {
             throw new InvalidArgumentException("Invalid tickets count");
         }
 
-        validateTicketsUpdate(id, reservedTicketsCount);
+        validateTicketsUpdateParameters(bookingId, reservedTicketsCount);
 
-        bookingRepository.updateByTickets(reservedTicketsCount, id);
-        travelingDataRepository.reserveTickets(reservedTicketsCount, id);
+        bookingRepository.updateByTickets(reservedTicketsCount, bookingId);
+        travelingDataRepository.reserveTickets(reservedTicketsCount, bookingId);
     }
 
     public void deleteById(long id) {
@@ -114,7 +116,7 @@ public class BookingService {
             throw new InvalidArgumentException("Invalid traveling data");
         }
 
-        validateUserExists(user);
+        validateUserExists(user.getUsername());
         validateTravelingDataExists(travelingData);
         validateTicketsAreSufficient(booking.getReservedTicketsCount(), travelingData.getAvailableTicketsCount());
     }
@@ -128,9 +130,8 @@ public class BookingService {
         }
     }
 
-    private void validateUserExists(User user) {
-        long id = user.getId();
-        Optional<User> searchedUser = userRepository.findById(id);
+    private void validateUserExists(String username) {
+        Optional<User> searchedUser = userRepository.findByUsername(username);
 
         if (!searchedUser.isPresent()) {
             throw new NonExistentItemException("User does not exist");
@@ -164,7 +165,7 @@ public class BookingService {
         return travelingData.getId();
     }
 
-    private void validateTicketsUpdate(long bookingId, int newTicketsCount) {
+    private void validateTicketsUpdateParameters(long bookingId, int newTicketsCount) {
         Booking booking = findById(bookingId);
         TravelingData travelingData = booking.getTravelingData();
         int availableTicketsCount = travelingData.getAvailableTicketsCount();

@@ -44,9 +44,9 @@ public class UserServiceTest {
     public void save_UserWithGivenUsernameAlreadyExists_ExceptionThrown() {
         User user = createUser();
         String username = user.getUsername();
-        String existingEmail = EMAIL;
-        String password = user.getPassword();
-        User anotherUser = new User(username, existingEmail, password);
+        String email = EMAIL;
+        String password = PASSWORD;
+        User anotherUser = new User(username, email, password);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
@@ -56,10 +56,10 @@ public class UserServiceTest {
     @Test
     public void save_UserWithGivenEmailAlreadyExists_ExceptionThrown() {
         User user = createUser();
-        String existingUsername = USERNAME;
+        String username = USERNAME;
         String email = user.getEmail();
-        String password = user.getPassword();
-        User anotherUser = new User(existingUsername, email, password);
+        String password = PASSWORD;
+        User anotherUser = new User(username, email, password);
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
