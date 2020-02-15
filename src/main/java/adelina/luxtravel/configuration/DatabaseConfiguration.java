@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource(value = {"classpath:db.properties"})
+@PropertySource(value = {"classpath:config.properties"})
 public class DatabaseConfiguration {
     private static MysqlDataSource dataSource;
     private static final String DB_URL = "MYSQL_DB_URL";
