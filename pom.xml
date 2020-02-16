@@ -21,12 +21,14 @@
         <spring-boot-starter-data.verson>2.1.4.RELEASE</spring-boot-starter-data.verson>
         <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
         <spring.security.core.version>5.2.0.RELEASE</spring.security.core.version>
+        <spring-boot-test-starter.version>2.2.4.RELEASE</spring-boot-test-starter.version>
         <sonarqube.version>3.6.0.1398</sonarqube.version>
         <bean.validation.api.version>2.0.1.Final</bean.validation.api.version>
         <hibernate.validator.version>6.0.16.Final</hibernate.validator.version>
         <hibernate.validator.processor.annotation.version>6.0.17.Final
         </hibernate.validator.processor.annotation.version>
         <junit-jupiter.version>5.4.2</junit-jupiter.version>
+        <junit-jupiter-api.version>5.4.2</junit-jupiter-api.version>
         <mockito.version>3.2.4</mockito.version>
         <mockito.junit.junpiter.version>3.2.4</mockito.junit.junpiter.version>
         <surefire.version>2.22.2</surefire.version>
@@ -71,6 +73,12 @@
             <version>${spring.security.core.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot-test-starter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>${bean.validation.api.version}</version>
@@ -84,6 +92,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter-api.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -116,6 +130,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
                     <excludes>
                         <exclude>**/*IT.java</exclude>
                     </excludes>
@@ -147,7 +164,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/src/it/java</source>
+                                <source>src/it/java</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -165,11 +182,6 @@
                         </goals>
                     </execution>
                 </executions>
-                    <configuration>
-                        <includes>
-                            <include>**/*IT.java</include>
-                        </includes>
-                </configuration>
             </plugin>
         </plugins>
     </build>
