@@ -9,6 +9,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import adelina.luxtravel.exception.InvalidArgumentException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static adelina.luxtravel.utility.Constants.*;
 
 @Service
+@Transactional
 public class TravelingPointService {
     private TravelingPointRepository travelingPointRepository;
 

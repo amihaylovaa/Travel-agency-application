@@ -5,6 +5,7 @@ import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
@@ -21,56 +22,48 @@ public class UserController {
     }
 
     @PostMapping
-    public User save(@RequestBody User user) throws InvalidArgumentException, NonExistentItemException {
+    public User save(@RequestBody User user) {
         return userService.save(user);
     }
 
-    @GetMapping(value = "/{username}")
-    public User findByUsername(@PathParam("username") String username)
-            throws InvalidArgumentException, NonExistentItemException {
+    @GetMapping(value = "username/{username}")
+    public User findByUsername(@PathVariable("username") String username) {
         return userService.findByUsername(username);
     }
 
-    @GetMapping(value = "/{email}")
-    public User findByEmail(@PathParam("email") String email)
-            throws InvalidArgumentException, NonExistentItemException {
+    @GetMapping(value = "email/{email}")
+    public User findByEmail(@PathVariable("email") String email) {
         return userService.findByEmail(email);
     }
 
     @GetMapping(value = "/all")
-    public List<User> findAll() throws NonExistentItemException {
+    public List<User> findAll() {
         return userService.findAll();
     }
 
-    @PutMapping(value = "/{username}/{newPassword}/{oldPassword}")
-    public void updatePassword(@PathParam("username") String username,
-                               @PathParam("newPassword") String newPassword,
-                               @PathParam("oldPassword") String oldPassword)
-            throws InvalidArgumentException, NonExistentItemException {
+    @PutMapping(value = "update-password/{username}/{newPassword}/{oldPassword}")
+    public void updatePassword(@PathVariable("username") String username,
+                               @PathVariable("newPassword") String newPassword,
+                               @PathVariable("oldPassword") String oldPassword) {
         userService.updatePassword(username, newPassword, oldPassword);
     }
 
-    @PutMapping(value = "/{newEmail}/{oldEmail}/{password}")
-    public void updateEmail(@PathParam("newEmail") String newEmail,
-                            @PathParam("oldEmail") String oldEmail,
-                            @PathParam("password") String password)
-            throws InvalidArgumentException, NonExistentItemException {
+    @PutMapping(value = "update-email/{newEmail}/{oldEmail}/{password}")
+    public void updateEmail(@PathVariable("newEmail") String newEmail,
+                            @PathVariable("oldEmail") String oldEmail,
+                            @PathVariable("password") String password) {
         userService.updateEmail(newEmail, oldEmail, password);
     }
 
-    @DeleteMapping(value = "/{username}/{password}")
-    public void deleteByUsername(@PathParam("username") String username,
-                                 @PathParam("password") String password)
-            throws InvalidArgumentException, NonExistentItemException {
-
+    @DeleteMapping(value = "username/{username}/{password}")
+    public void deleteByUsername(@PathVariable("username") String username,
+                                 @PathVariable("password") String password) {
         userService.deleteByUsername(username, password);
     }
 
-    @DeleteMapping(value = "/{email}/{password}")
+    @DeleteMapping(value = "email/{email}/{password}")
     public void deleteByEmail(@PathParam("email") String email,
-                              @PathParam("password") String password)
-            throws InvalidArgumentException, NonExistentItemException {
-
+                              @PathParam("password") String password) {
         userService.deleteByEmail(email, password);
     }
 }

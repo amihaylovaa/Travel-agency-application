@@ -2,6 +2,7 @@ package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -13,6 +14,7 @@ import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 @Entity
 @Table(name = "bus")
 @EqualsAndHashCode
+@NoArgsConstructor
 public class Bus extends Transport {
     public Bus(TransportClass vehicleClass) {
         super(vehicleClass);

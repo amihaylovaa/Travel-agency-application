@@ -3,6 +3,7 @@ package adelina.luxtravel.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 @Table(name = "traveling_point")
 @Getter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class TravelingPoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

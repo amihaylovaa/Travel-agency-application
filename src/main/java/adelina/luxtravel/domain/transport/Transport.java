@@ -2,7 +2,11 @@ package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
 import adelina.luxtravel.exception.FailedInitializationException;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,6 +20,13 @@ import static adelina.luxtravel.utility.Constants.MINUTE;
 @Table(name = "transport")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
+@NoArgsConstructor
+//TODO -  add DTO
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Airplane.class, name = "Airplane"),
+        @JsonSubTypes.Type(value = Bus.class, name = "Bus")})
 public abstract class Transport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

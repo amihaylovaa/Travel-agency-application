@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import static adelina.luxtravel.utility.Constants.INVALID_EMAIL;
 import static adelina.luxtravel.utility.Constants.INVALID_USERNAME;
 
 @Service
+@Transactional
 public class UserService {
     private UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;

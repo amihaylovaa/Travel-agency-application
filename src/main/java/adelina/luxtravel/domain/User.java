@@ -2,6 +2,7 @@ package adelina.luxtravel.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @Table(name = "user")
 @Getter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +36,14 @@ public class User {
     private String password;
     @NotNull(message = "List of bookings can not be null")
     @OneToMany(mappedBy = "user",
-               cascade = CascadeType.REMOVE,
-               orphanRemoval = true
-             )
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
     private List<Booking> bookings;
+
+    {
+        bookings = new ArrayList<>();
+    }
 
     public User(User user) {
         this(user.id, user.username, user.email, user.password);
@@ -52,6 +58,10 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.bookings = new ArrayList<>();
+    }
+
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
     }
 }
