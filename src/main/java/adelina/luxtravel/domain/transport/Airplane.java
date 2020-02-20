@@ -13,9 +13,7 @@ import static adelina.luxtravel.utility.Constants.AIRPLANE_AVG_SPEED;
 import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 
 @Entity
-@Table(name = "airplane")
 @Getter
-@EqualsAndHashCode
 @NoArgsConstructor
 public class Airplane extends Transport {
     public Airplane(TransportClass transportClass) {

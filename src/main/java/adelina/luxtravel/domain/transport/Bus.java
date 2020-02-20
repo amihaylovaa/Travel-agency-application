@@ -12,10 +12,9 @@ import static adelina.luxtravel.utility.Constants.BUS_AVG_SPEED;
 import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 
 @Entity
-@Table(name = "bus")
-@EqualsAndHashCode
 @NoArgsConstructor
 public class Bus extends Transport {
+
     public Bus(TransportClass vehicleClass) {
         super(vehicleClass);
     }

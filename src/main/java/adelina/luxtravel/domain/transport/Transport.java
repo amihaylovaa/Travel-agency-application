@@ -2,31 +2,23 @@ package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
 import adelina.luxtravel.exception.FailedInitializationException;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Polymorphism;
+import org.hibernate.annotations.PolymorphismType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 import static adelina.luxtravel.utility.Constants.HOUR;
-import static adelina.luxtravel.utility.Constants.MINUTE;
 
 @Entity
 @Table(name = "transport")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @NoArgsConstructor
-//TODO -  add DTO
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = Airplane.class, name = "Airplane"),
-        @JsonSubTypes.Type(value = Bus.class, name = "Bus")})
 public abstract class Transport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +26,7 @@ public abstract class Transport {
     protected long id;
     @NotNull(message = "Transport class can not be null")
     @Enumerated(EnumType.STRING)
-    @Column(name = "class", nullable = false, unique = true, length = 12)
+    @Column(name = "transport_class", nullable = false, length = 12)
     TransportClass transportClass;
 
     public Transport(TransportClass transportClass) {

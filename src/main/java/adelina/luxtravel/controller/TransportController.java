@@ -2,6 +2,7 @@ package adelina.luxtravel.controller;
 
 import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
+import adelina.luxtravel.dto.TransportDTO;
 import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.service.TransportService;
@@ -21,18 +22,18 @@ public class TransportController {
     }
 
     @PostMapping(value = "/bus")
-    public Transport saveBus(@RequestBody Transport transport) {
-        return transportService.saveBus(transport);
+    public Transport saveBus(@RequestBody TransportDTO transportDTO) {
+        return transportService.saveBus(transportDTO);
     }
 
     @PostMapping(value = "/airplane")
-    public Transport saveAirplane(@RequestBody Transport transport) {
-        return transportService.saveAirplane(transport);
+    public Transport saveAirplane(@RequestBody TransportDTO transportDTO) {
+        return transportService.saveAirplane(transportDTO);
     }
 
     @PostMapping(value = "/all")
-    public List<Transport> saveAll(@RequestBody List<Transport> transports) {
-        return transportService.saveAll(transports);
+    public List<Transport> saveAll(@RequestBody List<TransportDTO> transportsDTO) {
+        return transportService.saveAllDTO(transportsDTO);
     }
 
     @GetMapping(value = "/{id}")
@@ -40,30 +41,30 @@ public class TransportController {
         return transportService.findById(id);
     }
 
-    @GetMapping(value = "/buses/{transportClass}")
-    public List<Transport> findAllBusesByClass(@PathVariable("transportClass") TransportClass transportClass) {
+    @GetMapping(value = "/buses")
+    public List<Transport> findAllBusesByClass(@RequestBody TransportClass transportClass) {
         return transportService.findAllBusesByClass(transportClass);
     }
 
     @GetMapping(value = "/airplanes/{transportClass}")
-    public List<Transport> findAllAirplanesByClass(@PathVariable("transportClass") TransportClass transportClass) {
+    public List<Transport> findAllAirplanesByClass(@PathVariable String transportClass) {
         return transportService.findAllAirplanesByClass(transportClass);
     }
 
-    @GetMapping(value = "/buses")
+    @GetMapping(value = "/all/buses")
     public List<Transport> findAllBuses() {
         return transportService.findAllBuses();
     }
 
-    @GetMapping(value = "/airplanes")
+    @GetMapping(value = "/all/airplanes")
     public List<Transport> findAllAirplanes() {
         return transportService.findAllAirplanes();
     }
 
-    @PutMapping(value = "{transportClass}/{id}")
-    public void updateClass(@PathVariable("transportClass") TransportClass transportClass,
+    @PutMapping(value = "/{transportClass}/{id}")
+    public void updateClass(@PathVariable String transportClass,
                             @PathVariable("id") long id) {
-        transportService.updateClass(transportClass, id);
+       transportService.updateClass(transportClass, id);
     }
 
     @DeleteMapping(value = "/{id}")
