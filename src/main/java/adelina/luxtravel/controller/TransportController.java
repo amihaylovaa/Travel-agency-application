@@ -41,9 +41,9 @@ public class TransportController {
         return transportService.findById(id);
     }
 
-    @GetMapping(value = "/buses")
-    public List<Transport> findAllBusesByClass(@RequestBody TransportClass transportClass) {
-        return transportService.findAllBusesByClass(transportClass);
+    @GetMapping(value = "/buses/{transportClass}")
+    public List<Transport> findAllBusesByClass(@PathVariable TransportClass transportClass) {
+        return transportService.findAllBusesByClass(transportClass.name());
     }
 
     @GetMapping(value = "/airplanes/{transportClass}")

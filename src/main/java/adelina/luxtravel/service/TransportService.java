@@ -73,10 +73,10 @@ public class TransportService {
         return transport.get();
     }
 
-    public List<Transport> findAllBusesByClass(TransportClass transportClass) {
-      //  validateTransportClass(transportClass);
+    public List<Transport> findAllBusesByClass(String transportClass) {
+        validateTransportClass(transportClass);
 
-        List<Transport> transports = transportRepository.findAllBusesByClass(transportClass.name());
+        List<Transport> transports = transportRepository.findAllBusesByClass(transportClass);
 
         return validateTransportListExist(transports);
     }

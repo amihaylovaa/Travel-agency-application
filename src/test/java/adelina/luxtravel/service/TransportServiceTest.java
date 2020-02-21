@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TransportServiceTest {
-   /* @Mock
+    @Mock
     private TransportRepository transportRepository;
     @InjectMocks
     private TransportService transportService;
@@ -31,7 +31,7 @@ public class TransportServiceTest {
         TransportClass transportClass = TransportClass.ECONOMY;
         Transport expectedTransport = new Bus(transportClass);
 
-        when(transportRepository.saveBus(transportClass.name())).thenReturn((Bus) expectedTransport);
+        when(transportRepository.save(expectedTransport)).thenReturn(expectedTransport);
 
         Transport actualTransport = transportService.saveBus(expectedTransport);
 
@@ -43,7 +43,7 @@ public class TransportServiceTest {
         TransportClass transportClass = TransportClass.BUSINESS;
         Transport expectedTransport = new Airplane(transportClass);
 
-        when(transportRepository.saveAirplane(transportClass.name())).thenReturn((Airplane) expectedTransport);
+        when(transportRepository.save(expectedTransport)).thenReturn(expectedTransport);
 
         Transport actualTransport = transportService.saveAirplane(expectedTransport);
 
@@ -95,7 +95,7 @@ public class TransportServiceTest {
 
     @Test
     public void findAllBusesByClass_TransportClassIsNull_ExceptionThrown() {
-        TransportClass transportClass = null;
+        String transportClass = null;
 
         assertThrows(InvalidArgumentException.class, () -> transportService.findAllBusesByClass(transportClass));
     }
@@ -106,7 +106,7 @@ public class TransportServiceTest {
 
         when(transportRepository.findAllBusesByClass(transportClass.name())).thenThrow(NonExistentItemException.class);
 
-        assertThrows(NonExistentItemException.class, () -> transportService.findAllBusesByClass(transportClass));
+        assertThrows(NonExistentItemException.class, () -> transportService.findAllBusesByClass(transportClass.name()));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class TransportServiceTest {
 
         when(transportRepository.findAllBusesByClass(transportClass.name())).thenReturn(expectedTransports);
 
-        List<Transport> actualTransports = transportService.findAllBusesByClass(transportClass);
+        List<Transport> actualTransports = transportService.findAllBusesByClass(transportClass.name());
 
         assertEquals(expectedTransports.size(), actualTransports.size());
         assertTrue(expectedTransports.containsAll(actualTransports));
@@ -128,9 +128,10 @@ public class TransportServiceTest {
 
     @Test
     public void findAllAirplanesByClass_TransportClassIsNull_ExceptionThrown() {
-        TransportClass transportClass = null;
+        String transportClass = null;
 
-        assertThrows(InvalidArgumentException.class, () -> transportService.findAllAirplanesByClass(transportClass));
+        assertThrows(InvalidArgumentException.class,
+                () -> transportService.findAllAirplanesByClass(transportClass));
     }
 
     @Test
@@ -139,7 +140,8 @@ public class TransportServiceTest {
 
         when(transportRepository.findAllAirplanesByClass(transportClass.name())).thenThrow(NonExistentItemException.class);
 
-        assertThrows(NonExistentItemException.class, () -> transportService.findAllAirplanesByClass(transportClass));
+        assertThrows(NonExistentItemException.class,
+                () -> transportService.findAllAirplanesByClass(transportClass.name()));
     }
 
     @Test
@@ -153,7 +155,7 @@ public class TransportServiceTest {
 
         when(transportRepository.findAllAirplanesByClass(transportClass.name())).thenReturn(expectedTransports);
 
-        List<Transport> actualTransports = transportService.findAllAirplanesByClass(transportClass);
+        List<Transport> actualTransports = transportService.findAllAirplanesByClass(transportClass.name());
 
         assertEquals(expectedTransports.size(), actualTransports.size());
         assertTrue(expectedTransports.containsAll(actualTransports));
@@ -179,7 +181,7 @@ public class TransportServiceTest {
 
     @Test
     public void updateClass_TransportClassIsNull_ExceptionThrown() {
-        TransportClass transportClass = null;
+        String transportClass = null;
         long id = NumberUtils.LONG_ONE;
 
         assertThrows(InvalidArgumentException.class, () -> transportService.updateClass(transportClass, id));
@@ -189,7 +191,7 @@ public class TransportServiceTest {
     public void updateClass_TransportIdIsNegative_ExceptionThrown() {
         TransportClass transportClass = TransportClass.ECONOMY;
 
-        assertThrows(InvalidArgumentException.class, () -> transportService.updateClass(transportClass, NEGATIVE_ID));
+        assertThrows(InvalidArgumentException.class, () -> transportService.updateClass(transportClass.name(), NEGATIVE_ID));
     }
 
     @Test
@@ -201,7 +203,7 @@ public class TransportServiceTest {
         lenient().when(transportRepository.findById(id)).thenReturn(Optional.of(transport));
 
         assertThrows(NonExistentItemException.class,
-                () -> transportService.updateClass(transportClass, NON_EXISTENT_ID));
+                () -> transportService.updateClass(transportClass.name(), NON_EXISTENT_ID));
     }
 
     @Test
@@ -219,5 +221,5 @@ public class TransportServiceTest {
         lenient().when(transportRepository.findById(id)).thenReturn(Optional.of(transport));
 
         assertThrows(NonExistentItemException.class, () -> transportService.deleteById(NON_EXISTENT_ID));
-    }*/
+    }
 }

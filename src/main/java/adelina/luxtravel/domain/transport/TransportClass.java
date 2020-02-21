@@ -1,15 +1,14 @@
 package adelina.luxtravel.domain.transport;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@JsonSerialize
-@JsonDeserialize
+@NoArgsConstructor
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TransportClass {
+
     FIRST(0.1), BUSINESS(0.2), ECONOMY(0.4);
 
     private double priceCoefficient;
