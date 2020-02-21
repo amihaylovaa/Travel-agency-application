@@ -1,8 +1,11 @@
 package adelina.luxtravel.service;
 
 import adelina.luxtravel.domain.*;
+import adelina.luxtravel.domain.transport.Airplane;
+import adelina.luxtravel.domain.transport.Bus;
 import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.wrapper.*;
+import adelina.luxtravel.dto.*;
 import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.*;
 import org.apache.commons.lang3.ObjectUtils;
@@ -31,13 +34,15 @@ public class TravelingDataService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
+    public TravelingData save(TravelingDataDTO travelingDataDTO) {
+        validateDTO(travelingDataDTO);
+
+        TravelingData travelingData = createTravelingDataFromDTO(travelingDataDTO);
+
+        return save(travelingData);
+    }
+
     public TravelingData save(TravelingData travelingData) {
-        if (travelingData == null) {
-            throw new InvalidArgumentException("Invalid traveling data");
-        }
-
-        validateFields(travelingData.getDepartureDestination(), travelingData.getTransport());
-
         return travelingDataRepository.save(travelingData);
     }
 
@@ -54,8 +59,11 @@ public class TravelingDataService {
         return travelingData.get();
     }
 
-    public List<TravelingData> findByDates(LocalDate from, LocalDate to) {
-        validateDates(from, to);
+    public List<TravelingData> findByDates(DateDTO dateDTO) {
+        validateDates(dateDTO);
+
+        LocalDate from = dateDTO.getFromDate();
+        LocalDate to = dateDTO.getToDate();
 
         List<TravelingData> travelingData = travelingDataRepository.findByDates(from, to);
 
@@ -74,14 +82,14 @@ public class TravelingDataService {
         return travelingData;
     }
 
-    public void updateTransport(long travelingDataId, Transport transport) {
+    public void updateTransport(long travelingDataId, TransportDTO transportDTO) {
         if (travelingDataId <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
 
-        validateUpdateTransportParameters(travelingDataId, transport);
+        validateUpdateTransportParameters(travelingDataId, transportDTO);
 
-        travelingDataRepository.updateTransport(transport.getId(), travelingDataId);
+        travelingDataRepository.updateTransport(transportDTO.getId(), travelingDataId);
     }
 
     public void deleteById(long id) {
@@ -96,17 +104,22 @@ public class TravelingDataService {
         travelingDataRepository.deleteById(id);
     }
 
-    private void validateFields(DepartureDestination departureDestination, Transport transport) {
-        if (departureDestination == null) {
+    private void validateFields(DepartureDestinationDTO departureDestinationDTO, TransportDTO transportDTO, DateDTO dateDTO) {
+        if (departureDestinationDTO == null) {
             throw new InvalidArgumentException("Invalid departure destination");
         }
 
-        validateTransportIsNotNull(transport);
-        validateTransportExists(transport);
-        validateDepartureDestinationExists(departureDestination);
+        if (dateDTO == null) {
+            throw new InvalidArgumentException("Invalid dates");
+        }
+
+        validateTransportIsNotNull(transportDTO);
+        validateTransportExists(transportDTO);
+        validateDepartureDestinationExists(departureDestinationDTO);
+        validateDates(dateDTO);
     }
 
-    private void validateTransportExists(Transport transport) {
+    private void validateTransportExists(TransportDTO transport) {
         long transportId = transport.getId();
         Optional<Transport> transportOptional = transportRepository.findById(transportId);
 
@@ -115,9 +128,9 @@ public class TravelingDataService {
         }
     }
 
-    private void validateDepartureDestinationExists(DepartureDestination departureDestination) {
-        TravelingPoint departurePoint = departureDestination.getDeparturePoint();
-        TravelingPoint destinationPoint = departureDestination.getDestinationPoint();
+    private void validateDepartureDestinationExists(DepartureDestinationDTO departureDestinationDTO) {
+        TravelingPoint departurePoint = departureDestinationDTO.getDeparturePoint();
+        TravelingPoint destinationPoint = departureDestinationDTO.getDestinationPoint();
         long departurePointId = departurePoint.getId();
         long destinationPointId = destinationPoint.getId();
         Optional<TravelingPoint> startingPoint = travelingPointRepository.findById(departurePointId);
@@ -131,7 +144,7 @@ public class TravelingDataService {
         }
     }
 
-    private void validateUpdateTransportParameters(long travelingDataId, Transport transport) {
+    private void validateUpdateTransportParameters(long travelingDataId, TransportDTO transport) {
         if (!travelingDataExists(travelingDataId)) {
             throw new NonExistentItemException("This traveling data does not exist");
         }
@@ -155,16 +168,55 @@ public class TravelingDataService {
         return travelingData.isPresent();
     }
 
-    private void validateDates(LocalDate from, LocalDate to) {
+    private void validateDates(DateDTO dateDTO) {
+        LocalDate from = dateDTO.getFromDate();
+        LocalDate to = dateDTO.getToDate();
+
         if (from == null || to == null ||
                 from.isEqual(to) || from.isAfter(to) || from.isBefore(LocalDate.now())) {
             throw new InvalidArgumentException("Invalid dates");
         }
     }
 
-    private void validateTransportIsNotNull(Transport transport) {
-        if (transport == null) {
+    private void validateTransportIsNotNull(TransportDTO transportDTO) {
+        if (transportDTO == null) {
             throw new InvalidArgumentException("Invalid transport");
         }
+    }
+
+    private void validateDTO(TravelingDataDTO travelingDataDTO) {
+        TransportDTO transportDTO = travelingDataDTO.getTransportDTO();
+        DepartureDestinationDTO departureDestinationDTO = travelingDataDTO.getDepartureDestinationDTO();
+        DateDTO dateDTO = travelingDataDTO.getDateDTO();
+        int availableTicketsCount = travelingDataDTO.getAvailableTicketsCount();
+
+        validateFields(departureDestinationDTO, transportDTO, dateDTO);
+
+        if (availableTicketsCount <= NumberUtils.INTEGER_ZERO) {
+            throw new InvalidArgumentException("Invalid tickets count");
+        }
+    }
+
+    private TravelingData createTravelingDataFromDTO(TravelingDataDTO travelingDataDTO) {
+        TransportDTO transportDTO = travelingDataDTO.getTransportDTO();
+        DepartureDestinationDTO departureDestinationDTO = travelingDataDTO.getDepartureDestinationDTO();
+        TravelingPoint departurePoint = departureDestinationDTO.getDeparturePoint();
+        TravelingPoint destinationPoint = departureDestinationDTO.getDestinationPoint();
+        DateDTO dateDTO = travelingDataDTO.getDateDTO();
+        LocalDate from = dateDTO.getFromDate();
+        LocalDate to = dateDTO.getToDate();
+        Date date = new Date(from, to);
+        DepartureDestination departureDestination = new DepartureDestination(departurePoint, destinationPoint);
+        Transport transport = null;
+        int availableTicketsCount = travelingDataDTO.getAvailableTicketsCount();
+
+        if (transportDTO instanceof AirplaneDTO) {
+            transport = new Airplane(transportDTO.getId(), transportDTO.getTransportClass());
+        }
+        else {
+            transport = new Bus(transportDTO.getId(), transportDTO.getTransportClass());
+        }
+
+        return new TravelingData(transport, departureDestination, date, availableTicketsCount);
     }
 }

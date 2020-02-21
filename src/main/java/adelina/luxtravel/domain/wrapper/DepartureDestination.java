@@ -4,6 +4,7 @@ import adelina.luxtravel.domain.TravelingPoint;
 import adelina.luxtravel.exception.FailedInitializationException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
@@ -11,6 +12,7 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode
+@NoArgsConstructor
 @Getter
 @Embeddable
 public class DepartureDestination {

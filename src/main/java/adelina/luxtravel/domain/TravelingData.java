@@ -8,6 +8,7 @@ import static adelina.luxtravel.utility.Constants.PERCENT;
 
 import adelina.luxtravel.domain.wrapper.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
@@ -20,6 +21,7 @@ import java.util.List;
 @Entity
 @Table(name = "traveling_data")
 @Getter
+@NoArgsConstructor
 public class TravelingData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,12 +37,11 @@ public class TravelingData {
     @JoinColumn(name = "transport_id")
     private Transport transport;
     @Min(value = 1, message = "Count available tickets must have at least one ticket")
-    @Column(name = "count_available_tickets", nullable = false)
+    @Column(name = "available_tickets_count", nullable = false)
     private int availableTicketsCount;
     @DecimalMin(value ="10.0", message = "Price can not be less than 10.0 ")
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
-    @NotNull(message = "List of bookings can not be null")
     @OneToMany(mappedBy = "travelingData",
                cascade = CascadeType.REMOVE,
                orphanRemoval = true

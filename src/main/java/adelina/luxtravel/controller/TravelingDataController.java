@@ -2,6 +2,9 @@ package adelina.luxtravel.controller;
 
 import adelina.luxtravel.domain.TravelingData;
 import adelina.luxtravel.domain.transport.Transport;
+import adelina.luxtravel.dto.DateDTO;
+import adelina.luxtravel.dto.TransportDTO;
+import adelina.luxtravel.dto.TravelingDataDTO;
 import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.service.TravelingDataService;
@@ -22,37 +25,33 @@ public class TravelingDataController {
     }
 
     @PostMapping
-    public TravelingData save(@RequestBody TravelingData travelingData)
-            throws InvalidArgumentException, NonExistentItemException {
-        return travelingDataService.save(travelingData);
+    public TravelingData save(@RequestBody TravelingDataDTO travelingDataDTO) {
+        return travelingDataService.save(travelingDataDTO);
     }
 
     @GetMapping(value = "/{id}")
-    public TravelingData findById(@PathVariable("id") long id)
-            throws InvalidArgumentException, NonExistentItemException {
+    public TravelingData findById(@PathVariable("id") long id) {
         return travelingDataService.findById(id);
     }
 
     @GetMapping(value = "/dates")
-    public List<TravelingData> findByDates(@RequestBody LocalDate from, @RequestBody LocalDate to)
-            throws InvalidArgumentException, NonExistentItemException {
-        return travelingDataService.findByDates(from, to);
+    public List<TravelingData> findByDates(@RequestBody DateDTO dateDTO) {
+        return travelingDataService.findByDates(dateDTO);
     }
 
     @GetMapping(value = "/all")
-    public List<TravelingData> findAll() throws NonExistentItemException {
+    public List<TravelingData> findAll() {
         return travelingDataService.findAll();
     }
-
+// todo fix bug
     @PutMapping(value = "/{id}")
-    public void updateTransport(@PathVariable("bookingDataId") long travelingDataId,
-                                @RequestBody Transport transport)
-            throws InvalidArgumentException, NonExistentItemException {
-        travelingDataService.updateTransport(travelingDataId, transport);
+    public void updateTransport(@RequestBody TransportDTO transportDTO,
+                                @PathVariable("travelingDataId") long travelingDataId) {
+        travelingDataService.updateTransport(travelingDataId, transportDTO);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteById(@PathVariable("id") long id) throws InvalidArgumentException {
+    public void deleteById(@PathVariable("id") long id) {
         travelingDataService.deleteById(id);
     }
 }
