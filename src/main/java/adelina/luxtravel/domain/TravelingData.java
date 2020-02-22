@@ -7,6 +7,7 @@ import static adelina.luxtravel.utility.Constants.MINUTE;
 import static adelina.luxtravel.utility.Constants.PERCENT;
 
 import adelina.luxtravel.domain.wrapper.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -46,6 +47,7 @@ public class TravelingData {
                cascade = CascadeType.REMOVE,
                orphanRemoval = true
               )
+    @JsonManagedReference
     private List<Booking> bookings;
 
     public TravelingData(TravelingData travelingData) {

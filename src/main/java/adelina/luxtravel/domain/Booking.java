@@ -1,5 +1,7 @@
 package adelina.luxtravel.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,10 +21,12 @@ public class Booking {
     @NotNull(message = "User can not be null")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
     @NotNull(message = "Traveling data can not be null")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "traveling_data_id")
+    @JsonBackReference
     private TravelingData travelingData;
     @Min(value = 1, message = "Reserved tickets count can not be less than one")
     @Column(name = "reserved_tickets_count", nullable = false)

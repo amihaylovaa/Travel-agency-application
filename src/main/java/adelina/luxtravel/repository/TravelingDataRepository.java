@@ -31,13 +31,15 @@ public interface TravelingDataRepository extends JpaRepository<TravelingData, Lo
             nativeQuery = true)
     void updateTransport(long transportId, long id);
 
+    // todo not working
     @Modifying
     @Query(value = "UPDATE traveling_data " +
-                   "SET available_tickets_count = available_tickets_count - ?1" +
+                   "SET available_tickets_count = available_tickets_count - ?1 " +
                    "WHERE id = ?2",
             nativeQuery = true)
     void reserveTickets(int reservedTicketsCount, long id);
 
+    // todo - same
     @Modifying
     @Query(value = "UPDATE traveling_data " +
                    "SET available_tickets_count = available_tickets_count + ?1 " +

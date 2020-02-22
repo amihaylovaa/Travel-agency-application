@@ -1,6 +1,7 @@
 package adelina.luxtravel.controller;
 
 import adelina.luxtravel.domain.Booking;
+import adelina.luxtravel.dto.BookingDTO;
 import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.service.BookingService;
@@ -21,8 +22,8 @@ public class BookingController {
     }
 
     @PostMapping
-    public Booking save(@RequestBody Booking booking) {
-        return bookingService.save(booking);
+    public Booking save(@RequestBody BookingDTO bookingDTO) {
+        return bookingService.save(bookingDTO);
     }
 
     @GetMapping(value = "/{id}")
