@@ -12,6 +12,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import static adelina.luxtravel.utility.Constants.INVALID_ID;
 
 @Service
+@Transactional
 public class TravelingDataService {
     private TravelingDataRepository travelingDataRepository;
     private TransportRepository transportRepository;

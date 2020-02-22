@@ -43,13 +43,14 @@ public class TravelingDataController {
     public List<TravelingData> findAll() {
         return travelingDataService.findAll();
     }
-// todo fix bug
-    @PutMapping(value = "/{id}")
+
+    @PutMapping(value = "/{travelingDataId}")
     public void updateTransport(@RequestBody TransportDTO transportDTO,
                                 @PathVariable("travelingDataId") long travelingDataId) {
         travelingDataService.updateTransport(travelingDataId, transportDTO);
     }
 
+    // todo check
     @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable("id") long id) {
         travelingDataService.deleteById(id);
