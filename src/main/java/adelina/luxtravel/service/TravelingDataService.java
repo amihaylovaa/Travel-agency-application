@@ -4,6 +4,7 @@ import adelina.luxtravel.domain.*;
 import adelina.luxtravel.domain.transport.Airplane;
 import adelina.luxtravel.domain.transport.Bus;
 import adelina.luxtravel.domain.transport.Transport;
+import adelina.luxtravel.domain.transport.TransportClass;
 import adelina.luxtravel.domain.wrapper.*;
 import adelina.luxtravel.dto.*;
 import adelina.luxtravel.exception.*;
@@ -66,6 +67,14 @@ public class TravelingDataService {
 
         LocalDate from = dateDTO.getFromDate();
         LocalDate to = dateDTO.getToDate();
+        Date dates = new Date(from, to);
+
+        return findByDates(dates);
+    }
+
+    public List<TravelingData> findByDates(Date dates) {
+        LocalDate from = dates.getFromDate();
+        LocalDate to = dates.getToDate();
 
         List<TravelingData> travelingData = travelingDataRepository.findByDates(from, to);
 
@@ -91,7 +100,15 @@ public class TravelingDataService {
 
         validateUpdateTransportParameters(travelingDataId, transportDTO);
 
-        travelingDataRepository.updateTransport(transportDTO.getId(), travelingDataId);
+        Transport transport = createTransportFromDTO(transportDTO);
+
+        updateTransport(travelingDataId, transport);
+    }
+
+    public void updateTransport(long travelingDataId, Transport transport) {
+        long transportId = transport.getId();
+
+        travelingDataRepository.updateTransport(transportId, travelingDataId);
     }
 
     public void deleteById(long id) {
@@ -102,7 +119,6 @@ public class TravelingDataService {
         if (!travelingDataExists(id)) {
             throw new NonExistentItemException("Traveling data with this id does not exist");
         }
-
         travelingDataRepository.deleteById(id);
     }
 
@@ -115,7 +131,7 @@ public class TravelingDataService {
             throw new InvalidArgumentException("Invalid dates");
         }
 
-        validateTransportIsNotNull(transportDTO);
+        validateTransport(transportDTO);
         validateTransportExists(transportDTO);
         validateDepartureDestinationExists(departureDestinationDTO);
         validateDates(dateDTO);
@@ -146,22 +162,13 @@ public class TravelingDataService {
         }
     }
 
-    private void validateUpdateTransportParameters(long travelingDataId, TransportDTO transport) {
+    private void validateUpdateTransportParameters(long travelingDataId, TransportDTO transportDTO) {
         if (!travelingDataExists(travelingDataId)) {
             throw new NonExistentItemException("This traveling data does not exist");
         }
 
-        validateTransportIsNotNull(transport);
-
-        Optional<Transport> foundTransport = transportRepository.findById(transport.getId());
-
-        if (!foundTransport.isPresent()) {
-            throw new NonExistentItemException("This transport does not exist");
-        }
-
-        if (transport.equals(foundTransport.get())) {
-            throw new AlreadyExistingItemException("New transport class is the same as the current");
-        }
+        validateTransport(transportDTO);
+        validateTransportExists(transportDTO);
     }
 
     private boolean travelingDataExists(long travelingDataId) {
@@ -180,13 +187,23 @@ public class TravelingDataService {
         }
     }
 
-    private void validateTransportIsNotNull(TransportDTO transportDTO) {
+    private void validateTransport(TransportDTO transportDTO) {
         if (transportDTO == null) {
             throw new InvalidArgumentException("Invalid transport");
+        }
+
+        TransportClass transportClass = transportDTO.getTransportClass();
+
+        if (transportClass == null) {
+            throw new InvalidArgumentException("Invalid transport class");
         }
     }
 
     private void validateDTO(TravelingDataDTO travelingDataDTO) {
+        if (travelingDataDTO == null) {
+            throw new InvalidArgumentException("Invalid traveling data");
+        }
+
         TransportDTO transportDTO = travelingDataDTO.getTransportDTO();
         DepartureDestinationDTO departureDestinationDTO = travelingDataDTO.getDepartureDestinationDTO();
         DateDTO dateDTO = travelingDataDTO.getDateDTO();
@@ -209,16 +226,19 @@ public class TravelingDataService {
         LocalDate to = dateDTO.getToDate();
         Date date = new Date(from, to);
         DepartureDestination departureDestination = new DepartureDestination(departurePoint, destinationPoint);
-        Transport transport = null;
+        Transport transport = createTransportFromDTO(transportDTO);
         int availableTicketsCount = travelingDataDTO.getAvailableTicketsCount();
 
-        if (transportDTO instanceof AirplaneDTO) {
-            transport = new Airplane(transportDTO.getId(), transportDTO.getTransportClass());
-        }
-        else {
-            transport = new Bus(transportDTO.getId(), transportDTO.getTransportClass());
-        }
-
         return new TravelingData(transport, departureDestination, date, availableTicketsCount);
+    }
+
+    private Transport createTransportFromDTO(TransportDTO transportDTO) {
+        long id = transportDTO.getId();
+        TransportClass transportClass = transportDTO.getTransportClass();
+
+        if (transportDTO instanceof AirplaneDTO) {
+            return new Airplane(id, transportClass);
+        }
+        return new Bus(id, transportClass);
     }
 }

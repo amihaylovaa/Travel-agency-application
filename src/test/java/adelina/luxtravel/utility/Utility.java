@@ -10,6 +10,7 @@ import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
 import adelina.luxtravel.domain.wrapper.Date;
 import adelina.luxtravel.domain.wrapper.DepartureDestination;
+import adelina.luxtravel.dto.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.time.LocalDate;
@@ -122,15 +123,22 @@ public final class Utility {
         return travelingData;
     }
 
-    public static final TravelingData createTravelingDataWithNonExistingTransport() {
+    public static final TravelingDataDTO createTravelingDataWithNonExistingTransport() {
         TravelingData travelingData = createTravelingData();
         long id = 2;
         int availableTicketsCount = travelingData.getAvailableTicketsCount();
-        Transport nonExistingTransport = new Airplane(id, TransportClass.FIRST);
+        double price = travelingData.getPrice();
+        TransportDTO nonExistingTransport = new AirplaneDTO(id, TransportClass.FIRST);
         DepartureDestination departureDestination = travelingData.getDepartureDestination();
+        TravelingPoint departurePoint = departureDestination.getDeparturePoint();
+        TravelingPoint destinationPoint = departureDestination.getDestinationPoint();
+        DepartureDestinationDTO departureDestinationDTO = new DepartureDestinationDTO(departurePoint, destinationPoint);
         Date dates = travelingData.getDate();
+        LocalDate from = dates.getFromDate();
+        LocalDate to = dates.getToDate();
+        DateDTO dateDTO = new DateDTO(from, to);
 
-        return new TravelingData(id, departureDestination, nonExistingTransport, dates, availableTicketsCount);
+        return new TravelingDataDTO(id, departureDestinationDTO, dateDTO, nonExistingTransport, availableTicketsCount, price);
 
     }
 

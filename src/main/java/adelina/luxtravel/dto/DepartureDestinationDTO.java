@@ -14,4 +14,9 @@ public class DepartureDestinationDTO {
         long id;
         private TravelingPoint departurePoint;
         private TravelingPoint destinationPoint;
+
+        public DepartureDestinationDTO(TravelingPoint departurePoint, TravelingPoint destinationPoint) {
+                this.departurePoint = departurePoint;
+                this.destinationPoint = destinationPoint;
+        }
 }

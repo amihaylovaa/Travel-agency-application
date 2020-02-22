@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class BusDTO extends TransportDTO {
-
     public BusDTO(long id, TransportClass transportClass) {
         super(id, transportClass);
     }

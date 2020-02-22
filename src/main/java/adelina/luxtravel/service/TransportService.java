@@ -30,7 +30,9 @@ public class TransportService {
     }
 
     public Transport saveBus(TransportDTO transportDTO) {
-        Transport transport = convertDTO(transportDTO);
+        validateTransportDTO(transportDTO);
+
+        Transport transport = createTransportFromDTO(transportDTO);
 
         return saveBus(transport);
     }
@@ -40,7 +42,9 @@ public class TransportService {
     }
 
     public Transport saveAirplane(TransportDTO transportDTO) {
-        Transport transport = convertDTO(transportDTO);
+        validateTransportDTO(transportDTO);
+
+        Transport transport = createTransportFromDTO(transportDTO);
 
         return saveAirplane(transport);
     }
@@ -50,7 +54,7 @@ public class TransportService {
     }
 
     public List<Transport> saveAllDTO(List<TransportDTO> transportsDTO) {
-        List<Transport> transports = convertDTOList(transportsDTO);
+        List<Transport> transports = createTransportListFromDTO(transportsDTO);
 
         return saveAll(transports);
     }
@@ -69,7 +73,6 @@ public class TransportService {
         if (!transport.isPresent()) {
             throw new NonExistentItemException(NON_EXISTING_TRANSPORT_WITH_GIVEN_ID);
         }
-
         return transport.get();
     }
 
@@ -130,14 +133,12 @@ public class TransportService {
                 && !(transportClass.equals(TransportClass.ECONOMY.name()))) {
             throw new InvalidArgumentException("Invalid transport class name");
         }
-
     }
 
     private List<Transport> validateTransportListExist(List<Transport> transports) {
         if (ObjectUtils.isEmpty(transports)) {
             throw new NonExistentItemException("List of transports is not found");
         }
-
         return transports;
     }
 
@@ -149,14 +150,21 @@ public class TransportService {
         }
     }
 
-    public Transport convertDTO(TransportDTO transportDTO) {
+    private void validateTransportDTO(TransportDTO transportDTO) {
         if (transportDTO == null) {
             throw new InvalidArgumentException("Invalid transport data transfer object");
         }
 
         TransportClass transportClass = transportDTO.getTransportClass();
 
+        if (transportClass == null) {
+            throw new InvalidArgumentException("Invalid transport class");
+        }
         validateTransportClass(transportClass.name());
+    }
+
+    private Transport createTransportFromDTO(TransportDTO transportDTO) {
+        TransportClass transportClass = transportDTO.getTransportClass();
 
         if (transportDTO instanceof AirplaneDTO) {
             return new Airplane(transportClass);
@@ -164,7 +172,7 @@ public class TransportService {
         return new Bus(transportClass);
     }
 
-    public List<Transport> convertDTOList(List<TransportDTO> transportsDTO) {
+    private List<Transport> createTransportListFromDTO(List<TransportDTO> transportsDTO) {
         if (transportsDTO == null || transportsDTO.isEmpty()) {
             throw new InvalidArgumentException("Invalid list of DTOs");
         }
@@ -172,7 +180,8 @@ public class TransportService {
         List<Transport> transports = new ArrayList<>();
 
         for (TransportDTO transportDTO : transportsDTO) {
-            transports.add(convertDTO(transportDTO));
+            validateTransportDTO(transportDTO);
+            transports.add(createTransportFromDTO(transportDTO));
         }
         return saveAll(transports);
     }
