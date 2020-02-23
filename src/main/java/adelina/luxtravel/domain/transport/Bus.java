@@ -13,6 +13,7 @@ import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 
 @Entity
 @NoArgsConstructor
+@DiscriminatorValue(value="bus")
 public class Bus extends Transport {
 
     public Bus(TransportClass vehicleClass) {

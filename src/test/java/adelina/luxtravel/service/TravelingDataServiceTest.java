@@ -4,7 +4,6 @@ import adelina.luxtravel.domain.TravelingData;
 import adelina.luxtravel.domain.TravelingPoint;
 import adelina.luxtravel.domain.transport.*;
 import adelina.luxtravel.domain.wrapper.*;
-import adelina.luxtravel.dto.*;
 import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.TransportRepository;
 import adelina.luxtravel.repository.TravelingDataRepository;
@@ -36,25 +35,24 @@ public class TravelingDataServiceTest {
     private TravelingPointRepository travelingPointRepository;
     @InjectMocks
     private TravelingDataService travelingDataService;
-
+/*
     @Test
     public void save_TravelingDataIsNull_ExceptionThrown() {
-        TravelingDataDTO travelingDataDTO = null;
+        TravelingData travelingData = null;
 
-        assertThrows(InvalidArgumentException.class, () -> travelingDataService.save(travelingDataDTO));
+        assertThrows(InvalidArgumentException.class, () -> travelingDataService.save(travelingData));
     }
 
     @Test
     public void save_TransportDoesNotExist_ExceptionThrown() {
         TravelingData travelingData = createTravelingData();
         Transport existingTransport = travelingData.getTransport();
-        TravelingDataDTO travelingDataWithNonExistingTransportDTO = createTravelingDataWithNonExistingTransport();
+        TravelingData travelingDataWithNonExistingTransport = createTravelingDataWithNonExistingTransport();
         long existingTransportId = existingTransport.getId();
 
         lenient().when(transportRepository.findById(existingTransportId)).thenReturn(Optional.of(existingTransport));
 
-        assertThrows(NonExistentItemException.class,
-                () -> travelingDataService.save(travelingDataWithNonExistingTransportDTO));
+        assertThrows(NonExistentItemException.class, () -> travelingDataService.save(travelingDataWithNonExistingTransport));
     }
 
     @Test
@@ -66,9 +64,9 @@ public class TravelingDataServiceTest {
         TravelingPoint destinationPoint = departureDestination.getDestinationPoint();
 
         when(travelingPointRepository.findById(departurePoint.getId())).thenReturn(Optional.of(departurePoint));
-        lenient().when(travelingPointRepository.findById(destinationPoint.getId())).thenReturn(Optional.of(destinationPoint));
-        lenient().when(transportRepository.findById(transport.getId())).thenReturn(Optional.of(transport));
-        lenient().when(travelingDataRepository.save(expectedTravelingData)).thenReturn(expectedTravelingData);
+        when(travelingPointRepository.findById(destinationPoint.getId())).thenReturn(Optional.of(destinationPoint));
+        when(transportRepository.findById(transport.getId())).thenReturn(Optional.of(transport));
+        when(travelingDataRepository.save(expectedTravelingData)).thenReturn(expectedTravelingData);
 
         TravelingData actualTravelingData = travelingDataService.save(expectedTravelingData);
 
@@ -107,9 +105,8 @@ public class TravelingDataServiceTest {
     public void findByDates_DatesAreInvalid_ExceptionThrown() {
         LocalDate from = LocalDate.of(2021, 5, 12);
         LocalDate to = LocalDate.of(2021, 4, 5);
-        DateDTO dates = new DateDTO(from, to);
 
-        assertThrows(InvalidArgumentException.class, () -> travelingDataService.findByDates(dates));
+        assertThrows(InvalidArgumentException.class, () -> travelingDataService.findByDates(from, to));
     }
 
     @Test
@@ -117,11 +114,10 @@ public class TravelingDataServiceTest {
         List<TravelingData> travelingData = new ArrayList<>();
         LocalDate from = LocalDate.of(2021, 5, 12);
         LocalDate to = LocalDate.of(2021, 5, 15);
-        DateDTO dates = new DateDTO(from, to);
 
         when(travelingDataRepository.findByDates(from, to)).thenReturn(travelingData);
 
-        assertThrows(NonExistentItemException.class, () -> travelingDataService.findByDates(dates));
+        assertThrows(NonExistentItemException.class, () -> travelingDataService.findByDates(from, to));
     }
 
     @Test
@@ -135,7 +131,7 @@ public class TravelingDataServiceTest {
 
         when(travelingDataRepository.findByDates(from, to)).thenReturn(expectedTravelingData);
 
-        List<TravelingData> actualTravelingData = travelingDataService.findByDates(dates);
+        List<TravelingData> actualTravelingData = travelingDataService.findByDates(from, to);
 
         assertEquals(expectedTravelingData.size(), actualTravelingData.size());
         assertTrue(expectedTravelingData.containsAll(actualTravelingData));
@@ -167,7 +163,7 @@ public class TravelingDataServiceTest {
     public void updateTransport_TravelingDataIdIsNegative_ExceptionThrown() {
         long transportId = NumberUtils.LONG_ONE;
         TransportClass transportClass = TransportClass.FIRST;
-        TransportDTO transport = new AirplaneDTO(transportId, transportClass);
+        Transport transport = new Airplane(transportId, transportClass);
 
         assertThrows(InvalidArgumentException.class,
                 () -> travelingDataService.updateTransport(NEGATIVE_ID, transport));
@@ -179,7 +175,7 @@ public class TravelingDataServiceTest {
         long existingTravelingDataId = travelingData.getId();
         long transportId = NumberUtils.LONG_ONE;
         TransportClass transportClass = TransportClass.FIRST;
-        TransportDTO transport = new AirplaneDTO(transportId, transportClass);
+        Transport transport = new Airplane(transportId, transportClass);
 
         lenient().when(travelingDataRepository.findById(existingTravelingDataId)).thenReturn(Optional.of(travelingData));
 
@@ -191,7 +187,7 @@ public class TravelingDataServiceTest {
     public void updateTransport_TransportIsNull_ExceptionThrown() {
         TravelingData travelingData = createTravelingData();
         long id = travelingData.getId();
-        TransportDTO transport = null;
+        Transport transport = null;
 
         when(travelingDataRepository.findById(id)).thenReturn(Optional.of(travelingData));
 
@@ -204,13 +200,28 @@ public class TravelingDataServiceTest {
         long travelingDataId = travelingData.getId();
         Transport existingTransport = travelingData.getTransport();
         long existingTransportId = existingTransport.getId();
-        TransportDTO nonExistentTransport = new BusDTO(NON_EXISTENT_ID, TransportClass.FIRST);
+        Transport nonExistentTransport = new Bus(NON_EXISTENT_ID, TransportClass.FIRST);
 
         lenient().when(transportRepository.findById(existingTransportId)).thenReturn(Optional.of(existingTransport));
         when(travelingDataRepository.findById(travelingDataId)).thenReturn(Optional.of(travelingData));
 
         assertThrows(NonExistentItemException.class,
                 () -> travelingDataService.updateTransport(travelingDataId, nonExistentTransport));
+    }
+
+    @Test
+    public void updateTransport_NewTransportClassIsTheSameAsTheCurrent_ExceptionThrown() {
+        TravelingData travelingData = createTravelingData();
+        Transport existingTransport = travelingData.getTransport();
+        Transport updatedTransport = existingTransport;
+        long travelingDataId = travelingData.getId();
+        long existingTransportId = existingTransport.getId();
+
+        lenient().when(transportRepository.findById(existingTransportId)).thenReturn(Optional.of(existingTransport));
+        when(travelingDataRepository.findById(travelingDataId)).thenReturn(Optional.of(travelingData));
+
+        assertThrows(AlreadyExistingItemException.class,
+                () -> travelingDataService.updateTransport(travelingDataId, updatedTransport));
     }
 
     @Test
@@ -227,5 +238,5 @@ public class TravelingDataServiceTest {
         lenient().when(travelingDataRepository.findById(id)).thenReturn(Optional.of(travelingData));
 
         assertThrows(NonExistentItemException.class, () -> travelingDataService.deleteById(NON_EXISTENT_ID));
-    }
+    }*/
 }

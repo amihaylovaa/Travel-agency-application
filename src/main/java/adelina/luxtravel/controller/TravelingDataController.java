@@ -2,11 +2,6 @@ package adelina.luxtravel.controller;
 
 import adelina.luxtravel.domain.TravelingData;
 import adelina.luxtravel.domain.transport.Transport;
-import adelina.luxtravel.dto.DateDTO;
-import adelina.luxtravel.dto.TransportDTO;
-import adelina.luxtravel.dto.TravelingDataDTO;
-import adelina.luxtravel.exception.InvalidArgumentException;
-import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.service.TravelingDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +20,8 @@ public class TravelingDataController {
     }
 
     @PostMapping
-    public TravelingData save(@RequestBody TravelingDataDTO travelingDataDTO) {
-        return travelingDataService.save(travelingDataDTO);
+    public TravelingData save(@RequestBody TravelingData travelingData) {
+        return travelingDataService.save(travelingData);
     }
 
     @GetMapping(value = "/{id}")
@@ -35,8 +30,9 @@ public class TravelingDataController {
     }
 
     @GetMapping(value = "/dates")
-    public List<TravelingData> findByDates(@RequestBody DateDTO dateDTO) {
-        return travelingDataService.findByDates(dateDTO);
+    public List<TravelingData> findByDates(@PathVariable LocalDate from,
+                                           @PathVariable LocalDate to) {
+        return travelingDataService.findByDates(from, to);
     }
 
     @GetMapping(value = "/all")
@@ -45,12 +41,11 @@ public class TravelingDataController {
     }
 
     @PutMapping(value = "/{travelingDataId}")
-    public void updateTransport(@RequestBody TransportDTO transportDTO,
+    public void updateTransport(@RequestBody Transport transport,
                                 @PathVariable("travelingDataId") long travelingDataId) {
-        travelingDataService.updateTransport(travelingDataId, transportDTO);
+        travelingDataService.updateTransport(travelingDataId, transport);
     }
 
-    // todo check
     @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable("id") long id) {
         travelingDataService.deleteById(id);

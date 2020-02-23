@@ -1,10 +1,6 @@
 package adelina.luxtravel.controller;
 
 import adelina.luxtravel.domain.transport.Transport;
-import adelina.luxtravel.domain.transport.TransportClass;
-import adelina.luxtravel.dto.TransportDTO;
-import adelina.luxtravel.exception.InvalidArgumentException;
-import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.service.TransportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,18 +18,18 @@ public class TransportController {
     }
 
     @PostMapping(value = "/bus")
-    public Transport saveBus(@RequestBody TransportDTO transportDTO) {
-        return transportService.saveBus(transportDTO);
+    public Transport saveBus(@RequestBody Transport transport) {
+        return transportService.saveBus(transport);
     }
 
     @PostMapping(value = "/airplane")
-    public Transport saveAirplane(@RequestBody TransportDTO transportDTO) {
-        return transportService.saveAirplane(transportDTO);
+    public Transport saveAirplane(@RequestBody Transport transport) {
+        return transportService.saveAirplane(transport);
     }
 
     @PostMapping(value = "/all")
-    public List<Transport> saveAll(@RequestBody List<TransportDTO> transportsDTO) {
-        return transportService.saveAllDTO(transportsDTO);
+    public List<Transport> saveAll(@RequestBody List<Transport> transports) {
+        return transportService.saveAll(transports);
     }
 
     @GetMapping(value = "/{id}")
@@ -42,8 +38,8 @@ public class TransportController {
     }
 
     @GetMapping(value = "/buses/{transportClass}")
-    public List<Transport> findAllBusesByClass(@PathVariable TransportClass transportClass) {
-        return transportService.findAllBusesByClass(transportClass.name());
+    public List<Transport> findAllBusesByClass(@PathVariable("transportClass") String transportClass) {
+        return transportService.findAllBusesByClass(transportClass);
     }
 
     @GetMapping(value = "/airplanes/{transportClass}")

@@ -17,6 +17,12 @@ public interface TravelingDataRepository extends JpaRepository<TravelingData, Lo
             nativeQuery = true)
     List<TravelingData> findByDates(LocalDate from, LocalDate to);
 
+    @Query(value = "SELECT available_tickets_count " +
+                   "FROM traveling_data " +
+                   "WHERE id = ?1 ",
+            nativeQuery = true)
+          int findAvailableTicketsCount(long travelingDataId);
+
     @Modifying
     @Query(value = "UPDATE traveling_data " +
                    "SET from_date = ?1 AND to_date = ?2 " +
@@ -31,26 +37,24 @@ public interface TravelingDataRepository extends JpaRepository<TravelingData, Lo
             nativeQuery = true)
     void updateTransport(long transportId, long id);
 
-    // todo not working
     @Modifying
     @Query(value = "UPDATE traveling_data " +
-                   "SET available_tickets_count = available_tickets_count - ?1 " +
+                   "SET available_tickets_count = (available_tickets_count - ?1) " +
                    "WHERE id = ?2",
             nativeQuery = true)
     void reserveTickets(int reservedTicketsCount, long id);
 
-    // todo - same
     @Modifying
     @Query(value = "UPDATE traveling_data " +
-                   "SET available_tickets_count = available_tickets_count + ?1 " +
+                   "SET available_tickets_count = (available_tickets_count + ?1) " +
                    "WHERE id = ?2",
             nativeQuery = true)
     void cancelTicketReservation(int reservedTicketsCount, long id);
 
     @Modifying
     @Query(value = "UPDATE traveling_data " +
-            "SET available_tickets_count = available_tickets_count + ?1 " +
-            "WHERE id = ?2",
+                   "SET available_tickets_count = (available_tickets_count + ?1) " +
+                   "WHERE id = ?2",
             nativeQuery = true)
     void updateTicketsReservation(int reservedTicketsCount, long id);
 }

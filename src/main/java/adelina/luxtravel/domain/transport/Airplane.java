@@ -15,6 +15,7 @@ import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 @Entity
 @Getter
 @NoArgsConstructor
+@DiscriminatorValue(value="airplane")
 public class Airplane extends Transport {
     public Airplane(TransportClass transportClass) {
         super(transportClass);

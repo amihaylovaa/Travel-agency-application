@@ -1,12 +1,14 @@
 package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
+
 import adelina.luxtravel.exception.FailedInitializationException;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Polymorphism;
-import org.hibernate.annotations.PolymorphismType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,6 +21,13 @@ import static adelina.luxtravel.utility.Constants.HOUR;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonSubTypes(
+        {@JsonSubTypes.Type(value = Airplane.class, name = "Airplane"),
+                @JsonSubTypes.Type(value = Bus.class, name = "Bus")
+        })
+@DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "transport_type")
 public abstract class Transport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +36,7 @@ public abstract class Transport {
     @NotNull(message = "Transport class can not be null")
     @Enumerated(EnumType.STRING)
     @Column(name = "transport_class", nullable = false, length = 12)
-    TransportClass transportClass;
+    protected TransportClass transportClass;
 
     public Transport(TransportClass transportClass) {
         this.transportClass = transportClass;

@@ -11,27 +11,27 @@ import java.util.List;
 
 @Repository
 public interface TransportRepository extends JpaRepository<Transport, Long> {
-    @Query(value = "SELECT t.id, t.transport_class, b.id as clazz_ " +
+    @Query(value = "SELECT t.id, t.transport_class, t.transport_type, b.id as clazz_ " +
                    "FROM transport t, bus b " +
                    "WHERE t.transport_class = ?1 " +
-                   "AND b.id = t.id " ,
+                   "AND t.id = b.id " ,
             nativeQuery = true)
     List<Transport> findAllBusesByClass(String transportClass);
 
-    @Query(value = "SELECT t.id, t.transport_class, a.id as clazz_ " +
+    @Query(value = "SELECT t.id, t.transport_class, t.transport_type, a.id as clazz_ " +
                    "FROM transport t , airplane a " +
                    "WHERE transport_class = ?1 " +
-                   "AND t.id = a.id",
+                   "AND a.id = t.id",
             nativeQuery = true)
     List<Transport> findAllAirplanesByClass(String transportClass);
 
-    @Query(value = "SELECT t.id, t.transport_class, b.id as clazz_ " +
+    @Query(value = "SELECT t.id, t.transport_class, t.transport_type, b.id as clazz_ " +
                    "FROM transport t , bus b " +
                    "WHERE t.id = b.id",
             nativeQuery = true)
     List<Transport> findAllBuses();
 
-    @Query(value = "SELECT t.id, t.transport_class, a.id as clazz_ " +
+    @Query(value = "SELECT t.id, t.transport_class, t.transport_type, a.id as clazz_ " +
                    "FROM transport t , airplane a " +
                    "WHERE t.id = a.id",
             nativeQuery = true)

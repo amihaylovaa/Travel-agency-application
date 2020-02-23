@@ -27,6 +27,21 @@ public class TransportServiceTest {
     private TransportService transportService;
 
     @Test
+    public void saveBus_BusIsNull_ExceptionThrown() {
+        Transport transport = null;
+
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveBus(transport));
+    }
+
+    @Test
+    public void saveBus_TransportClassIsNull_ExceptionThrown() {
+        TransportClass transportClass = null;
+        Transport transport = new Bus(transportClass);
+
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveBus(transport));
+    }
+
+    @Test
     public void saveBus_ValidData_CreatedBus() {
         TransportClass transportClass = TransportClass.ECONOMY;
         Transport expectedTransport = new Bus(transportClass);
@@ -39,6 +54,21 @@ public class TransportServiceTest {
     }
 
     @Test
+    public void saveAirplane_AirplaneIsNull_ExceptionThrown() {
+        Transport transport = null;
+
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveAirplane(transport));
+    }
+
+    @Test
+    public void saveAirplane_TransportClassIsNull_ExceptionThrown() {
+        TransportClass transportClass = null;
+        Transport transport = new Airplane(transportClass);
+
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveAirplane(transport));
+    }
+
+    @Test
     public void saveAirplane_ValidData_CreatedAirplane() {
         TransportClass transportClass = TransportClass.BUSINESS;
         Transport expectedTransport = new Airplane(transportClass);
@@ -48,6 +78,21 @@ public class TransportServiceTest {
         Transport actualTransport = transportService.saveAirplane(expectedTransport);
 
         assertEquals(expectedTransport, actualTransport);
+    }
+
+    @Test
+    public void saveAll_TransportListIsEmpty_ExceptionThrown() {
+        List<Transport> transports = new ArrayList<>();
+
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveAll(transports));
+    }
+
+    @Test
+    public void saveAll_TransportListHasNullElement_ExceptionThrown() {
+        List<Transport> transports = new ArrayList<>(createTransportList());
+        transports.add(null);
+
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveAll(transports));
     }
 
     @Test
@@ -94,10 +139,11 @@ public class TransportServiceTest {
     }
 
     @Test
-    public void findAllBusesByClass_TransportClassIsNull_ExceptionThrown() {
+    public void findAllBusesByClass_TransportClassNameIsNull_ExceptionThrown() {
         String transportClass = null;
 
-        assertThrows(InvalidArgumentException.class, () -> transportService.findAllBusesByClass(transportClass));
+        assertThrows(InvalidArgumentException.class,
+                () -> transportService.findAllBusesByClass(transportClass));
     }
 
     @Test
@@ -106,7 +152,8 @@ public class TransportServiceTest {
 
         when(transportRepository.findAllBusesByClass(transportClass.name())).thenThrow(NonExistentItemException.class);
 
-        assertThrows(NonExistentItemException.class, () -> transportService.findAllBusesByClass(transportClass.name()));
+        assertThrows(NonExistentItemException.class,
+                () -> transportService.findAllBusesByClass(transportClass.name()));
     }
 
     @Test
@@ -127,7 +174,7 @@ public class TransportServiceTest {
     }
 
     @Test
-    public void findAllAirplanesByClass_TransportClassIsNull_ExceptionThrown() {
+    public void findAllAirplanesByClass_TransportClassNameIsNull_ExceptionThrown() {
         String transportClass = null;
 
         assertThrows(InvalidArgumentException.class,
@@ -180,18 +227,20 @@ public class TransportServiceTest {
     }
 
     @Test
-    public void updateClass_TransportClassIsNull_ExceptionThrown() {
+    public void updateClass_TransportClassNameIsNull_ExceptionThrown() {
         String transportClass = null;
         long id = NumberUtils.LONG_ONE;
 
-        assertThrows(InvalidArgumentException.class, () -> transportService.updateClass(transportClass, id));
+        assertThrows(InvalidArgumentException.class,
+                () -> transportService.updateClass(transportClass, id));
     }
 
     @Test
     public void updateClass_TransportIdIsNegative_ExceptionThrown() {
         TransportClass transportClass = TransportClass.ECONOMY;
 
-        assertThrows(InvalidArgumentException.class, () -> transportService.updateClass(transportClass.name(), NEGATIVE_ID));
+        assertThrows(InvalidArgumentException.class,
+                () -> transportService.updateClass(transportClass.name(), NEGATIVE_ID));
     }
 
     @Test

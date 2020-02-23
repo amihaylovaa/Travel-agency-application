@@ -19,14 +19,12 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @NotNull(message = "User can not be null")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-    @JsonBackReference
     private User user;
     @NotNull(message = "Traveling data can not be null")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "traveling_data_id")
-    @JsonBackReference
     private TravelingData travelingData;
     @Min(value = 1, message = "Reserved tickets count can not be less than one")
     @Column(name = "reserved_tickets_count", nullable = false)

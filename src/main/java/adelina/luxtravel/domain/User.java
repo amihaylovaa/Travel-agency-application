@@ -1,5 +1,6 @@
 package adelina.luxtravel.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -36,10 +37,10 @@ public class User {
     private String password;
     @NotNull(message = "List of bookings can not be null")
     @OneToMany(mappedBy = "user",
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.REMOVE,
             orphanRemoval = true
              )
-    @JsonManagedReference
+    @JsonBackReference
     private List<Booking> bookings;
 
     {

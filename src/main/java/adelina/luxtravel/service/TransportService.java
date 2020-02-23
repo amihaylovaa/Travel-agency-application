@@ -1,8 +1,6 @@
 package adelina.luxtravel.service;
 
 import adelina.luxtravel.domain.transport.*;
-import adelina.luxtravel.dto.AirplaneDTO;
-import adelina.luxtravel.dto.TransportDTO;
 import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.TransportRepository;
 import org.apache.commons.lang3.ObjectUtils;
@@ -29,37 +27,21 @@ public class TransportService {
         this.transportRepository = transportRepository;
     }
 
-    public Transport saveBus(TransportDTO transportDTO) {
-        validateTransportDTO(transportDTO);
-
-        Transport transport = createTransportFromDTO(transportDTO);
-
-        return saveBus(transport);
-    }
-
     public Transport saveBus(Transport transport) {
+        validateTransport(transport);
+
         return transportRepository.save(transport);
-    }
-
-    public Transport saveAirplane(TransportDTO transportDTO) {
-        validateTransportDTO(transportDTO);
-
-        Transport transport = createTransportFromDTO(transportDTO);
-
-        return saveAirplane(transport);
     }
 
     public Transport saveAirplane(Transport transport) {
+        validateTransport(transport);
+
         return transportRepository.save(transport);
     }
 
-    public List<Transport> saveAllDTO(List<TransportDTO> transportsDTO) {
-        List<Transport> transports = createTransportListFromDTO(transportsDTO);
-
-        return saveAll(transports);
-    }
-
     public List<Transport> saveAll(List<Transport> transports) {
+        validateTransportList(transports);
+
         return transportRepository.saveAll(transports);
     }
 
@@ -150,12 +132,12 @@ public class TransportService {
         }
     }
 
-    private void validateTransportDTO(TransportDTO transportDTO) {
-        if (transportDTO == null) {
-            throw new InvalidArgumentException("Invalid transport data transfer object");
+    private void validateTransport(Transport transport) {
+        if (transport == null) {
+            throw new InvalidArgumentException("Invalid transport");
         }
 
-        TransportClass transportClass = transportDTO.getTransportClass();
+        TransportClass transportClass = transport.getTransportClass();
 
         if (transportClass == null) {
             throw new InvalidArgumentException("Invalid transport class");
@@ -163,26 +145,13 @@ public class TransportService {
         validateTransportClass(transportClass.name());
     }
 
-    private Transport createTransportFromDTO(TransportDTO transportDTO) {
-        TransportClass transportClass = transportDTO.getTransportClass();
-
-        if (transportDTO instanceof AirplaneDTO) {
-            return new Airplane(transportClass);
-        }
-        return new Bus(transportClass);
-    }
-
-    private List<Transport> createTransportListFromDTO(List<TransportDTO> transportsDTO) {
-        if (transportsDTO == null || transportsDTO.isEmpty()) {
-            throw new InvalidArgumentException("Invalid list of DTOs");
+    private void validateTransportList(List<Transport> transports) {
+        if (transports == null || transports.isEmpty()) {
+            throw new InvalidArgumentException("Invalid transport list");
         }
 
-        List<Transport> transports = new ArrayList<>();
-
-        for (TransportDTO transportDTO : transportsDTO) {
-            validateTransportDTO(transportDTO);
-            transports.add(createTransportFromDTO(transportDTO));
+        for (Transport transport : transports) {
+            validateTransport(transport);
         }
-        return saveAll(transports);
     }
 }

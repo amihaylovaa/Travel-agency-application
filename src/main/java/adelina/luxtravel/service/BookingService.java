@@ -7,7 +7,6 @@ import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
 import adelina.luxtravel.domain.wrapper.Date;
 import adelina.luxtravel.domain.wrapper.DepartureDestination;
-import adelina.luxtravel.dto.*;
 import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.TravelingDataRepository;
 import adelina.luxtravel.repository.BookingRepository;
@@ -23,8 +22,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static adelina.luxtravel.utility.Constants.INVALID_ID;
-import static adelina.luxtravel.utility.Constants.INVALID_USERNAME;
 
 @Service
 @Transactional
@@ -32,7 +29,7 @@ public class BookingService {
     private BookingRepository bookingRepository;
     private TravelingDataRepository travelingDataRepository;
     private UserRepository userRepository;
-
+/*
     @Autowired
     public BookingService(BookingRepository bookingRepository, TravelingDataRepository travelingDataRepository, UserRepository userRepository) {
         this.bookingRepository = bookingRepository;
@@ -106,7 +103,6 @@ public class BookingService {
         validateTicketsUpdateParameters(bookingId, reservedTicketsCount);
 
         bookingRepository.updateByTickets(reservedTicketsCount, bookingId);
-        travelingDataRepository.reserveTickets(reservedTicketsCount, bookingId);
     }
 
     public void deleteById(long id) {
@@ -164,21 +160,21 @@ public class BookingService {
     }
 
     private void reserveTickets(Booking booking) {
-        long bookingDataId = getBookingDataId(booking);
+        long travelingDataId = getTravelingDataId(booking);
         int ticketsCount = booking.getReservedTicketsCount();
 
-        travelingDataRepository.reserveTickets(ticketsCount, bookingDataId);
+        travelingDataRepository.reserveTickets(ticketsCount, travelingDataId);
     }
 
     private void cancelTicketsReservation(long bookingId) {
         Booking booking = findById(bookingId);
         int reservedTicketsCount = booking.getReservedTicketsCount();
-        long bookingDataId = getBookingDataId(booking);
+        long travelingDataId = getTravelingDataId(booking);
 
-        travelingDataRepository.cancelTicketReservation(reservedTicketsCount, bookingDataId);
+        travelingDataRepository.cancelTicketReservation(reservedTicketsCount, travelingDataId);
     }
 
-    private long getBookingDataId(Booking booking) {
+    private long getTravelingDataId(Booking booking) {
         TravelingData travelingData = booking.getTravelingData();
 
         return travelingData.getId();
@@ -187,11 +183,16 @@ public class BookingService {
     private void validateTicketsUpdateParameters(long bookingId, int newTicketsCount) {
         Booking booking = findById(bookingId);
         TravelingData travelingData = booking.getTravelingData();
-        int availableTicketsCount = travelingData.getAvailableTicketsCount();
-        int reservedTicketsCount = booking.getReservedTicketsCount();
+        long travelingDataId = travelingData.getId();
+        int currentReservedTicketsCount = booking.getReservedTicketsCount();
+
+        travelingDataRepository.cancelTicketReservation(currentReservedTicketsCount, travelingDataId);
+
+        int availableTicketsCount = travelingDataRepository.findAvailableTicketsCount(travelingDataId);
 
         validateTicketsAreSufficient(newTicketsCount, availableTicketsCount);
-        travelingDataRepository.updateTicketsReservation(reservedTicketsCount, bookingId);
+
+        travelingDataRepository.reserveTickets(newTicketsCount, travelingDataId);
     }
 
     private Booking createBookingFromDTO(BookingDTO bookingDTO) {
@@ -229,5 +230,5 @@ public class BookingService {
         } else {
             return new Bus(transportId, transportClass);
         }
-    }
+    }*/
 }

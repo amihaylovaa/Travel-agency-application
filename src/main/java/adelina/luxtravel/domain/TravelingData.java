@@ -7,7 +7,8 @@ import static adelina.luxtravel.utility.Constants.MINUTE;
 import static adelina.luxtravel.utility.Constants.PERCENT;
 
 import adelina.luxtravel.domain.wrapper.*;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,7 @@ import java.util.List;
 @Table(name = "traveling_data")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class TravelingData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,25 +42,23 @@ public class TravelingData {
     @Min(value = 1, message = "Count available tickets must have at least one ticket")
     @Column(name = "available_tickets_count", nullable = false)
     private int availableTicketsCount;
-    @DecimalMin(value ="10.0", message = "Price can not be less than 10.0 ")
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
     @OneToMany(mappedBy = "travelingData",
-               cascade = CascadeType.REMOVE,
-               orphanRemoval = true
-              )
-    @JsonManagedReference
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    @JsonBackReference
     private List<Booking> bookings;
 
     public TravelingData(TravelingData travelingData) {
-        this(travelingData.id, travelingData.departureDestination,
-                travelingData.transport, travelingData.date, travelingData.availableTicketsCount);
-    }
-
-    public TravelingData(long id, DepartureDestination departureDestination,
-                         Transport transport, Date date, int availableTicketsCount) {
-        this(transport, departureDestination, date, availableTicketsCount);
-        this.id = id;
+        id = travelingData.getId();
+        availableTicketsCount = travelingData.getAvailableTicketsCount();
+        date = travelingData.getDate();
+        departureDestination = travelingData.getDepartureDestination();
+        transport = travelingData.getTransport();
+        bookings = travelingData.getBookings();
+        setPrice();
     }
 
     public TravelingData(Transport transport, DepartureDestination departureDestination,

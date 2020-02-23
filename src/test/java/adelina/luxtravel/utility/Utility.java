@@ -10,7 +10,6 @@ import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
 import adelina.luxtravel.domain.wrapper.Date;
 import adelina.luxtravel.domain.wrapper.DepartureDestination;
-import adelina.luxtravel.dto.*;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.time.LocalDate;
@@ -75,7 +74,7 @@ public final class Utility {
         return transports;
     }
 
-    public static final TravelingData createTravelingData() {
+   /* public static final TravelingData createTravelingData() {
         long id = NumberUtils.LONG_ONE;
         int availableTicketsCount = 36;
         double departureLatitude = 42.13;
@@ -94,8 +93,8 @@ public final class Utility {
         Date date = new Date(from, to);
 
         return new TravelingData(id, departureDestination, transport, date, availableTicketsCount);
-    }
-
+    }*/
+/*
     public static final List<TravelingData> createTravelingDataList() {
         long id = 2;
         int availableTicketsCount = 10;
@@ -121,24 +120,17 @@ public final class Utility {
         travelingData.add(travelingDataB);
 
         return travelingData;
-    }
+    }*/
 
-    public static final TravelingDataDTO createTravelingDataWithNonExistingTransport() {
+  /*  public static final TravelingData createTravelingDataWithNonExistingTransport() {
         TravelingData travelingData = createTravelingData();
         long id = 2;
         int availableTicketsCount = travelingData.getAvailableTicketsCount();
-        double price = travelingData.getPrice();
-        TransportDTO nonExistingTransport = new AirplaneDTO(id, TransportClass.FIRST);
+        Transport nonExistingTransport = new Airplane(id, TransportClass.FIRST);
         DepartureDestination departureDestination = travelingData.getDepartureDestination();
-        TravelingPoint departurePoint = departureDestination.getDeparturePoint();
-        TravelingPoint destinationPoint = departureDestination.getDestinationPoint();
-        DepartureDestinationDTO departureDestinationDTO = new DepartureDestinationDTO(departurePoint, destinationPoint);
         Date dates = travelingData.getDate();
-        LocalDate from = dates.getFromDate();
-        LocalDate to = dates.getToDate();
-        DateDTO dateDTO = new DateDTO(from, to);
 
-        return new TravelingDataDTO(id, departureDestinationDTO, dateDTO, nonExistingTransport, availableTicketsCount, price);
+        return new TravelingData(id, departureDestination, nonExistingTransport, dates, availableTicketsCount);
 
     }
 
@@ -163,5 +155,5 @@ public final class Utility {
         User nonExistingUser = new User(NON_EXISTENT_ID, username, email, password);
 
         return new Booking(bookingId, travelingData, nonExistingUser, reservedTicketsCount);
-    }
+    }*/
 }
