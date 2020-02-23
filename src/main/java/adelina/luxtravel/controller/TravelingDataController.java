@@ -29,23 +29,27 @@ public class TravelingDataController {
         return travelingDataService.findById(id);
     }
 
-    @GetMapping(value = "/dates")
-    public List<TravelingData> findByDates(@PathVariable LocalDate from,
-                                           @PathVariable LocalDate to) {
+    // todo  check
+    @GetMapping(value = "/dates/{from}/{to}")
+    public List<TravelingData> findByDates(@PathVariable("from") LocalDate from,
+                                           @PathVariable("to") LocalDate to) {
         return travelingDataService.findByDates(from, to);
     }
 
+    // todo check
     @GetMapping(value = "/all")
     public List<TravelingData> findAll() {
         return travelingDataService.findAll();
     }
 
+    // todo check
     @PutMapping(value = "/{travelingDataId}")
     public void updateTransport(@RequestBody Transport transport,
                                 @PathVariable("travelingDataId") long travelingDataId) {
         travelingDataService.updateTransport(travelingDataId, transport);
     }
 
+    // todo check
     @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable("id") long id) {
         travelingDataService.deleteById(id);
