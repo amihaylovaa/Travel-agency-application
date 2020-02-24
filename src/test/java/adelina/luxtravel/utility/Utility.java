@@ -74,7 +74,7 @@ public final class Utility {
         return transports;
     }
 
-   /* public static final TravelingData createTravelingData() {
+    public static final TravelingData createTravelingData() {
         long id = NumberUtils.LONG_ONE;
         int availableTicketsCount = 36;
         double departureLatitude = 42.13;
@@ -93,8 +93,8 @@ public final class Utility {
         Date date = new Date(from, to);
 
         return new TravelingData(id, departureDestination, transport, date, availableTicketsCount);
-    }*/
-/*
+    }
+
     public static final List<TravelingData> createTravelingDataList() {
         long id = 2;
         int availableTicketsCount = 10;
@@ -120,9 +120,9 @@ public final class Utility {
         travelingData.add(travelingDataB);
 
         return travelingData;
-    }*/
+    }
 
-  /*  public static final TravelingData createTravelingDataWithNonExistingTransport() {
+    public static final TravelingData createTravelingDataWithNonExistingTransport() {
         TravelingData travelingData = createTravelingData();
         long id = 2;
         int availableTicketsCount = travelingData.getAvailableTicketsCount();
@@ -131,7 +131,6 @@ public final class Utility {
         Date dates = travelingData.getDate();
 
         return new TravelingData(id, departureDestination, nonExistingTransport, dates, availableTicketsCount);
-
     }
 
     public static final Booking createBooking() {
@@ -155,5 +154,5 @@ public final class Utility {
         User nonExistingUser = new User(NON_EXISTENT_ID, username, email, password);
 
         return new Booking(bookingId, travelingData, nonExistingUser, reservedTicketsCount);
-    }*/
+    }
 }

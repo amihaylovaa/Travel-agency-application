@@ -38,8 +38,7 @@ public class TravelingDataService {
     public TravelingData save(TravelingData travelingData) {
         validateTravelingData(travelingData);
 
-        // todo - refactoring
-        return travelingDataRepository.save(new TravelingData(travelingData));
+        return travelingDataRepository.save(travelingData);
     }
 
     public TravelingData findById(long id) {
@@ -55,7 +54,10 @@ public class TravelingDataService {
         return travelingData.get();
     }
 
-    public List<TravelingData> findByDates(LocalDate from, LocalDate to) {
+    public List<TravelingData> findByDates(Date dates) {
+        LocalDate from = dates.getFromDate();
+        LocalDate to = dates.getToDate();
+
         validateDates(from, to);
 
         List<TravelingData> travelingData = travelingDataRepository.findByDates(from, to);
@@ -77,6 +79,8 @@ public class TravelingDataService {
 
 
     public void updateTransport(long travelingDataId, Transport transport) {
+        validateUpdateTransportParameters(travelingDataId, transport);
+
         long transportId = transport.getId();
 
         travelingDataRepository.updateTransport(transportId, travelingDataId);
@@ -134,6 +138,10 @@ public class TravelingDataService {
     }
 
     private void validateUpdateTransportParameters(long travelingDataId, Transport transport) {
+        if (travelingDataId <= NumberUtils.INTEGER_ZERO) {
+            throw new InvalidArgumentException("Invalid traveling data id");
+        }
+
         if (!travelingDataExists(travelingDataId)) {
             throw new NonExistentItemException("This traveling data does not exist");
         }

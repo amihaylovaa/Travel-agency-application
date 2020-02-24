@@ -21,9 +21,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public User save(@RequestBody User user) {
+    @PostMapping(value = "register")
+    public User register(@RequestBody User user) {
         return userService.save(user);
+    }
+
+    @GetMapping(value = "login/{username}/{password}")
+    public void login(@PathVariable("username") String username, @PathVariable("password") String password) {
+         userService.login(username, password);
     }
 
     @GetMapping(value = "username/{username}")

@@ -29,12 +29,7 @@ public class UserService {
     }
 
     public User save(User user) {
-        if (user == null) {
-            throw new InvalidArgumentException("Invalid user");
-        }
-
-        validateUsernameDoesNotExist(user.getUsername());
-        validateEmailDoesNotExist(user.getEmail());
+        validateUser(user);
 
         String userPassword = user.getPassword();
 
@@ -43,10 +38,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void login(String username, String password) {
+        authenticationByUsername(username, password);
+    }
+
     public User findByUsername(String username) {
-        if (StringUtils.isEmpty(username)) {
-            throw new InvalidArgumentException(INVALID_USERNAME);
-        }
+        validateUsername(username);
 
         Optional<User> user = userRepository.findByUsername(username);
 
@@ -57,9 +54,7 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        if (StringUtils.isEmpty(email)) {
-            throw new InvalidArgumentException(INVALID_EMAIL);
-        }
+        validateEmail(email);
 
         Optional<User> user = userRepository.findByEmail(email);
 
@@ -79,11 +74,12 @@ public class UserService {
     }
 
     public void updatePassword(String username, String newPassword, String oldPassword) {
-        validatePasswordUpdateParameters(username, newPassword, oldPassword);
+        validatePassword(newPassword);
+        authenticationByUsername(username, oldPassword);
 
-        User user = findByUsername(username);
-
-        validatePasswordMatch(oldPassword, user.getPassword());
+        if (newPassword.equals(oldPassword)) {
+            throw new InvalidArgumentException("New password can not be the same as the new one");
+        }
 
         String newHashedPassword = passwordEncoder.encode(newPassword);
 
@@ -91,43 +87,17 @@ public class UserService {
     }
 
     public void updateEmail(String newEmail, String oldEmail, String password) {
-        validateEmailUpdateParameters(newEmail, oldEmail, password);
-
-        User user = findByEmail(oldEmail);
-
-        validatePasswordMatch(password, user.getPassword());
-
+        validateEmail(newEmail);
+        authenticationByEmail(oldEmail, password);
         validateEmailDoesNotExist(newEmail);
 
         userRepository.updateEmail(newEmail, oldEmail);
     }
 
     public void deleteByUsername(String username, String password) {
-        if (StringUtils.isEmpty(username)) {
-            throw new InvalidArgumentException(INVALID_USERNAME);
-        }
-
-        validatePassword(password);
-
-        User user = findByUsername(username);
-
-        validatePasswordMatch(password, user.getPassword());
+        authenticationByUsername(username, password);
 
         userRepository.deleteByUsername(username);
-    }
-
-    public void deleteByEmail(String email, String password) {
-        if (StringUtils.isEmpty(email)) {
-            throw new InvalidArgumentException(INVALID_EMAIL);
-        }
-
-        validatePassword(password);
-
-        User user = findByEmail(email);
-
-        validatePasswordMatch(password, user.getPassword());
-
-        userRepository.deleteByEmail(email);
     }
 
     private void validatePassword(String password) {
@@ -158,30 +128,55 @@ public class UserService {
         }
     }
 
-    private void validateEmailUpdateParameters(String newEmail, String oldEmail, String password) {
-        if (StringUtils.isEmpty(newEmail)) {
-            throw new InvalidArgumentException("Invalid new email");
-        }
-        if (StringUtils.isEmpty(oldEmail)) {
-            throw new InvalidArgumentException("Invalid old email");
-        }
-        if (newEmail.equals(oldEmail)) {
-            throw new AlreadyExistingItemException("New email can not be the same as the current");
-        }
-
-        validatePassword(password);
-    }
-
-    private void validatePasswordUpdateParameters(String username, String newPassword, String oldPassword) {
+    private void validateUsername(String username) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException(INVALID_USERNAME);
         }
+    }
 
-        validatePassword(newPassword);
-        validatePassword(oldPassword);
-
-        if (newPassword.equals(oldPassword)) {
-            throw new InvalidArgumentException("New password can not be the same as the new one");
+    private void validateEmail(String email) {
+        if (StringUtils.isEmpty(email)) {
+            throw new InvalidArgumentException(INVALID_EMAIL);
         }
+    }
+
+    private void validateUser(User user) {
+        if (user == null) {
+            throw new InvalidArgumentException("Invalid user");
+        }
+
+        String username = user.getUsername();
+        String email = user.getEmail();
+        String password = user.getPassword();
+
+        validateUsername(username);
+        validateEmail(email);
+        validatePassword(password);
+        validateUsernameDoesNotExist(username);
+        validateEmailDoesNotExist(email);
+    }
+
+    private void authenticationByUsername(String username, String password) {
+        validateUsername(username);
+        validatePassword(password);
+
+        User user = findByUsername(username);
+
+        validatePasswordMatch(password, user.getPassword());
+    }
+
+    private void authenticationByEmail(String email, String password) {
+        validateEmail(email);
+        validatePassword(password);
+
+        User user = findByEmail(email);
+
+        validatePasswordMatch(password, user.getPassword());
+    }
+
+    public void deleteByEmail(String email, String password) {
+        authenticationByEmail(email, password);
+
+        userRepository.deleteByEmail(email);
     }
 }

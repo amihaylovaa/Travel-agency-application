@@ -35,7 +35,7 @@ public class TravelingDataServiceTest {
     private TravelingPointRepository travelingPointRepository;
     @InjectMocks
     private TravelingDataService travelingDataService;
-/*
+
     @Test
     public void save_TravelingDataIsNull_ExceptionThrown() {
         TravelingData travelingData = null;
@@ -64,9 +64,9 @@ public class TravelingDataServiceTest {
         TravelingPoint destinationPoint = departureDestination.getDestinationPoint();
 
         when(travelingPointRepository.findById(departurePoint.getId())).thenReturn(Optional.of(departurePoint));
-        when(travelingPointRepository.findById(destinationPoint.getId())).thenReturn(Optional.of(destinationPoint));
-        when(transportRepository.findById(transport.getId())).thenReturn(Optional.of(transport));
-        when(travelingDataRepository.save(expectedTravelingData)).thenReturn(expectedTravelingData);
+        lenient().when(travelingPointRepository.findById(destinationPoint.getId())).thenReturn(Optional.of(destinationPoint));
+        lenient().when(transportRepository.findById(transport.getId())).thenReturn(Optional.of(transport));
+        lenient().when(travelingDataRepository.save(expectedTravelingData)).thenReturn(expectedTravelingData);
 
         TravelingData actualTravelingData = travelingDataService.save(expectedTravelingData);
 
@@ -102,22 +102,15 @@ public class TravelingDataServiceTest {
     }
 
     @Test
-    public void findByDates_DatesAreInvalid_ExceptionThrown() {
-        LocalDate from = LocalDate.of(2021, 5, 12);
-        LocalDate to = LocalDate.of(2021, 4, 5);
-
-        assertThrows(InvalidArgumentException.class, () -> travelingDataService.findByDates(from, to));
-    }
-
-    @Test
     public void findByDates_EmptyTravelingDataListFortTheseDates_ExceptionThrown() {
         List<TravelingData> travelingData = new ArrayList<>();
         LocalDate from = LocalDate.of(2021, 5, 12);
         LocalDate to = LocalDate.of(2021, 5, 15);
+        Date dates = new Date(from, to);
 
         when(travelingDataRepository.findByDates(from, to)).thenReturn(travelingData);
 
-        assertThrows(NonExistentItemException.class, () -> travelingDataService.findByDates(from, to));
+        assertThrows(NonExistentItemException.class, () -> travelingDataService.findByDates(dates));
     }
 
     @Test
@@ -131,7 +124,7 @@ public class TravelingDataServiceTest {
 
         when(travelingDataRepository.findByDates(from, to)).thenReturn(expectedTravelingData);
 
-        List<TravelingData> actualTravelingData = travelingDataService.findByDates(from, to);
+        List<TravelingData> actualTravelingData = travelingDataService.findByDates(dates);
 
         assertEquals(expectedTravelingData.size(), actualTravelingData.size());
         assertTrue(expectedTravelingData.containsAll(actualTravelingData));
@@ -210,21 +203,6 @@ public class TravelingDataServiceTest {
     }
 
     @Test
-    public void updateTransport_NewTransportClassIsTheSameAsTheCurrent_ExceptionThrown() {
-        TravelingData travelingData = createTravelingData();
-        Transport existingTransport = travelingData.getTransport();
-        Transport updatedTransport = existingTransport;
-        long travelingDataId = travelingData.getId();
-        long existingTransportId = existingTransport.getId();
-
-        lenient().when(transportRepository.findById(existingTransportId)).thenReturn(Optional.of(existingTransport));
-        when(travelingDataRepository.findById(travelingDataId)).thenReturn(Optional.of(travelingData));
-
-        assertThrows(AlreadyExistingItemException.class,
-                () -> travelingDataService.updateTransport(travelingDataId, updatedTransport));
-    }
-
-    @Test
     public void deleteById_IdIsZero_ExceptionThrown() {
 
         assertThrows(InvalidArgumentException.class, () -> travelingDataService.deleteById(ZERO_ID));
@@ -238,5 +216,5 @@ public class TravelingDataServiceTest {
         lenient().when(travelingDataRepository.findById(id)).thenReturn(Optional.of(travelingData));
 
         assertThrows(NonExistentItemException.class, () -> travelingDataService.deleteById(NON_EXISTENT_ID));
-    }*/
+    }
 }

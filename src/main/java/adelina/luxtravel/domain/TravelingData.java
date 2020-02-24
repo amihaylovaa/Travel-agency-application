@@ -7,24 +7,19 @@ import static adelina.luxtravel.utility.Constants.MINUTE;
 import static adelina.luxtravel.utility.Constants.PERCENT;
 
 import adelina.luxtravel.domain.wrapper.*;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "traveling_data")
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class TravelingData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,12 +39,6 @@ public class TravelingData {
     private int availableTicketsCount;
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
-    @OneToMany(mappedBy = "travelingData",
-            cascade = CascadeType.REMOVE,
-            orphanRemoval = true
-    )
-    @JsonBackReference
-    private List<Booking> bookings;
 
     public TravelingData(TravelingData travelingData) {
         id = travelingData.getId();
@@ -57,8 +46,13 @@ public class TravelingData {
         date = travelingData.getDate();
         departureDestination = travelingData.getDepartureDestination();
         transport = travelingData.getTransport();
-        bookings = travelingData.getBookings();
         setPrice();
+    }
+
+    public TravelingData(long id, DepartureDestination departureDestination, Transport transport,
+                         Date date, int availableTicketsCount) {
+        this(transport, departureDestination, date, availableTicketsCount);
+        this.id = id;
     }
 
     public TravelingData(Transport transport, DepartureDestination departureDestination,
@@ -67,7 +61,6 @@ public class TravelingData {
         this.departureDestination = departureDestination;
         this.date = date;
         this.availableTicketsCount = availableTicketsCount;
-        this.bookings = new ArrayList<>();
         setPrice();
     }
 

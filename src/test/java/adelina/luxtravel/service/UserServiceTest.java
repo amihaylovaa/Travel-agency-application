@@ -204,15 +204,6 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updateEmail_NewAndOldEmailsAreTheSame_ExceptionThrown() {
-        User user = createUser();
-        String email = user.getEmail();
-        String password = user.getPassword();
-
-        assertThrows(AlreadyExistingItemException.class, () -> userService.updateEmail(email, email, password));
-    }
-
-    @Test
     public void updateEmail_UserWithGivenOldEmailDoesNotExist_ExceptionThrown() {
         User user = createUser();
         String existingEmail = user.getEmail();
