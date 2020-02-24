@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
@@ -37,6 +38,7 @@ public class TravelingData {
     @Min(value = 1, message = "Count available tickets must have at least one ticket")
     @Column(name = "available_tickets_count", nullable = false)
     private int availableTicketsCount;
+    @DecimalMin(value = "5.0", message = "Price can not be less than 5.0 ")
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
 

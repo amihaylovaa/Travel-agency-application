@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/bookings")
 public class BookingController {
-/*
+
     private BookingService bookingService;
 
     @Autowired
@@ -21,8 +21,8 @@ public class BookingController {
     }
 
     @PostMapping
-    public Booking save(@RequestBody BookingDTO bookingDTO) {
-        return bookingService.save(bookingDTO);
+    public Booking save(@RequestBody Booking booking) {
+        return bookingService.save(booking);
     }
 
     @GetMapping(value = "/{id}")
@@ -49,5 +49,5 @@ public class BookingController {
     @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable("id") long id) {
         bookingService.deleteById(id);
-    }*/
+    }
 }

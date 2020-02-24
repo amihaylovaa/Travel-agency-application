@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceTest {
-   /* @Mock
+    @Mock
     TravelingDataRepository travelingDataRepository;
     @Mock
     UserRepository userRepository;
@@ -201,5 +201,5 @@ public class BookingServiceTest {
         lenient().when(bookingRepository.findById(existingId)).thenReturn(Optional.of(booking));
 
         assertThrows(NonExistentItemException.class, () -> bookingService.deleteById(NON_EXISTENT_ID));
-    }*/
+    }
 }

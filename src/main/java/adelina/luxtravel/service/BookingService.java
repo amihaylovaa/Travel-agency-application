@@ -1,12 +1,6 @@
 package adelina.luxtravel.service;
 
 import adelina.luxtravel.domain.*;
-import adelina.luxtravel.domain.transport.Airplane;
-import adelina.luxtravel.domain.transport.Bus;
-import adelina.luxtravel.domain.transport.Transport;
-import adelina.luxtravel.domain.transport.TransportClass;
-import adelina.luxtravel.domain.wrapper.Date;
-import adelina.luxtravel.domain.wrapper.DepartureDestination;
 import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.TravelingDataRepository;
 import adelina.luxtravel.repository.BookingRepository;
@@ -18,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
+
 import java.util.List;
 import java.util.Optional;
+
+import static adelina.luxtravel.utility.Constants.INVALID_ID;
+import static adelina.luxtravel.utility.Constants.INVALID_USERNAME;
 
 
 @Service
@@ -29,7 +26,7 @@ public class BookingService {
     private BookingRepository bookingRepository;
     private TravelingDataRepository travelingDataRepository;
     private UserRepository userRepository;
-/*
+
     @Autowired
     public BookingService(BookingRepository bookingRepository, TravelingDataRepository travelingDataRepository, UserRepository userRepository) {
         this.bookingRepository = bookingRepository;
@@ -37,19 +34,12 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
-    public Booking save(BookingDTO bookingDTO) {
-        if (bookingDTO == null) {
+    public Booking save(Booking booking) {
+        if (booking == null) {
             throw new InvalidArgumentException("Invalid booking");
         }
 
-        validateFields(bookingDTO);
-
-        Booking booking = createBookingFromDTO(bookingDTO);
-
-        return save(booking);
-    }
-
-    public Booking save(Booking booking) {
+        validateFields(booking);
         reserveTickets(booking);
 
         return bookingRepository.save(booking);
@@ -119,30 +109,28 @@ public class BookingService {
         bookingRepository.deleteById(id);
     }
 
-    private void validateFields(BookingDTO bookingDTO) {
-        User user = bookingDTO.getUser();
-        TravelingDataDTO travelingDataDTO = bookingDTO.getTravelingDataDTO();
+    private void validateFields(Booking booking) {
+        User user = booking.getUser();
+        TravelingData travelingData = booking.getTravelingData();
+        int reservedTicketsCount = booking.getReservedTicketsCount();
 
         if (user == null) {
             throw new InvalidArgumentException("Invalid user");
         }
 
-        if (travelingDataDTO == null) {
+        if (travelingData == null) {
             throw new InvalidArgumentException("Invalid traveling data");
         }
 
-        validateUserExists(user.getUsername());
-        validateTravelingDataExists(travelingDataDTO);
-        validateTicketsAreSufficient(bookingDTO.getReservedTicketsCount(), travelingDataDTO.getAvailableTicketsCount());
-    }
+        long id = travelingData.getId();
+        Optional<TravelingData> searchedTravelingPoint = travelingDataRepository.findById(id);
 
-    private void validateTravelingDataExists(TravelingDataDTO travelingDataDTO) {
-        long id = travelingDataDTO.getId();
-        Optional<TravelingData> searchedBookingData = travelingDataRepository.findById(id);
-
-        if (!searchedBookingData.isPresent()) {
+        if (!searchedTravelingPoint.isPresent()) {
             throw new NonExistentItemException("Booking data does not exist");
         }
+
+        validateUserExists(user.getUsername());
+        validateTicketsAreSufficient(reservedTicketsCount, searchedTravelingPoint.get().getAvailableTicketsCount());
     }
 
     private void validateUserExists(String username) {
@@ -194,41 +182,4 @@ public class BookingService {
 
         travelingDataRepository.reserveTickets(newTicketsCount, travelingDataId);
     }
-
-    private Booking createBookingFromDTO(BookingDTO bookingDTO) {
-        int reservedTicketsCount = bookingDTO.getReservedTicketsCount();
-        User user = bookingDTO.getUser();
-        TravelingDataDTO travelingDataDTO = bookingDTO.getTravelingDataDTO();
-        TravelingData travelingData = createTravelingDataFromDTO(travelingDataDTO);
-
-        return new Booking(travelingData, user, reservedTicketsCount);
-    }
-
-    private TravelingData createTravelingDataFromDTO(TravelingDataDTO travelingDataDTO) {
-        long travelingDataId = travelingDataDTO.getId();
-        DepartureDestinationDTO departureDestinationDTO = travelingDataDTO.getDepartureDestinationDTO();
-        TravelingPoint departurePoint = departureDestinationDTO.getDeparturePoint();
-        TravelingPoint destinationPoint = departureDestinationDTO.getDestinationPoint();
-        TransportDTO transportDTO = travelingDataDTO.getTransportDTO();
-        int availableTicketsCount = travelingDataDTO.getAvailableTicketsCount();
-        DateDTO dateDTO = travelingDataDTO.getDateDTO();
-        LocalDate from = dateDTO.getFromDate();
-        LocalDate to = dateDTO.getToDate();
-        Date dates = new Date(from, to);
-        DepartureDestination departureDestination = new DepartureDestination(departurePoint, destinationPoint);
-        Transport transport = createTransportFromDTO(transportDTO);
-
-        return new TravelingData(travelingDataId, departureDestination, transport, dates, availableTicketsCount);
-    }
-
-    private Transport createTransportFromDTO(TransportDTO transportDTO) {
-        long transportId = transportDTO.getId();
-        TransportClass transportClass = transportDTO.getTransportClass();
-
-        if (transportDTO instanceof AirplaneDTO) {
-            return new Airplane(transportId, transportClass);
-        } else {
-            return new Bus(transportId, transportClass);
-        }
-    }*/
 }
