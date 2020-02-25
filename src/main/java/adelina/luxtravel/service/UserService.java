@@ -94,6 +94,12 @@ public class UserService {
         userRepository.updateEmail(newEmail, oldEmail);
     }
 
+    public void deleteByEmail(String email, String password) {
+        authenticationByEmail(email, password);
+
+        userRepository.deleteByEmail(email);
+    }
+
     public void deleteByUsername(String username, String password) {
         authenticationByUsername(username, password);
 
@@ -172,11 +178,5 @@ public class UserService {
         User user = findByEmail(email);
 
         validatePasswordMatch(password, user.getPassword());
-    }
-
-    public void deleteByEmail(String email, String password) {
-        authenticationByEmail(email, password);
-
-        userRepository.deleteByEmail(email);
     }
 }

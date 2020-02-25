@@ -7,7 +7,7 @@ import static adelina.luxtravel.utility.Constants.MINUTE;
 import static adelina.luxtravel.utility.Constants.PERCENT;
 
 import adelina.luxtravel.domain.wrapper.*;
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,7 +32,7 @@ public class TravelingData {
     @Embedded
     Date date;
     @NotNull(message = "Transport can not be null")
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "transport_id")
     private Transport transport;
     @Min(value = 1, message = "Count available tickets must have at least one ticket")

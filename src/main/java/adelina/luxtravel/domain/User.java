@@ -35,17 +35,6 @@ public class User {
     @Length(min = 8, message = "Password can not be less than 8 characters")
     @Column(name = "password", nullable = false)
     private String password;
-    @NotNull(message = "List of bookings can not be null")
-    @OneToMany(mappedBy = "user",
-            cascade = CascadeType.REMOVE,
-            orphanRemoval = true
-             )
-    @JsonBackReference
-    private List<Booking> bookings;
-
-    {
-        bookings = new ArrayList<>();
-    }
 
     public User(User user) {
         this(user.id, user.username, user.email, user.password);

@@ -61,7 +61,7 @@ public class BookingServiceTest {
         assertThrows(NonExistentItemException.class, () -> bookingService.save(newBooking));
     }
 
-    @Test
+   /* @Test
     public void save_NotEnoughTickets_ExceptionThrown() {
         Booking booking = createBooking();
         TravelingData travelingData = booking.getTravelingData();
@@ -82,7 +82,7 @@ public class BookingServiceTest {
 
         assertThrows(NonExistentItemException.class, () -> bookingService.save(newBooking));
     }
-
+*/
     @Test
     public void save_ValidData_CreatedBooking() {
         Booking expectedBooking = createBooking();

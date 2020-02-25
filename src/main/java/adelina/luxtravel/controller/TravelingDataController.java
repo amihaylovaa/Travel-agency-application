@@ -1,7 +1,6 @@
 package adelina.luxtravel.controller;
 
 import adelina.luxtravel.domain.TravelingData;
-import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.wrapper.Date;
 import adelina.luxtravel.service.TravelingDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +38,12 @@ public class TravelingDataController {
         return travelingDataService.findAll();
     }
 
-    @PutMapping(value = "/{travelingDataId}")
-    public void updateTransport(@RequestBody Transport transport,
-                                @PathVariable("travelingDataId") long travelingDataId) {
-        travelingDataService.updateTransport(travelingDataId, transport);
+    @PutMapping(value = "/dates/{travelingDataId}")
+    public void updateDates(@RequestBody Date dates,
+                            @PathVariable("travelingDataId") long travelingDataId) {
+        travelingDataService.updateDates(travelingDataId, dates);
     }
 
-    // todo check
     @DeleteMapping(value = "/{id}")
     public void deleteById(@PathVariable("id") long id) {
         travelingDataService.deleteById(id);

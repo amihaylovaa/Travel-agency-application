@@ -153,56 +153,6 @@ public class TravelingDataServiceTest {
     }
 
     @Test
-    public void updateTransport_TravelingDataIdIsNegative_ExceptionThrown() {
-        long transportId = NumberUtils.LONG_ONE;
-        TransportClass transportClass = TransportClass.FIRST;
-        Transport transport = new Airplane(transportId, transportClass);
-
-        assertThrows(InvalidArgumentException.class,
-                () -> travelingDataService.updateTransport(NEGATIVE_ID, transport));
-    }
-
-    @Test
-    public void updateTransport_TravelingDataWithGivenIdDoesNotExist_ExceptionThrown() {
-        TravelingData travelingData = createTravelingData();
-        long existingTravelingDataId = travelingData.getId();
-        long transportId = NumberUtils.LONG_ONE;
-        TransportClass transportClass = TransportClass.FIRST;
-        Transport transport = new Airplane(transportId, transportClass);
-
-        lenient().when(travelingDataRepository.findById(existingTravelingDataId)).thenReturn(Optional.of(travelingData));
-
-        assertThrows(NonExistentItemException.class,
-                () -> travelingDataService.updateTransport(NON_EXISTENT_ID, transport));
-    }
-
-    @Test
-    public void updateTransport_TransportIsNull_ExceptionThrown() {
-        TravelingData travelingData = createTravelingData();
-        long id = travelingData.getId();
-        Transport transport = null;
-
-        when(travelingDataRepository.findById(id)).thenReturn(Optional.of(travelingData));
-
-        assertThrows(InvalidArgumentException.class, () -> travelingDataService.updateTransport(id, transport));
-    }
-
-    @Test
-    public void updateTransport_TransportWithGivenIdDoesNotExist_ExceptionThrown() {
-        TravelingData travelingData = createTravelingData();
-        long travelingDataId = travelingData.getId();
-        Transport existingTransport = travelingData.getTransport();
-        long existingTransportId = existingTransport.getId();
-        Transport nonExistentTransport = new Bus(NON_EXISTENT_ID, TransportClass.FIRST);
-
-        lenient().when(transportRepository.findById(existingTransportId)).thenReturn(Optional.of(existingTransport));
-        when(travelingDataRepository.findById(travelingDataId)).thenReturn(Optional.of(travelingData));
-
-        assertThrows(NonExistentItemException.class,
-                () -> travelingDataService.updateTransport(travelingDataId, nonExistentTransport));
-    }
-
-    @Test
     public void deleteById_IdIsZero_ExceptionThrown() {
 
         assertThrows(InvalidArgumentException.class, () -> travelingDataService.deleteById(ZERO_ID));

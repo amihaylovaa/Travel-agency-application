@@ -25,7 +25,7 @@ public class TravelingPointController {
         return travelingPointService.save(travelingPoint);
     }
 
-    @PostMapping(value = "/list")
+    @PostMapping(value = "/all")
     public List<TravelingPoint> saveAll(@RequestBody List<TravelingPoint> travelingPoints) {
         return travelingPointService.saveAll(travelingPoints);
     }
@@ -46,7 +46,8 @@ public class TravelingPointController {
     }
 
     @PutMapping(value = "/{newName}/{oldName}")
-    public void updateName(@PathVariable("newName") String newName, @PathVariable("oldName") String oldName) {
+    public void updateName(@PathVariable("newName") String newName,
+                           @PathVariable("oldName") String oldName) {
         travelingPointService.updateName(newName, oldName);
     }
 

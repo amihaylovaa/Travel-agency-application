@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TransportClass {
 
     FIRST(0.1), BUSINESS(0.2), ECONOMY(0.4);

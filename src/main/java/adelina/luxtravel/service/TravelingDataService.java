@@ -49,7 +49,7 @@ public class TravelingDataService {
         Optional<TravelingData> travelingData = travelingDataRepository.findById(id);
 
         if (!travelingData.isPresent()) {
-            throw new NonExistentItemException("This booking data does not exist");
+            throw new NonExistentItemException("This traveling data does not exist");
         }
         return travelingData.get();
     }
@@ -72,18 +72,19 @@ public class TravelingDataService {
         List<TravelingData> travelingData = travelingDataRepository.findAll();
 
         if (ObjectUtils.isEmpty(travelingData)) {
-            throw new NonExistentItemException("No booking data found");
+            throw new NonExistentItemException("No traveling data found");
         }
         return travelingData;
     }
 
+    public void updateDates(long travelingDataId, Date dates) {
+        validateUpdateDatesParameters(travelingDataId, dates);
 
-    public void updateTransport(long travelingDataId, Transport transport) {
-        validateUpdateTransportParameters(travelingDataId, transport);
+        LocalDate fromDate = dates.getFromDate();
+        LocalDate toDate = dates.getToDate();
 
-        long transportId = transport.getId();
-
-        travelingDataRepository.updateTransport(transportId, travelingDataId);
+        travelingDataRepository.updateFromDate(fromDate, travelingDataId);
+        travelingDataRepository.updateToDate(toDate, travelingDataId);
     }
 
     public void deleteById(long id) {
@@ -137,17 +138,22 @@ public class TravelingDataService {
         }
     }
 
-    private void validateUpdateTransportParameters(long travelingDataId, Transport transport) {
+    private void validateUpdateDatesParameters(long travelingDataId, Date newDates) {
         if (travelingDataId <= NumberUtils.INTEGER_ZERO) {
             throw new InvalidArgumentException("Invalid traveling data id");
         }
 
-        if (!travelingDataExists(travelingDataId)) {
-            throw new NonExistentItemException("This traveling data does not exist");
+        if (newDates == null) {
+            throw new InvalidArgumentException("Invalid from and to dates");
         }
 
-        validateTransport(transport);
-        validateTransportExists(transport);
+        TravelingData travelingData = findById(travelingDataId);
+
+        validateDates(newDates.getFromDate(), newDates.getToDate());
+
+        if (newDates.equals(travelingData.getDate())) {
+            throw new AlreadyExistingItemException("New dates can not be the same as the current");
+        }
     }
 
     private boolean travelingDataExists(long travelingDataId) {

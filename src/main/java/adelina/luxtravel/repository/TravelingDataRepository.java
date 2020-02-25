@@ -25,17 +25,17 @@ public interface TravelingDataRepository extends JpaRepository<TravelingData, Lo
 
     @Modifying
     @Query(value = "UPDATE traveling_data " +
-                   "SET from_date = ?1 AND to_date = ?2 " +
-                   "WHERE id = ?3",
+                   "SET from_date = ?1 " +
+                   "WHERE id = ?2",
             nativeQuery = true)
-    void updateDates(LocalDate newFromDate, LocalDate newToDate, long id);
+    void updateFromDate(LocalDate newFromDate, long id);
 
     @Modifying
     @Query(value = "UPDATE traveling_data " +
-                   "SET transport_id = ?1 " +
+                   "SET to_date = ?1 " +
                    "WHERE id = ?2",
             nativeQuery = true)
-    void updateTransport(long transportId, long id);
+    void updateToDate(LocalDate newToDate, long id);
 
     @Modifying
     @Query(value = "UPDATE traveling_data " +

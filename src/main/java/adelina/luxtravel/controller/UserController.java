@@ -67,8 +67,8 @@ public class UserController {
     }
 
     @DeleteMapping(value = "email/{email}/{password}")
-    public void deleteByEmail(@PathParam("email") String email,
-                              @PathParam("password") String password) {
+    public void deleteByEmail(@PathVariable("email") String email,
+                              @PathVariable("password") String password) {
         userService.deleteByEmail(email, password);
     }
 }

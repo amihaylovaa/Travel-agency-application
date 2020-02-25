@@ -1,7 +1,6 @@
 package adelina.luxtravel.domain.transport;
 
 import adelina.luxtravel.domain.TravelingPoint;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
