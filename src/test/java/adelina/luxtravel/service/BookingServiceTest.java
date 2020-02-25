@@ -9,6 +9,7 @@ import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
 import adelina.luxtravel.domain.wrapper.Date;
 import adelina.luxtravel.domain.wrapper.DepartureDestination;
+import adelina.luxtravel.exception.AlreadyExistingItemException;
 import adelina.luxtravel.exception.InvalidArgumentException;
 import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.repository.BookingRepository;
@@ -61,8 +62,8 @@ public class BookingServiceTest {
         assertThrows(NonExistentItemException.class, () -> bookingService.save(newBooking));
     }
 
-   /* @Test
-    public void save_NotEnoughTickets_ExceptionThrown() {
+    @Test
+    public void save_RequestedTicketsAreMoreThanTheAvailable_ExceptionThrown() {
         Booking booking = createBooking();
         TravelingData travelingData = booking.getTravelingData();
         Transport transport = travelingData.getTransport();
@@ -70,7 +71,7 @@ public class BookingServiceTest {
         Date dates = travelingData.getDate();
         User user = booking.getUser();
         String username = user.getUsername();
-        long travelingDataId = travelingData.getId();
+        long travelingDataId = travelingData.getId() + 1;
         long bookingId = booking.getId();
         int availableTicketsCount = 5;
         int reservedTicketsCount = 7;
@@ -78,11 +79,11 @@ public class BookingServiceTest {
         Booking newBooking = new Booking(bookingId, newTravelingData, user, reservedTicketsCount);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
-        when(travelingDataRepository.findById(travelingDataId)).thenReturn(Optional.of(travelingData));
+        when(travelingDataRepository.findById(travelingDataId)).thenReturn(Optional.of(newTravelingData));
 
         assertThrows(NonExistentItemException.class, () -> bookingService.save(newBooking));
     }
-*/
+
     @Test
     public void save_ValidData_CreatedBooking() {
         Booking expectedBooking = createBooking();

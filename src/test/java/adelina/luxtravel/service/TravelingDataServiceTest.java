@@ -8,7 +8,6 @@ import adelina.luxtravel.exception.*;
 import adelina.luxtravel.repository.TransportRepository;
 import adelina.luxtravel.repository.TravelingDataRepository;
 import adelina.luxtravel.repository.TravelingPointRepository;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -150,6 +149,35 @@ public class TravelingDataServiceTest {
 
         assertEquals(expectedSize, actualTravelingData.size());
         assertTrue(actualTravelingData.containsAll(expectedTravelingData));
+    }
+
+    @Test
+    public void updateDates_DatesAreNull_ExceptionThrown() {
+        TravelingData travelingData = createTravelingData();
+        Date dates = null;
+        long id = travelingData.getId();
+
+        assertThrows(InvalidArgumentException.class, () -> travelingDataService.updateDates(id, dates));
+    }
+
+    @Test
+    public void updateDates_NewDatesAreTheSameAsTheCurrent_ExceptionThrown() {
+        TravelingData travelingData = createTravelingData();
+        Date alreadyExistingDates = travelingData.getDate();
+        long id = travelingData.getId();
+
+        when(travelingDataRepository.findById(id)).thenReturn(Optional.of(travelingData));
+
+        assertThrows(AlreadyExistingItemException.class, () -> travelingDataService.updateDates(id, alreadyExistingDates));
+    }
+
+    @Test
+    public void updateDates_TravelingDataWithGivenIdDoesNotExist_ExceptionThrown() {
+        LocalDate fromDate = LocalDate.of(2020, 11, 18);
+        LocalDate toDate = LocalDate.of(2020, 11, 24);
+        Date dates = new Date(fromDate, toDate);
+
+        assertThrows(NonExistentItemException.class, () -> travelingDataService.updateDates(NON_EXISTENT_ID, dates));
     }
 
     @Test

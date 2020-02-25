@@ -123,14 +123,14 @@ public class BookingService {
         }
 
         long id = travelingData.getId();
-        Optional<TravelingData> searchedTravelingPoint = travelingDataRepository.findById(id);
+        Optional<TravelingData> searchedTravelingData = travelingDataRepository.findById(id);
 
-        if (!searchedTravelingPoint.isPresent()) {
-            throw new NonExistentItemException("Booking data does not exist");
+        if (!searchedTravelingData.isPresent()) {
+            throw new NonExistentItemException("Traveling data does not exist");
         }
 
         validateUserExists(user.getUsername());
-        validateTicketsAreSufficient(reservedTicketsCount, searchedTravelingPoint.get().getAvailableTicketsCount());
+        validateTicketsAreSufficient(reservedTicketsCount, searchedTravelingData.get().getAvailableTicketsCount());
     }
 
     private void validateUserExists(String username) {
