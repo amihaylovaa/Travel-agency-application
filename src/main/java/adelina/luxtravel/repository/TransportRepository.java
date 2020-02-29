@@ -1,6 +1,7 @@
 package adelina.luxtravel.repository;
 
 import adelina.luxtravel.domain.transport.Transport;
+import adelina.luxtravel.domain.transport.TransportClass;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

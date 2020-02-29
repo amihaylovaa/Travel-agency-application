@@ -27,40 +27,55 @@ public class TransportServiceTest {
     private TransportService transportService;
 
     @Test
-    public void save_TransportIsNull_ExceptionThrown() {
+    public void saveBus_BusIsNull_ExceptionThrown() {
         Transport transport = null;
 
-        assertThrows(InvalidArgumentException.class, () -> transportService.save(transport));
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveBus(transport));
     }
 
     @Test
-    public void save_BusWithGivenTransportClassIsNull_ExceptionThrown() {
+    public void saveBus_TransportClassIsNull_ExceptionThrown() {
         TransportClass transportClass = null;
         Transport transport = new Bus(transportClass);
 
-        assertThrows(InvalidArgumentException.class, () -> transportService.save(transport));
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveBus(transport));
     }
 
     @Test
-    public void save_AddBusValidData_CreatedBus() {
+    public void saveBus_ValidData_CreatedBus() {
         TransportClass transportClass = TransportClass.ECONOMY;
         Transport expectedTransport = new Bus(transportClass);
 
         when(transportRepository.save(expectedTransport)).thenReturn(expectedTransport);
 
-        Transport actualTransport = transportService.save(expectedTransport);
+        Transport actualTransport = transportService.saveBus(expectedTransport);
 
         assertEquals(expectedTransport, actualTransport);
     }
 
     @Test
-    public void save_AddAirplaneValidData_CreatedAirplane() {
+    public void saveAirplane_AirplaneIsNull_ExceptionThrown() {
+        Transport transport = null;
+
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveAirplane(transport));
+    }
+
+    @Test
+    public void saveAirplane_TransportClassIsNull_ExceptionThrown() {
+        TransportClass transportClass = null;
+        Transport transport = new Airplane(transportClass);
+
+        assertThrows(InvalidArgumentException.class, () -> transportService.saveAirplane(transport));
+    }
+
+    @Test
+    public void saveAirplane_ValidData_CreatedAirplane() {
         TransportClass transportClass = TransportClass.BUSINESS;
         Transport expectedTransport = new Airplane(transportClass);
 
         when(transportRepository.save(expectedTransport)).thenReturn(expectedTransport);
 
-        Transport actualTransport = transportService.save(expectedTransport);
+        Transport actualTransport = transportService.saveAirplane(expectedTransport);
 
         assertEquals(expectedTransport, actualTransport);
     }

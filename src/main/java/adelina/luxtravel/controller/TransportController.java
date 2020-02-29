@@ -17,9 +17,14 @@ public class TransportController {
         this.transportService = transportService;
     }
 
-    @PostMapping
-    public Transport save(@RequestBody Transport transport) {
-        return transportService.save(transport);
+    @PostMapping(value = "/bus")
+    public Transport saveBus(@RequestBody Transport transport) {
+        return transportService.saveBus(transport);
+    }
+
+    @PostMapping(value = "/airplane")
+    public Transport saveAirplane(@RequestBody Transport transport) {
+        return transportService.saveAirplane(transport);
     }
 
     @PostMapping(value = "/all")

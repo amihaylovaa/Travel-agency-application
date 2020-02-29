@@ -24,7 +24,7 @@ import static adelina.luxtravel.utility.Constants.HOUR;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes(
-        {       @JsonSubTypes.Type(value = Airplane.class, name = "Airplane"),
+        {@JsonSubTypes.Type(value = Airplane.class, name = "Airplane"),
                 @JsonSubTypes.Type(value = Bus.class, name = "Bus")
         })
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "transport_type")

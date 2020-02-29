@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,13 @@ public class TransportService {
         this.transportRepository = transportRepository;
     }
 
-    public Transport save(Transport transport) {
+    public Transport saveBus(Transport transport) {
+        validateTransport(transport);
+
+        return transportRepository.save(transport);
+    }
+
+    public Transport saveAirplane(Transport transport) {
         validateTransport(transport);
 
         return transportRepository.save(transport);
@@ -112,7 +119,7 @@ public class TransportService {
 
     private List<Transport> validateTransportListExist(List<Transport> transports) {
         if (ObjectUtils.isEmpty(transports)) {
-            throw new NonExistentItemException("Transport list is not found");
+            throw new NonExistentItemException("List of transports is not found");
         }
         return transports;
     }
