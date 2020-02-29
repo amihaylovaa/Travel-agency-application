@@ -57,8 +57,7 @@ public class TravelingData {
         this.id = id;
     }
 
-    public TravelingData(Transport transport, DepartureDestination departureDestination,
-                         Date date, int availableTicketsCount) {
+    public TravelingData(Transport transport, DepartureDestination departureDestination, Date date, int availableTicketsCount) {
         this.transport = transport;
         this.departureDestination = departureDestination;
         this.date = date;
@@ -68,9 +67,9 @@ public class TravelingData {
 
     private void setPrice() {
         TransportClass transportClass = transport.getTransportClass();
-        double priceCoefficient = transportClass.getPriceCoefficient();
         TravelingPoint departurePoint = departureDestination.getDeparturePoint();
         TravelingPoint destinationPoint = departureDestination.getDestinationPoint();
+        double priceCoefficient = transportClass.getPriceCoefficient();
 
         LocalTime localTime = transport.calculateDuration(departurePoint, destinationPoint);
 

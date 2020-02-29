@@ -42,9 +42,7 @@ public class TravelingDataService {
     }
 
     public TravelingData findById(long id) {
-        if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException(INVALID_ID);
-        }
+        validateId(id);
 
         Optional<TravelingData> travelingData = travelingDataRepository.findById(id);
 
@@ -55,6 +53,8 @@ public class TravelingDataService {
     }
 
     public List<TravelingData> findByDates(Date dates) {
+        validateDates(dates);
+
         LocalDate from = dates.getFromDate();
         LocalDate to = dates.getToDate();
 
@@ -63,7 +63,7 @@ public class TravelingDataService {
         List<TravelingData> travelingData = travelingDataRepository.findByDates(from, to);
 
         if (ObjectUtils.isEmpty(travelingData)) {
-            throw new NonExistentItemException("There are no booking data for these days");
+            throw new NonExistentItemException("There are no traveling data for these days");
         }
         return travelingData;
     }
@@ -88,9 +88,7 @@ public class TravelingDataService {
     }
 
     public void deleteById(long id) {
-        if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException(INVALID_ID);
-        }
+        validateId(id);
 
         if (!travelingDataExists(id)) {
             throw new NonExistentItemException("Traveling data with this id does not exist");
@@ -98,19 +96,16 @@ public class TravelingDataService {
         travelingDataRepository.deleteById(id);
     }
 
-    private void validateFields(DepartureDestination departureDestination, Transport transport, Date date) {
+    private void validateFields(DepartureDestination departureDestination, Transport transport, Date dates) {
         if (departureDestination == null) {
             throw new InvalidArgumentException("Invalid departure destination");
         }
 
-        if (date == null) {
-            throw new InvalidArgumentException("Invalid dates");
-        }
-
+        validateDates(dates);
+        validateDates(dates.getFromDate(), dates.getToDate());
         validateTransport(transport);
         validateTransportExists(transport);
         validateDepartureDestinationExists(departureDestination);
-        validateDates(date.getFromDate(), date.getToDate());
     }
 
     private void validateTransportExists(Transport transport) {
@@ -139,17 +134,11 @@ public class TravelingDataService {
     }
 
     private void validateUpdateDatesParameters(long travelingDataId, Date newDates) {
-        if (travelingDataId <= NumberUtils.INTEGER_ZERO) {
-            throw new InvalidArgumentException("Invalid traveling data id");
-        }
-
-        if (newDates == null) {
-            throw new InvalidArgumentException("Invalid from and to dates");
-        }
+        validateId(travelingDataId);
+        validateDates(newDates);
+        validateDates(newDates.getFromDate(), newDates.getToDate());
 
         TravelingData travelingData = findById(travelingDataId);
-
-        validateDates(newDates.getFromDate(), newDates.getToDate());
 
         if (newDates.equals(travelingData.getDate())) {
             throw new AlreadyExistingItemException("New dates can not be the same as the current");
@@ -160,6 +149,12 @@ public class TravelingDataService {
         Optional<TravelingData> travelingData = travelingDataRepository.findById(travelingDataId);
 
         return travelingData.isPresent();
+    }
+
+    private void validateDates(Date dates) {
+        if (dates == null) {
+            throw new InvalidArgumentException("Invalid dates");
+        }
     }
 
     private void validateDates(LocalDate from, LocalDate to) {
@@ -179,6 +174,8 @@ public class TravelingDataService {
         if (transportClass == null) {
             throw new InvalidArgumentException("Invalid transport class");
         }
+
+        validateId(transport.getId());
     }
 
     private void validateTravelingData(TravelingData travelingData) {
@@ -195,6 +192,12 @@ public class TravelingDataService {
 
         if (availableTicketsCount <= NumberUtils.INTEGER_ZERO) {
             throw new InvalidArgumentException("Invalid tickets count");
+        }
+    }
+
+    private void validateId(long id) {
+        if (id <= NumberUtils.INTEGER_ZERO) {
+            throw new InvalidArgumentException(INVALID_ID);
         }
     }
 }

@@ -46,9 +46,7 @@ public class BookingService {
     }
 
     public Booking findById(long id) {
-        if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException(INVALID_ID);
-        }
+        validateId(id);
 
         Optional<Booking> booking = bookingRepository.findById(id);
 
@@ -83,9 +81,8 @@ public class BookingService {
     }
 
     public void updateTickets(long bookingId, int reservedTicketsCount) {
-        if (bookingId <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException(INVALID_ID);
-        }
+        validateId(bookingId);
+
         if (reservedTicketsCount <= NumberUtils.INTEGER_ZERO) {
             throw new InvalidArgumentException("Invalid tickets count");
         }
@@ -96,9 +93,7 @@ public class BookingService {
     }
 
     public void deleteById(long id) {
-        if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException(INVALID_ID);
-        }
+        validateId(id);
 
         Optional<Booking> booking = bookingRepository.findById(id);
 
@@ -166,6 +161,12 @@ public class BookingService {
         TravelingData travelingData = booking.getTravelingData();
 
         return travelingData.getId();
+    }
+
+    private void validateId(long id) {
+        if (id <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException(INVALID_ID);
+        }
     }
 
     private void validateTicketsUpdateParameters(long bookingId, int newTicketsCount) {

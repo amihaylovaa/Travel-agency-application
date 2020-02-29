@@ -34,8 +34,7 @@ public class TravelingPoint {
     private double latitude;
 
     public TravelingPoint(TravelingPoint travelingPoint) {
-        this(travelingPoint.id, travelingPoint.name,
-                travelingPoint.longitude, travelingPoint.latitude);
+        this(travelingPoint.id, travelingPoint.name, travelingPoint.longitude, travelingPoint.latitude);
     }
 
     public TravelingPoint(long id, String name, double longitude, double latitude) {

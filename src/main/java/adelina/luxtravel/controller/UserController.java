@@ -1,14 +1,10 @@
 package adelina.luxtravel.controller;
 
 import adelina.luxtravel.domain.User;
-import adelina.luxtravel.exception.InvalidArgumentException;
-import adelina.luxtravel.exception.NonExistentItemException;
 import adelina.luxtravel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -28,7 +24,7 @@ public class UserController {
 
     @GetMapping(value = "login/{username}/{password}")
     public void login(@PathVariable("username") String username, @PathVariable("password") String password) {
-         userService.login(username, password);
+        userService.login(username, password);
     }
 
     @GetMapping(value = "username/{username}")

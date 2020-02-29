@@ -49,7 +49,6 @@ public class TravelingPointService {
         if (!travelingPoint.isPresent()) {
             throw new NonExistentItemException("Traveling point with this id does not exist");
         }
-
         return travelingPoint.get();
     }
 
@@ -63,7 +62,6 @@ public class TravelingPointService {
         if (!travelingPoint.isPresent()) {
             throw new NonExistentItemException("Traveling point with this name does not exists");
         }
-
         return travelingPoint.get();
     }
 
@@ -71,9 +69,8 @@ public class TravelingPointService {
         List<TravelingPoint> travelingPoints = travelingPointRepository.findAll();
 
         if (ObjectUtils.isEmpty(travelingPoints)) {
-            throw new NonExistentItemException("There are no traveling points found");
+            throw new NonExistentItemException("Traveling points are not found");
         }
-
         return travelingPoints;
     }
 

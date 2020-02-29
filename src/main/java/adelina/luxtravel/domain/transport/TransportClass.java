@@ -1,6 +1,5 @@
 package adelina.luxtravel.domain.transport;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
