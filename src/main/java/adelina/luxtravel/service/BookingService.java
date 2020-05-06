@@ -10,13 +10,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.Optional;
 
 import static adelina.luxtravel.utility.Constants.INVALID_ID;
+import static adelina.luxtravel.utility.Constants.INVALID_USERNAME;
+
 
 @Service
+@Transactional
 public class BookingService {
     private BookingRepository bookingRepository;
     private TravelingDataRepository travelingDataRepository;
@@ -33,8 +38,10 @@ public class BookingService {
         if (booking == null) {
             throw new InvalidArgumentException("Invalid booking");
         }
-        validateFieldsExist(booking);
+
+        validateFields(booking);
         reserveTickets(booking);
+
         return bookingRepository.save(booking);
     }
 
@@ -53,8 +60,10 @@ public class BookingService {
 
     public List<Booking> findAllUserBookings(String username) {
         if (StringUtils.isEmpty(username)) {
-            throw new InvalidArgumentException("Invalid username");
+            throw new InvalidArgumentException(INVALID_USERNAME);
         }
+
+        validateUserExists(username);
 
         List<Booking> bookings = bookingRepository.findAllUserBookings(username);
 
@@ -73,49 +82,63 @@ public class BookingService {
         return bookings;
     }
 
-    public void updateTickets(long id, int reservedTicketsCount) {
-        if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException("Invalid id");
+    public void updateTickets(long bookingId, int reservedTicketsCount) {
+        if (bookingId <= NumberUtils.LONG_ZERO) {
+            throw new InvalidArgumentException(INVALID_ID);
         }
         if (reservedTicketsCount <= NumberUtils.INTEGER_ZERO) {
             throw new InvalidArgumentException("Invalid tickets count");
         }
 
-        validateTicketsUpdate(id, reservedTicketsCount);
+        validateTicketsUpdateParameters(bookingId, reservedTicketsCount);
 
-        bookingRepository.updateByTickets(reservedTicketsCount, id);
-        travelingDataRepository.reserveTickets(reservedTicketsCount, id);
+        bookingRepository.updateByTickets(reservedTicketsCount, bookingId);
     }
 
     public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
+
+        Optional<Booking> booking = bookingRepository.findById(id);
+
+        if (!booking.isPresent()) {
+            throw new NonExistentItemException("This booking does not exist");
+        }
         cancelTicketsReservation(id);
         bookingRepository.deleteById(id);
     }
 
-    private void validateFieldsExist(Booking booking) {
+    private void validateFields(Booking booking) {
         User user = booking.getUser();
         TravelingData travelingData = booking.getTravelingData();
         int reservedTicketsCount = booking.getReservedTicketsCount();
-        long userId = user.getId();
-        long bookingDataId = travelingData.getId();
-        int availableTicketsCount = travelingData.getAvailableTicketsCount();
 
-        Optional<User> searchedUser = userRepository.findById(userId);
+        if (user == null) {
+            throw new InvalidArgumentException("Invalid user");
+        }
+
+        if (travelingData == null) {
+            throw new InvalidArgumentException("Invalid traveling data");
+        }
+
+        long id = travelingData.getId();
+        Optional<TravelingData> searchedTravelingData = travelingDataRepository.findById(id);
+
+        if (!searchedTravelingData.isPresent()) {
+            throw new NonExistentItemException("Traveling data does not exist");
+        }
+
+        validateUserExists(user.getUsername());
+        validateTicketsAreSufficient(reservedTicketsCount, searchedTravelingData.get().getAvailableTicketsCount());
+    }
+
+    private void validateUserExists(String username) {
+        Optional<User> searchedUser = userRepository.findByUsername(username);
 
         if (!searchedUser.isPresent()) {
             throw new NonExistentItemException("User does not exist");
         }
-
-        Optional<TravelingData> searchedBookingData = travelingDataRepository.findById(bookingDataId);
-
-        if (!searchedBookingData.isPresent()) {
-            throw new NonExistentItemException("Booking data does not exist");
-        }
-
-        validateTicketsAreSufficient(reservedTicketsCount, availableTicketsCount);
     }
 
     private void validateTicketsAreSufficient(int reservedTicketsCount, int availableTicketsCount) {
@@ -125,33 +148,38 @@ public class BookingService {
     }
 
     private void reserveTickets(Booking booking) {
-        long bookingDataId = getBookingDataId(booking);
+        long travelingDataId = getTravelingDataId(booking);
         int ticketsCount = booking.getReservedTicketsCount();
 
-        travelingDataRepository.reserveTickets(ticketsCount, bookingDataId);
+        travelingDataRepository.reserveTickets(ticketsCount, travelingDataId);
     }
 
     private void cancelTicketsReservation(long bookingId) {
         Booking booking = findById(bookingId);
         int reservedTicketsCount = booking.getReservedTicketsCount();
-        long bookingDataId = getBookingDataId(booking);
+        long travelingDataId = getTravelingDataId(booking);
 
-        travelingDataRepository.cancelTicketReservation(reservedTicketsCount, bookingDataId);
+        travelingDataRepository.cancelTicketReservation(reservedTicketsCount, travelingDataId);
     }
 
-    private long getBookingDataId(Booking booking) {
+    private long getTravelingDataId(Booking booking) {
         TravelingData travelingData = booking.getTravelingData();
 
         return travelingData.getId();
     }
 
-    private void validateTicketsUpdate(long bookingId, int newTicketsCount) {
+    private void validateTicketsUpdateParameters(long bookingId, int newTicketsCount) {
         Booking booking = findById(bookingId);
         TravelingData travelingData = booking.getTravelingData();
-        int availableTicketsCount = travelingData.getAvailableTicketsCount();
-        int reservedTicketsCount = booking.getReservedTicketsCount();
+        long travelingDataId = travelingData.getId();
+        int currentReservedTicketsCount = booking.getReservedTicketsCount();
+
+        travelingDataRepository.cancelTicketReservation(currentReservedTicketsCount, travelingDataId);
+
+        int availableTicketsCount = travelingDataRepository.findAvailableTicketsCount(travelingDataId);
 
         validateTicketsAreSufficient(newTicketsCount, availableTicketsCount);
-        travelingDataRepository.updateTicketsReservation(reservedTicketsCount, bookingId);
+
+        travelingDataRepository.reserveTickets(newTicketsCount, travelingDataId);
     }
 }

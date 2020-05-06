@@ -10,28 +10,35 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    @Query(value = "SELECT email, username" +
-                   "FROM  user" +
+    @Query(value = "SELECT * " +
+                   "FROM user " +
+                   "WHERE email = ?1 " +
+                   "AND password = ?2",
+               nativeQuery = true)
+    Optional<User> login(String email, String password);
+
+    @Query(value = "SELECT * " +
+                   "FROM  user " +
                    "WHERE username = ?1",
             nativeQuery = true)
     Optional<User> findByUsername(String username);
 
-    @Query(value = "SELECT email, username" +
-                   "FROM  user" +
+    @Query(value = "SELECT * " +
+                   "FROM  user " +
                    "WHERE email = ?1",
             nativeQuery = true)
     Optional<User> findByEmail(String email);
 
     @Modifying
     @Query(value = "UPDATE user " +
-                   "SET password = ?1" +
+                   "SET password = ?1 " +
                    "WHERE username = ?2 ",
             nativeQuery = true)
     void updatePassword(String newPassword, String username);
 
     @Modifying
     @Query(value = "UPDATE user " +
-                   "SET email = ?1" +
+                   "SET email = ?1 " +
                    "WHERE email = ?2",
             nativeQuery = true)
     void updateEmail(String newEmail, String currentEmail);

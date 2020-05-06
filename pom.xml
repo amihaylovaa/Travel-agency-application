@@ -21,13 +21,19 @@
         <spring-boot-starter-data.verson>2.1.4.RELEASE</spring-boot-starter-data.verson>
         <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
         <spring.security.core.version>5.2.0.RELEASE</spring.security.core.version>
+        <spring-boot-test-starter.version>2.2.4.RELEASE</spring-boot-test-starter.version>
         <sonarqube.version>3.6.0.1398</sonarqube.version>
         <bean.validation.api.version>2.0.1.Final</bean.validation.api.version>
         <hibernate.validator.version>6.0.16.Final</hibernate.validator.version>
         <hibernate.validator.processor.annotation.version>6.0.17.Final
         </hibernate.validator.processor.annotation.version>
-        <junit.version>5.5.2</junit.version>
-        <mockito.version>3.2.4</mockito.version>>
+        <junit-jupiter.version>5.4.2</junit-jupiter.version>
+        <junit-jupiter-api.version>5.4.2</junit-jupiter-api.version>
+        <mockito.version>3.2.4</mockito.version>
+        <mockito.junit.junpiter.version>3.2.4</mockito.junit.junpiter.version>
+        <surefire.version>2.22.2</surefire.version>
+        <build.helper.version>1.10</build.helper.version>
+        <failsafe.version>2.22.2</failsafe.version>
     </properties>
 
     <dependencies>
@@ -42,7 +48,6 @@
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -68,6 +73,12 @@
             <version>${spring.security.core.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot-test-starter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>${bean.validation.api.version}</version>
@@ -79,8 +90,20 @@
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
+            <version>${junit-jupiter-api.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.junit.junpiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -94,6 +117,11 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -101,6 +129,19 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -114,6 +155,38 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonarqube.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${build.helper.version}</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/it/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${failsafe.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

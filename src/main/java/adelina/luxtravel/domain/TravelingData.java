@@ -4,22 +4,23 @@ import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
 
 import static adelina.luxtravel.utility.Constants.MINUTE;
-import static adelina.luxtravel.utility.Constants.TEN_PERCENT;
+import static adelina.luxtravel.utility.Constants.PERCENT;
 
 import adelina.luxtravel.domain.wrapper.*;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "traveling_data")
 @Getter
+@NoArgsConstructor
 public class TravelingData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,29 +32,27 @@ public class TravelingData {
     @Embedded
     Date date;
     @NotNull(message = "Transport can not be null")
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "transport_id")
     private Transport transport;
     @Min(value = 1, message = "Count available tickets must have at least one ticket")
-    @Column(name = "count_available_tickets", nullable = false)
+    @Column(name = "available_tickets_count", nullable = false)
     private int availableTicketsCount;
-    @DecimalMin(value ="10.0", message = "Price can not be less than 10.0 ")
+    @DecimalMin(value = "5.0", message = "Price can not be less than 5.0 ")
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
-    @NotNull(message = "List of bookings can not be null")
-    @OneToMany(mappedBy = "travelingData",
-               cascade = CascadeType.REMOVE,
-               orphanRemoval = true
-              )
-    private List<Booking> bookings;
 
     public TravelingData(TravelingData travelingData) {
-        this(travelingData.id, travelingData.departureDestination,
-                travelingData.transport, travelingData.date, travelingData.availableTicketsCount);
+        id = travelingData.getId();
+        availableTicketsCount = travelingData.getAvailableTicketsCount();
+        date = travelingData.getDate();
+        departureDestination = travelingData.getDepartureDestination();
+        transport = travelingData.getTransport();
+        setPrice();
     }
 
-    public TravelingData(long id, DepartureDestination departureDestination,
-                         Transport transport, Date date, int availableTicketsCount) {
+    public TravelingData(long id, DepartureDestination departureDestination, Transport transport,
+                         Date date, int availableTicketsCount) {
         this(transport, departureDestination, date, availableTicketsCount);
         this.id = id;
     }
@@ -64,7 +63,6 @@ public class TravelingData {
         this.departureDestination = departureDestination;
         this.date = date;
         this.availableTicketsCount = availableTicketsCount;
-        this.bookings = new ArrayList<>();
         setPrice();
     }
 
@@ -76,6 +74,6 @@ public class TravelingData {
 
         LocalTime localTime = transport.calculateDuration(departurePoint, destinationPoint);
 
-        price = ((localTime.getHour() * MINUTE + localTime.getMinute()) / priceCoefficient) * TEN_PERCENT;
+        price = ((localTime.getHour() * MINUTE + localTime.getMinute()) / priceCoefficient) * PERCENT;
     }
 }

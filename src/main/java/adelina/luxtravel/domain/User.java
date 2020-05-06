@@ -1,6 +1,10 @@
 package adelina.luxtravel.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
@@ -13,6 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @Getter
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,12 +35,6 @@ public class User {
     @Length(min = 8, message = "Password can not be less than 8 characters")
     @Column(name = "password", nullable = false)
     private String password;
-    @NotNull(message = "List of bookings can not be null")
-    @OneToMany(mappedBy = "user",
-               cascade = CascadeType.REMOVE,
-               orphanRemoval = true
-             )
-    private List<Booking> bookings;
 
     public User(User user) {
         this(user.id, user.username, user.email, user.password);
@@ -50,6 +49,10 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.bookings = new ArrayList<>();
+    }
+
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
     }
 }

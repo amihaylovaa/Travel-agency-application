@@ -1,6 +1,9 @@
 package adelina.luxtravel.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -10,16 +13,17 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "booking")
 @Getter
+@NoArgsConstructor
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @NotNull(message = "User can not be null")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
     @NotNull(message = "Traveling data can not be null")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "traveling_data_id")
     private TravelingData travelingData;
     @Min(value = 1, message = "Reserved tickets count can not be less than one")

@@ -1,7 +1,5 @@
 package adelina.luxtravel.repository;
 
-import adelina.luxtravel.domain.transport.Airplane;
-import adelina.luxtravel.domain.transport.Bus;
 import adelina.luxtravel.domain.transport.Transport;
 import adelina.luxtravel.domain.transport.TransportClass;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,66 +11,36 @@ import java.util.List;
 
 @Repository
 public interface TransportRepository extends JpaRepository<Transport, Long> {
-    @Query(value = "BEGIN;" +
-
-                   "INSERT INTO transport(class)" +
-                   "VALUES (?1);" +
-
-                   "INSERT INTO bus" +
-                   "SELECT id" +
-                   "FROM transport" +
-                   "WHERE class = ?1;" +
-
-                    "COMMIT;",
+    @Query(value = "SELECT t.id, t.transport_class, t.transport_type, b.id as clazz_ " +
+                   "FROM transport t, bus b " +
+                   "WHERE t.transport_class = ?1 " +
+                   "AND t.id = b.id " ,
             nativeQuery = true)
-    Bus saveBus(TransportClass transportClass);
+    List<Transport> findAllBusesByClass(String transportClass);
 
-    @Query(value = "BEGIN;" +
-
-                   "INSERT INTO transport(class)" +
-                   "VALUES (?1);" +
-
-                   "INSERT INTO airplane" +
-                   "SELECT id" +
-                   "FROM transport" +
-                   "WHERE class = ?1;" +
-
-                  "COMMIT;",
+    @Query(value = "SELECT t.id, t.transport_class, t.transport_type, a.id as clazz_ " +
+                   "FROM transport t , airplane a " +
+                   "WHERE transport_class = ?1 " +
+                   "AND a.id = t.id",
             nativeQuery = true)
-    Airplane saveAirplane(TransportClass transportClass);
+    List<Transport> findAllAirplanesByClass(String transportClass);
 
-    @Query(value = "SELECT class" +
-                   "FROM transport" +
-                   "WHERE class = ?1 AND id IN" +
-                   "(SELECT id FROM bus WHERE id=transport.id)",
-            nativeQuery = true)
-    List<Transport> findAllBusesByClass(TransportClass transportClass);
-
-    @Query(value = "SELECT class" +
-                   "FROM transport" +
-                   "WHERE class = ?1 AND id IN" +
-                   "(SELECT id FROM airplane WHERE id=transport.id)",
-            nativeQuery = true)
-    List<Transport> findAllAirplanesByClass(TransportClass transportClass);
-
-    @Query(value = "SELECT class" +
-                   "FROM transport" +
-                   "id IN" +
-                   "(SELECT id FROM bus WHERE id=transport.id)",
+    @Query(value = "SELECT t.id, t.transport_class, t.transport_type, b.id as clazz_ " +
+                   "FROM transport t , bus b " +
+                   "WHERE t.id = b.id",
             nativeQuery = true)
     List<Transport> findAllBuses();
 
-    @Query(value = "SELECT class" +
-                   "FROM transport" +
-                   "id IN" +
-                   "(SELECT id FROM airplane WHERE id=transport.id)",
+    @Query(value = "SELECT t.id, t.transport_class, t.transport_type, a.id as clazz_ " +
+                   "FROM transport t , airplane a " +
+                   "WHERE t.id = a.id",
             nativeQuery = true)
     List<Transport> findAllAirplanes();
 
     @Modifying
-    @Query(value = "UPDATE transport" +
-                   "SET class = ?1" +
-                   "WHERE id = ?2",
+    @Query(value = "UPDATE transport " +
+                   "SET transport_class = ?1 " +
+                   "WHERE id = ?2 ",
             nativeQuery = true)
-    void updateClass(TransportClass transportClass, long id);
+    void updateClass(String transportClass, long id);
 }

@@ -1,14 +1,11 @@
 package adelina.luxtravel.controller;
 
 import adelina.luxtravel.domain.TravelingData;
-import adelina.luxtravel.domain.transport.Transport;
-import adelina.luxtravel.exception.InvalidArgumentException;
-import adelina.luxtravel.exception.NonExistentItemException;
+import adelina.luxtravel.domain.wrapper.Date;
 import adelina.luxtravel.service.TravelingDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -22,37 +19,33 @@ public class TravelingDataController {
     }
 
     @PostMapping
-    public TravelingData save(@RequestBody TravelingData travelingData)
-            throws InvalidArgumentException, NonExistentItemException {
-        return travelingDataService.save(travelingData);
+    public TravelingData save(@RequestBody TravelingData travelingData) {
+        return travelingDataService.save(new TravelingData(travelingData));
     }
 
     @GetMapping(value = "/{id}")
-    public TravelingData findById(@PathVariable("id") long id)
-            throws InvalidArgumentException, NonExistentItemException {
+    public TravelingData findById(@PathVariable("id") long id) {
         return travelingDataService.findById(id);
     }
 
     @GetMapping(value = "/dates")
-    public List<TravelingData> findByDates(@RequestBody LocalDate from, @RequestBody LocalDate to)
-            throws InvalidArgumentException, NonExistentItemException {
-        return travelingDataService.findByDates(from, to);
+    public List<TravelingData> findByDates(@RequestBody Date date) {
+        return travelingDataService.findByDates(date);
     }
 
     @GetMapping(value = "/all")
-    public List<TravelingData> findAll() throws NonExistentItemException {
+    public List<TravelingData> findAll() {
         return travelingDataService.findAll();
     }
 
-    @PutMapping(value = "/{id}")
-    public void updateTransport(@PathVariable("bookingDataId") long travelingDataId,
-                                @RequestBody Transport transport)
-            throws InvalidArgumentException, NonExistentItemException {
-        travelingDataService.updateTransport(travelingDataId, transport);
+    @PutMapping(value = "/dates/{travelingDataId}")
+    public void updateDates(@RequestBody Date dates,
+                            @PathVariable("travelingDataId") long travelingDataId) {
+        travelingDataService.updateDates(travelingDataId, dates);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteById(@PathVariable("id") long id) throws InvalidArgumentException {
+    public void deleteById(@PathVariable("id") long id) {
         travelingDataService.deleteById(id);
     }
 }
