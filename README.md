@@ -48,7 +48,7 @@ Response
 ````
 ## Removing booking that does not exist 
 
-End point - `/bookings/3`
+End point - `/bookings/id`
 
 ````
 {
