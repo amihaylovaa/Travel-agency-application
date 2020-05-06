@@ -3,11 +3,11 @@ Its main purpose is to present all holidays and excursions that the travel agenc
 
 The applications is consisting of :
 
-*Domain layer - contains all basic entities without which the application could not exist
+* Domain layer - contains all basic entities without which the application could not exist
 
-*Persistence layer - contains all database operation
+* Persistence layer - contains all database operation
 
-*Service layer - contains all the business logic with large number of validations
+* Service layer - contains all the business logic with large number of validations
 
 There are controllers that handles POST, GET, PUT and DELETE HTTP methods.
 
