@@ -63,4 +63,7 @@ End point - `/bookings/id`
 
 
 
-*Application's data is stored in relational database management system MySQL.
+* Application's data is stored in relational database management system MySQL.
+
+
+* Integration tests are planned in the future.
