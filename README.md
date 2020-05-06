@@ -1,4 +1,4 @@
-Lux travel agency is a Restful application powered by Spring boot.
+**Lux travel agency** is a Restful application powered by Spring boot.
 Its main purpose is to present all holidays and excursions that the travel agency provides.
 
 The applications is consisting of :
@@ -13,7 +13,7 @@ There are controllers that handles POST, GET, PUT and DELETE HTTP methods.
 
 Examples for handling rest API :
 
-# Creating user 
+## Creating user 
 
 End point - /users/register
 
@@ -35,9 +35,9 @@ Response :
     "password": "$2a$10$BXiSC32pmXTxnkhLwWGiU./pP8Z7Rqmf3rPeJ1TYwVe/3tVzl07uW"
 }
 ````
-# Finding transport by existing id
+## Finding transport by existing id
 
-End point - /transports/4
+End point - `/transports/id`
 ````
 Response
 {
@@ -46,9 +46,9 @@ Response
     "transportClass": "FIRST"
 }
 ````
-# Removing booking that does not exist 
+## Removing booking that does not exist 
 
-End point /bookings/3
+End point - `/bookings/3`
 
 ````
 {
@@ -59,4 +59,8 @@ End point /bookings/3
 }
 ````
 
-Application's data is stored in relational database management system MySQL.
+
+
+
+
+**Application's data is stored in relational database management system MySQL.
