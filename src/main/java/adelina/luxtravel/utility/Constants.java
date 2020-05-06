@@ -1,6 +1,11 @@
 package adelina.luxtravel.utility;
 
 public class Constants {
+
+    private Constants() {
+
+    }
+
     public static final double MINUTE = 60.0;
     public static final double HOUR = 60.0;
     public static final double AIRPLANE_AVG_SPEED = 850.50;

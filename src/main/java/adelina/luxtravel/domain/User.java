@@ -1,7 +1,5 @@
 package adelina.luxtravel.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,9 +8,6 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "user")
