@@ -1,0 +1,12 @@
+#IntelliJ generated
+
+out/
+.idea/
+
+#Maven generated
+
+target/
+
+*.iml
+*.iws
+*.ipr
