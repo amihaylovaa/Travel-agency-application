@@ -18,6 +18,9 @@ import java.util.Optional;
 
 import static adelina.luxtravel.utility.Constants.INVALID_ID;
 
+/**
+ * Represents service for traveling data
+ */
 @Service
 @Transactional
 public class TravelingDataService {
@@ -25,6 +28,13 @@ public class TravelingDataService {
     private TransportRepository transportRepository;
     private TravelingPointRepository travelingPointRepository;
 
+    /**
+     * Constructor
+     *
+     * @param travelingDataRepository  traveling data repository
+     * @param transportRepository      transport repository
+     * @param travelingPointRepository traveling point repository
+     */
     @Autowired
     public TravelingDataService(TravelingDataRepository travelingDataRepository,
                                 TransportRepository transportRepository,
@@ -34,13 +44,24 @@ public class TravelingDataService {
         this.travelingPointRepository = travelingPointRepository;
     }
 
-
+    /**
+     * Saves new traveling data
+     *
+     * @param travelingData the traveling data that is going to be saved
+     * @return the saved traveling data
+     */
     public TravelingData save(TravelingData travelingData) {
         validateTravelingData(travelingData);
 
         return travelingDataRepository.save(travelingData);
     }
 
+    /**
+     * Searches for traveling data by id
+     *
+     * @param id traveling data's id
+     * @return the found traveling data, otherwise throws exception for non-existent traveling data
+     */
     public TravelingData findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
@@ -54,6 +75,12 @@ public class TravelingDataService {
         return travelingData.get();
     }
 
+    /**
+     * Searches for traveling data by dates
+     *
+     * @param dates the dates
+     * @return list of all traveling data for these dates, throws exception if no traveling data are present
+     */
     public List<TravelingData> findByDates(Date dates) {
         LocalDate from = dates.getFromDate();
         LocalDate to = dates.getToDate();
@@ -68,6 +95,11 @@ public class TravelingDataService {
         return travelingData;
     }
 
+    /**
+     * Gets all traveling data
+     *
+     * @return list of all traveling data, throws exception if no traveling data are present
+     */
     public List<TravelingData> findAll() {
         List<TravelingData> travelingData = travelingDataRepository.findAll();
 
@@ -77,6 +109,12 @@ public class TravelingDataService {
         return travelingData;
     }
 
+    /**
+     * Updates travelign data by dates
+     *
+     * @param travelingDataId traveling data's id
+     * @param dates           the new dates
+     */
     public void updateDates(long travelingDataId, Date dates) {
         validateUpdateDatesParameters(travelingDataId, dates);
 
@@ -87,6 +125,11 @@ public class TravelingDataService {
         travelingDataRepository.updateToDate(toDate, travelingDataId);
     }
 
+    /**
+     * Deletes traveling data by id
+     *
+     * @param id traveling data's id
+     */
     public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);

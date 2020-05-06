@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Represents controller for traveling point
+ */
 @RestController
 @RequestMapping("/traveling_points")
 public class TravelingPointController {

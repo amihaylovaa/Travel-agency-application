@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Wrapper class representing departure and destination traveling points
+ */
 @EqualsAndHashCode
 @NoArgsConstructor
 @Getter
@@ -25,6 +28,12 @@ public class DepartureDestination {
     @JoinColumn(name = "destination_point_id")
     private TravelingPoint destinationPoint;
 
+    /**
+     * Constructor
+     *
+     * @param departurePoint object contains departure traveling point's data
+     * @param destinationPoint object contains destination traveling point's data
+     */
     public DepartureDestination(TravelingPoint departurePoint, TravelingPoint destinationPoint) {
         setStartingEndingPoint(departurePoint, destinationPoint);
     }

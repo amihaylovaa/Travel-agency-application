@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Represents controller for transport
+ */
 @RestController
 @RequestMapping("/transports")
 public class TransportController {

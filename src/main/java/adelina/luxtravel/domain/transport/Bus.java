@@ -10,19 +10,39 @@ import java.time.LocalTime;
 import static adelina.luxtravel.utility.Constants.BUS_AVG_SPEED;
 import static adelina.luxtravel.utility.DistanceCalculator.findDistance;
 
+/**
+ * Represents a specific transport - Bus
+ */
 @Entity
 @NoArgsConstructor
-@DiscriminatorValue(value="bus")
+@DiscriminatorValue(value = "bus")
 public class Bus extends Transport {
-
-    public Bus(TransportClass vehicleClass) {
-        super(vehicleClass);
+    /**
+     * Constructor
+     *
+     * @param transportClass transport's class
+     */
+    public Bus(TransportClass transportClass) {
+        super(transportClass);
     }
 
+    /**
+     * Constructor
+     *
+     * @param id             bus's id
+     * @param transportClass transport's class
+     */
     public Bus(long id, TransportClass transportClass) {
         super(id, transportClass);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param departurePoint   departure traveling point
+     * @param destinationPoint destination traveling point
+     * @return
+     */
     @Override
     public LocalTime calculateDuration(TravelingPoint departurePoint, TravelingPoint destinationPoint) {
         double departurePointLongitude = departurePoint.getLongitude();

@@ -1,5 +1,8 @@
 package adelina.luxtravel.utility;
 
+/**
+ * Utility class that stores all constants used in the application
+ */
 public class Constants {
 
     private Constants() {

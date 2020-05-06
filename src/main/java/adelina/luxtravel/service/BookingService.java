@@ -20,6 +20,9 @@ import static adelina.luxtravel.utility.Constants.INVALID_ID;
 import static adelina.luxtravel.utility.Constants.INVALID_USERNAME;
 
 
+/**
+ * Represents service for booking
+ */
 @Service
 @Transactional
 public class BookingService {
@@ -27,6 +30,13 @@ public class BookingService {
     private TravelingDataRepository travelingDataRepository;
     private UserRepository userRepository;
 
+    /**
+     * Constructor
+     *
+     * @param bookingRepository       bookings repository
+     * @param travelingDataRepository traveling data repository
+     * @param userRepository          user repository
+     */
     @Autowired
     public BookingService(BookingRepository bookingRepository, TravelingDataRepository travelingDataRepository, UserRepository userRepository) {
         this.bookingRepository = bookingRepository;
@@ -34,6 +44,12 @@ public class BookingService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Saves new booking
+     *
+     * @param booking the booking that is going to be saved
+     * @return the saved booking
+     */
     public Booking save(Booking booking) {
         if (booking == null) {
             throw new InvalidArgumentException("Invalid booking");
@@ -45,6 +61,12 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
+    /**
+     * Searches for a booking by id
+     *
+     * @param id booking's id
+     * @return the found booking, otherwise throws exception for non-existent booking
+     */
     public Booking findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
@@ -58,6 +80,13 @@ public class BookingService {
         return booking.get();
     }
 
+    /**
+     * Searches for all user's bookings
+     *
+     * @param username user's username
+     * @return list of user's bookings, otherwise throws exception for non-existent bookings
+     * for user with that username
+     */
     public List<Booking> findAllUserBookings(String username) {
         if (StringUtils.isEmpty(username)) {
             throw new InvalidArgumentException(INVALID_USERNAME);
@@ -73,6 +102,11 @@ public class BookingService {
         return bookings;
     }
 
+    /**
+     * Gets all bookings
+     *
+     * @return list of all bookings, throws exception if no bookings are present
+     */
     public List<Booking> findAll() {
         List<Booking> bookings = bookingRepository.findAll();
 
@@ -82,6 +116,12 @@ public class BookingService {
         return bookings;
     }
 
+    /**
+     * Updates booking by reserved tickets count
+     *
+     * @param bookingId            booking's id
+     * @param reservedTicketsCount the new tickets' count
+     */
     public void updateTickets(long bookingId, int reservedTicketsCount) {
         if (bookingId <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
@@ -95,6 +135,11 @@ public class BookingService {
         bookingRepository.updateByTickets(reservedTicketsCount, bookingId);
     }
 
+    /**
+     * Deletes booking by id
+     *
+     * @param id booking's id
+     */
     public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);

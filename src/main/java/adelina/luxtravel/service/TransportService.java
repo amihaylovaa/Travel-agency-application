@@ -16,34 +16,66 @@ import java.util.Optional;
 import static adelina.luxtravel.utility.Constants.INVALID_ID;
 import static adelina.luxtravel.utility.Constants.NON_EXISTING_TRANSPORT_WITH_GIVEN_ID;
 
+/**
+ * Represents service for transport
+ */
 @Service
 @Transactional
 public class TransportService {
     private TransportRepository transportRepository;
 
+    /**
+     * Constructor
+     *
+     * @param transportRepository transport repository
+     */
     @Autowired
     public TransportService(TransportRepository transportRepository) {
         this.transportRepository = transportRepository;
     }
 
+    /**
+     * Saves new bus
+     *
+     * @param transport the transport (bus) that is going to be saved
+     * @return the saved bus
+     */
     public Transport saveBus(Transport transport) {
         validateTransport(transport);
 
         return transportRepository.save(transport);
     }
 
+    /**
+     * Saves new airplanes
+     *
+     * @param transport the transport(airplane) that is going to be saved
+     * @return the saved transport
+     */
     public Transport saveAirplane(Transport transport) {
         validateTransport(transport);
 
         return transportRepository.save(transport);
     }
 
+    /**
+     * Saves list of transports
+     *
+     * @param transports the list of transports that are going to be saved
+     * @return the saved list of transports
+     */
     public List<Transport> saveAll(List<Transport> transports) {
         validateTransportList(transports);
 
         return transportRepository.saveAll(transports);
     }
 
+    /**
+     * Searches for a transport by id
+     *
+     * @param id transport's id
+     * @return the found transport, otherwise throws exception for non-existent transport
+     */
     public Transport findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
@@ -57,6 +89,13 @@ public class TransportService {
         return transport.get();
     }
 
+    /**
+     * Searches for all buses by class
+     *
+     * @param transportClass the transport class
+     * @return list of buses of that class, otherwise throws exception
+     * for non-existent list of buses of that class
+     */
     public List<Transport> findAllBusesByClass(String transportClass) {
         validateTransportClass(transportClass);
 
@@ -65,6 +104,13 @@ public class TransportService {
         return validateTransportListExist(transports);
     }
 
+    /**
+     * Searches for all airplanes by class
+     *
+     * @param transportClass the transport class
+     * @return list of airplanes of that class, otherwise throws exception
+     * for non-existent list of airplanes of that class
+     */
     public List<Transport> findAllAirplanesByClass(String transportClass) {
         validateTransportClass(transportClass);
 
@@ -73,18 +119,34 @@ public class TransportService {
         return validateTransportListExist(transports);
     }
 
+    /**
+     * Gets all airplanes
+     *
+     * @return list of all airplanes, throws exception if no airplanes are present
+     */
     public List<Transport> findAllAirplanes() {
         List<Transport> transports = transportRepository.findAllAirplanes();
 
         return validateTransportListExist(transports);
     }
 
+    /**
+     * Gets all buses
+     *
+     * @return list of all buses, throws exception if no buses are present
+     */
     public List<Transport> findAllBuses() {
         List<Transport> transports = transportRepository.findAllBuses();
 
         return validateTransportListExist(transports);
     }
 
+    /**
+     * Updates transport's class by id
+     *
+     * @param transportClass the new transport class
+     * @param id             transport's id
+     */
     public void updateClass(String transportClass, long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
@@ -95,6 +157,11 @@ public class TransportService {
         transportRepository.updateClass(transportClass, id);
     }
 
+    /**
+     * Deletes transport by id
+     *
+     * @param id transport's id
+     */
     public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);

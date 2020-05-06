@@ -7,7 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-
+/**
+ * Represents a booking for a traveling data
+ */
 @Entity
 @Table(name = "booking")
 @Getter
@@ -28,15 +30,35 @@ public class Booking {
     @Column(name = "reserved_tickets_count", nullable = false)
     private int reservedTicketsCount;
 
+    /**
+     * Constructor
+     *
+     * @param booking object contains booking's data
+     */
     public Booking(Booking booking) {
         this(booking.id, booking.travelingData, booking.user, booking.reservedTicketsCount);
     }
 
+    /**
+     * Constructor
+     *
+     * @param id booking's id
+     * @param travelingData traveling data
+     * @param user the user created the booking
+     * @param reservedTicketsCount  reserved tickets count
+     */
     public Booking(long id, TravelingData travelingData, User user, int reservedTicketsCount) {
         this(travelingData, user, reservedTicketsCount);
         this.id = id;
     }
 
+    /**
+     * Constructor
+     *
+     * @param travelingData traveling data
+     * @param user the user created the booking
+     * @param reservedTicketsCount reserved tickets count
+     */
     public Booking(TravelingData travelingData, User user, int reservedTicketsCount) {
         this.user = user;
         this.travelingData = travelingData;

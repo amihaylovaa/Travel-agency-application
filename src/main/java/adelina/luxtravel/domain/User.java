@@ -9,6 +9,10 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+/**
+ * Represents a user
+ */
+
 @Entity
 @Table(name = "user")
 @Getter
@@ -31,21 +35,47 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    /**
+     * Constructor
+     *
+     * @param user - object contains user's data
+     */
     public User(User user) {
         this(user.id, user.username, user.email, user.password);
     }
 
+    /**
+     * Constructor
+     *
+     * @param id       user's id
+     * @param username user's username
+     * @param email    user's email
+     * @param password user's password
+     */
     public User(long id, String username, String email, String password) {
         this(username, email, password);
         this.id = id;
     }
 
+    /**
+     * Constructor
+     *
+     * @param username user's username
+     * @param email    user's email
+     * @param password user's password
+     */
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
 
+    /**
+     * Constructor
+     *
+     * @param username user's username
+     * @param email    user's email
+     */
     public User(String username, String email) {
         this.username = username;
         this.email = email;

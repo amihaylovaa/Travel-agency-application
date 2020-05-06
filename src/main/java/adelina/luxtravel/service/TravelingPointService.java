@@ -16,16 +16,30 @@ import java.util.Optional;
 
 import static adelina.luxtravel.utility.Constants.*;
 
+/**
+ * Represents service for traveling point
+ */
 @Service
 @Transactional
 public class TravelingPointService {
     private TravelingPointRepository travelingPointRepository;
 
+    /**
+     * Constructor
+     *
+     * @param travelingPointRepository traveling point repository
+     */
     @Autowired
     public TravelingPointService(TravelingPointRepository travelingPointRepository) {
         this.travelingPointRepository = travelingPointRepository;
     }
 
+    /**
+     * Saves new traveling point
+     *
+     * @param travelingPoint the traveling point that is going to be saved
+     * @return the saved traveling point
+     */
     public TravelingPoint save(TravelingPoint travelingPoint) {
         validateTravelingPoint(travelingPoint);
         validateTravelingPointDoesNotExist(travelingPoint.getName());
@@ -33,12 +47,24 @@ public class TravelingPointService {
         return travelingPointRepository.save(travelingPoint);
     }
 
+    /**
+     * Save list of new traveling points
+     *
+     * @param travelingPoints list of traveling points that are going to be saved
+     * @return the saved list of traveling points
+     */
     public List<TravelingPoint> saveAll(List<TravelingPoint> travelingPoints) {
         validateTravelingPointsList(travelingPoints);
 
         return travelingPointRepository.saveAll(travelingPoints);
     }
 
+    /**
+     * Searches for traveling point by id
+     *
+     * @param id traveling point's id
+     * @return the found traveling point, otherwise throws exception for non-existent traveling point
+     */
     public TravelingPoint findById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
@@ -53,6 +79,12 @@ public class TravelingPointService {
         return travelingPoint.get();
     }
 
+    /**
+     * Searches for traveling point by name
+     *
+     * @param name traveling point's name
+     * @return the found traveling point, otherwise throws exception for non-existent traveling point
+     */
     public TravelingPoint findByName(String name) {
         if (StringUtils.isEmpty(name)) {
             throw new InvalidArgumentException("Invalid name");
@@ -67,6 +99,11 @@ public class TravelingPointService {
         return travelingPoint.get();
     }
 
+    /**
+     * Gets all traveling points
+     *
+     * @return list of traveling points, throws exception if no traveling points are presented
+     */
     public List<TravelingPoint> findAll() {
         List<TravelingPoint> travelingPoints = travelingPointRepository.findAll();
 
@@ -77,12 +114,23 @@ public class TravelingPointService {
         return travelingPoints;
     }
 
+    /**
+     * Updates traveling point's name by current(old) name
+     *
+     * @param newName traveling point's new name
+     * @param oldName traveling point's current(old) name
+     */
     public void updateName(String newName, String oldName) {
         validateUpdateNameParameters(newName, oldName);
 
         travelingPointRepository.updateName(newName, oldName);
     }
 
+    /**
+     * Delete traveling point by id
+     *
+     * @param id traveling point's id
+     */
     public void deleteById(long id) {
         if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);

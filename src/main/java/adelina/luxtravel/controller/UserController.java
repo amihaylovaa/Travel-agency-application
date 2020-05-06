@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Represents controller for user
+ */
 @RestController
 @RequestMapping("/users")
 public class UserController {

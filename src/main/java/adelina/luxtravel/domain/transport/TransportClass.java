@@ -3,6 +3,10 @@ package adelina.luxtravel.domain.transport;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents transport class on which ticket's price depend
+ */
+
 @Getter
 @NoArgsConstructor
 public enum TransportClass {

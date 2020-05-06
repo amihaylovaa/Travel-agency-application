@@ -17,6 +17,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
+/**
+ * Represents data about a particular travel
+ */
 @Entity
 @Table(name = "traveling_data")
 @Getter
@@ -42,6 +45,11 @@ public class TravelingData {
     @Column(name = "price", nullable = false, precision = 6, scale = 2)
     private double price;
 
+    /**
+     * Constructor
+     *
+     * @param travelingData traveling data object
+     */
     public TravelingData(TravelingData travelingData) {
         id = travelingData.getId();
         availableTicketsCount = travelingData.getAvailableTicketsCount();
@@ -51,12 +59,29 @@ public class TravelingData {
         setPrice();
     }
 
+    /**
+     * Constructor
+     *
+     * @param id                    traveling data's id
+     * @param departureDestination  departure and destination traveling points
+     * @param transport             transport
+     * @param date                  starting and ending dates
+     * @param availableTicketsCount available tickets count
+     */
     public TravelingData(long id, DepartureDestination departureDestination, Transport transport,
                          Date date, int availableTicketsCount) {
         this(transport, departureDestination, date, availableTicketsCount);
         this.id = id;
     }
 
+    /**
+     * Constructor
+     *
+     * @param transport             transport
+     * @param departureDestination  departure and destination traveling points
+     * @param date                  starting and ending dates
+     * @param availableTicketsCount available tickets count
+     */
     public TravelingData(Transport transport, DepartureDestination departureDestination,
                          Date date, int availableTicketsCount) {
         this.transport = transport;

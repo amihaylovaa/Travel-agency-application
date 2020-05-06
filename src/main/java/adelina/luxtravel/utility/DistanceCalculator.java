@@ -4,7 +4,12 @@ import static adelina.luxtravel.utility.Constants.KM;
 import static java.lang.Math.*;
 import static adelina.luxtravel.utility.Constants.EARTH_RADIUS_IN_METERS;
 
-public final class DistanceCalculator {
+/**
+ * Utility class contains a single method
+ * that calculates the distance between two points(traveling points)
+ * of sphere by Haversine formula
+ */
+public class DistanceCalculator {
 
     public static final double findDistance(double longitudeSource, double latitudeSource,
                                             double longitudeDestination, double latitudeDestination) {

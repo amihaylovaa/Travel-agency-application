@@ -8,6 +8,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+/**
+ * Database configuration class
+ */
 @Configuration
 @EnableTransactionManagement
 @PropertySource(value = {"classpath:config.properties"})

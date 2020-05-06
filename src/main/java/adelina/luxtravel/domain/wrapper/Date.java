@@ -13,6 +13,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Embeddable;
 import java.time.LocalDate;
 
+/**
+ * Wrapper class representing starting and ending dates for a traveling
+ */
+
 @EqualsAndHashCode
 @NoArgsConstructor
 @Getter
@@ -27,6 +31,12 @@ public class Date {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate toDate;
 
+    /**
+     * Constructor
+     *
+     * @param fromDate starting date
+     * @param toDate   ending date
+     */
     public Date(LocalDate fromDate, LocalDate toDate) {
         setBookingDates(fromDate, toDate);
     }

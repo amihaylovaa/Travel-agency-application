@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Represents controller for traveling data
+ */
 @RestController
 @RequestMapping("/traveling_data")
 public class TravelingDataController {

@@ -16,6 +16,9 @@ import java.time.LocalTime;
 
 import static adelina.luxtravel.utility.Constants.HOUR;
 
+/**
+ * Abstract class that represents the means of transport
+ */
 @Entity
 @Table(name = "transport")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -38,19 +41,41 @@ public abstract class Transport {
     @Column(name = "transport_class", nullable = false, length = 12)
     protected TransportClass transportClass;
 
+    /**
+     * Constructor
+     *
+     * @param transportClass transport's class
+     */
     public Transport(TransportClass transportClass) {
         this.transportClass = transportClass;
     }
 
+    /**
+     * Constructor
+     *
+     * @param transport object contains transport's data
+     */
     public Transport(Transport transport) {
         this(transport.id, transport.transportClass);
     }
 
+    /**
+     * Constructor
+     *
+     * @param id             transport's id
+     * @param transportClass transport's class
+     */
     public Transport(long id, TransportClass transportClass) {
         this(transportClass);
         this.id = id;
     }
 
+    /**
+     * Parses duration in a specific format
+     *
+     * @param duration the duration of a traveling
+     * @return the duration in appropriate format
+     */
     public LocalTime parseToLocalTime(Double duration) {
         String durationRound = String.format("%.2f", duration);
 
@@ -75,5 +100,13 @@ public abstract class Transport {
         return LocalTime.of(hours, minutes);
     }
 
+    /**
+     * Calculates the duration between two traveling points
+     * based on the type of transport
+     *
+     * @param departurePoint   departure traveling point
+     * @param destinationPoint destination traveling point
+     * @return the duration
+     */
     public abstract LocalTime calculateDuration(TravelingPoint departurePoint, TravelingPoint destinationPoint);
 }
