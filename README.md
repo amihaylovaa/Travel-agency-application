@@ -15,7 +15,7 @@ Examples for handling rest API :
 
 ## Creating user 
 
-End point - /users/register
+End point - `/users/register`
 
 Request body :
 
@@ -63,4 +63,4 @@ End point - `/bookings/id`
 
 
 
-** Application's data is stored in relational database management system MySQL.
+*Application's data is stored in relational database management system MySQL.
