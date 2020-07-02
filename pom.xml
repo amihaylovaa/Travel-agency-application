@@ -17,7 +17,7 @@
     <properties>
         <lombok.version>1.18.8</lombok.version>
         <hibernate.version>5.4.2.Final</hibernate.version>
-        <mysql-connector.version>8.0.15</mysql-connector.version>
+        <mysql-connector.version>8.0.16</mysql-connector.version>
         <spring-boot-starter-data.verson>2.1.4.RELEASE</spring-boot-starter-data.verson>
         <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
         <spring.security.core.version>5.2.0.RELEASE</spring.security.core.version>
