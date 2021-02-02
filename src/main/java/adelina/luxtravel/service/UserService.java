@@ -52,6 +52,7 @@ public class UserService {
         validateUsernameNotExists(username);
         validateEmailNotExists(email);
         setRole(user);
+        validatePasswordNotEmpty(user.getPassword());
         encodePassword(user);
 
         return userRepository.save(user);
@@ -167,6 +168,7 @@ public class UserService {
         String storedPassword = storedUser.getPassword();
         String sentPassword = user.getPassword();
 
+        validateEmailNotEmpty(newEmail);
         validatePasswordMatch(sentPassword, storedPassword);
         validateEmailNotExists(newEmail);
         userRepository.updateEmail(newEmail, username);
@@ -185,14 +187,14 @@ public class UserService {
 
         String username = user.getUsername();
         Role role = user.getRole();
-        String roleType = role.getRoleType().name();
 
-        validateUsernameNotEmpty(username);
-
-        if (StringUtils.isEmpty(roleType)) {
+        if (ObjectUtils.isEmpty(role) || ObjectUtils.isEmpty(role.getRoleType())) {
             throw new InvalidArgumentException("Invalid role");
         }
 
+        validateUsernameNotEmpty(username);
+
+        String roleType = role.getRoleType().name();
         long roleId = roleRepository.getIdFromName(roleType);
         userRepository.updateRole(roleId, username);
 
@@ -206,7 +208,7 @@ public class UserService {
      * @return true for successfully deleted user, false for unsuccessful attempt
      */
     public boolean deleteById(long id) {
-        if (id <= 0) {
+        if (id <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
         }
 

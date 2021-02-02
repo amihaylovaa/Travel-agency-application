@@ -21,7 +21,7 @@ public final class Constants {
     public static final String INVALID_TICKETS_COUNT = "Invalid tickets count";
     public static final String NON_EXISTING_TRANSPORT_WITH_GIVEN_ID = "Transport with given id does not exist";
     public static final String NON_EXISTENT_EXCURSION = "Excursion does not exists";
-    public static final long EXPIRATION_TIME = 20 * 1000 * 60;
+    public static final long EXPIRATION_TIME = 20L * 1000 * 60;
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";
     public static final String SECRET = "SecretGeneration";

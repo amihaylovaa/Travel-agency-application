@@ -1,5 +1,6 @@
 package adelina.luxtravel.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 @Entity
 @Table(name = "users")
 @Getter
+@EqualsAndHashCode
 @NoArgsConstructor
 public class User {
     @Id
@@ -50,6 +52,12 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
     }
 
     public User(String username, String password) {
