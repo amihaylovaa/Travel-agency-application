@@ -30,6 +30,10 @@ public class Bus extends Transport {
         super(transportClass);
     }
 
+    public Bus(long id, TransportClass transportClass) {
+        super(id, transportClass);
+    }
+
     /**
      * {@inheritDoc}
      *

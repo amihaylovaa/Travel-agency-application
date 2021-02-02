@@ -32,6 +32,10 @@ public class Airplane extends Transport {
         super(transportClass);
     }
 
+    public Airplane(long id, TransportClass transportClass) {
+        super(id, transportClass);
+    }
+
     /**
      * {@inheritDoc}
      *
