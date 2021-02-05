@@ -8,6 +8,7 @@ import adelina.luxtravel.domain.wrapper.*;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,7 @@ import java.time.LocalTime;
 @Table(name = "excursions")
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Excursion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

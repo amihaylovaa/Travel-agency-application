@@ -33,4 +33,8 @@ public class ExcursionTransport {
     private Transport transport;
     @Column(name = "price")
     private double price;
+
+    public ExcursionTransport(Transport transport) {
+        this.transport = transport;
+    }
 }

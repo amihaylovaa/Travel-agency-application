@@ -105,9 +105,7 @@ public class ExcursionService {
      * @return the available tickets
      */
     public int findExcursionAvailableTicketsCountById(long id) {
-        if (id <= NumberUtils.LONG_ZERO) {
-            throw new InvalidArgumentException(INVALID_ID);
-        }
+        findById(id);
 
         return excursionRepository.findExcursionAvailableTicketsCountById(id);
     }
@@ -155,6 +153,13 @@ public class ExcursionService {
     public int reserveTickets(long excursionId, int reservedTicketsCount) {
         if (excursionId <= NumberUtils.LONG_ZERO) {
             throw new InvalidArgumentException(INVALID_ID);
+        }
+
+        Excursion excursion = findById(excursionId);
+        int availableTicketsCount = excursion.getAvailableTicketsCount();
+
+        if (availableTicketsCount < reservedTicketsCount) {
+            throw new InvalidArgumentException(INVALID_TICKETS_COUNT);
         }
 
         excursionRepository.reserveTickets(reservedTicketsCount, excursionId);
